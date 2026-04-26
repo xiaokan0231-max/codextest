@@ -4,10 +4,17 @@
 
 ## 运行方式
 
+Windows 推荐使用 `py`：
+
+```powershell
+py -m pip install -r requirements.txt
+py app.py
+```
+
+macOS / Linux 通常可以使用：
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 python app.py
 ```
 
@@ -16,6 +23,8 @@ python app.py
 ## 操作方式
 
 - 方向键 / WASD：控制方向
+- 触屏方向按钮：控制方向
+- 屏幕滑动：控制方向
 - 空格：暂停 / 继续
 - 撞墙或撞到自己：游戏结束
 

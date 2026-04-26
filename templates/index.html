@@ -10,6 +10,7 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+        touch-action: none;
         background: #0b1020;
         color: #fff;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -37,6 +38,9 @@
         background: rgba(0, 0, 0, 0.5);
         text-align: center;
       }
+      #overlay[hidden] {
+        display: none;
+      }
       #panel {
         background: rgba(12, 18, 40, 0.95);
         border: 1px solid rgba(255, 255, 255, 0.25);
@@ -57,13 +61,62 @@
       button:hover {
         background: #5f91ff;
       }
+      #controls {
+        position: fixed;
+        right: max(16px, env(safe-area-inset-right));
+        bottom: max(16px, env(safe-area-inset-bottom));
+        display: grid;
+        grid-template-columns: repeat(3, 56px);
+        grid-template-rows: repeat(3, 56px);
+        gap: 8px;
+        user-select: none;
+        touch-action: manipulation;
+      }
+      #controls button {
+        margin: 0;
+        width: 56px;
+        height: 56px;
+        border-radius: 8px;
+        background: rgba(79, 131, 255, 0.84);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        font-size: 22px;
+        font-weight: 700;
+      }
+      #controls button:active {
+        transform: translateY(1px);
+        background: rgba(95, 145, 255, 0.95);
+      }
+      #controls [data-dir="up"] {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      #controls [data-dir="left"] {
+        grid-column: 1;
+        grid-row: 2;
+      }
+      #controls [data-dir="right"] {
+        grid-column: 3;
+        grid-row: 2;
+      }
+      #controls [data-dir="down"] {
+        grid-column: 2;
+        grid-row: 3;
+      }
+      @media (pointer: fine) and (min-width: 900px) {
+        #controls {
+          opacity: 0.28;
+        }
+        #controls:hover {
+          opacity: 1;
+        }
+      }
     </style>
   </head>
   <body>
     <div id="hud">
       <div>分数：<span id="score">0</span></div>
       <div>最高分：<span id="best">0</span></div>
-      <div id="hint">方向键 / WASD 控制；空格暂停</div>
+      <div id="hint">方向键 / WASD / 触屏按钮 / 滑动控制；空格暂停</div>
     </div>
 
     <div id="overlay" hidden>
@@ -72,6 +125,13 @@
         <p id="message"></p>
         <button id="restart">重新开始</button>
       </div>
+    </div>
+
+    <div id="controls" aria-label="触屏方向控制">
+      <button type="button" data-dir="up" aria-label="向上">↑</button>
+      <button type="button" data-dir="left" aria-label="向左">←</button>
+      <button type="button" data-dir="right" aria-label="向右">→</button>
+      <button type="button" data-dir="down" aria-label="向下">↓</button>
     </div>
 
     <script type="module">
@@ -97,10 +157,10 @@
       const ambient = new THREE.AmbientLight(0xffffff, 0.45);
       scene.add(ambient);
 
-      const dir = new THREE.DirectionalLight(0xffffff, 0.9);
-      dir.position.set(12, 18, 8);
-      dir.castShadow = true;
-      scene.add(dir);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+      dirLight.position.set(12, 18, 8);
+      dirLight.castShadow = true;
+      scene.add(dirLight);
 
       const floor = new THREE.Mesh(
         new THREE.PlaneGeometry(GRID + 2, GRID + 2),
@@ -114,10 +174,10 @@
       const gridHelper = new THREE.GridHelper(GRID + 1, GRID + 1, 0x5672c7, 0x324a89);
       scene.add(gridHelper);
 
-      const snakeMat = new THREE.MeshStandardMaterial({ color: 0x47ff8a, emissive: 0x0a5522 });
-      const headMat = new THREE.MeshStandardMaterial({ color: 0x8cffd5, emissive: 0x1b7c4b });
-      const foodMat = new THREE.MeshStandardMaterial({ color: 0xff5c7a, emissive: 0x661324 });
-      const blockGeo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+      const snakeMat  = new THREE.MeshStandardMaterial({ color: 0x47ff8a, emissive: 0x0a5522 });
+      const headMat   = new THREE.MeshStandardMaterial({ color: 0x8cffd5, emissive: 0x1b7c4b });
+      const foodMat   = new THREE.MeshStandardMaterial({ color: 0xff5c7a, emissive: 0x661324 });
+      const blockGeo  = new THREE.BoxGeometry(0.9, 0.9, 0.9);
 
       const snakeGroup = new THREE.Group();
       scene.add(snakeGroup);
@@ -126,27 +186,50 @@
       foodMesh.castShadow = true;
       scene.add(foodMesh);
 
-      let snake = [];
+      /* ============ Mesh Pool ============ */
+      const meshPool = [];
+
+      function getMesh(material) {
+        let m = meshPool.pop();
+        if (!m) {
+          m = new THREE.Mesh(blockGeo, material);
+          m.castShadow = true;
+        } else {
+          m.material = material;
+        }
+        m.visible = true;
+        return m;
+      }
+
+      function recycleMeshes() {
+        while (snakeGroup.children.length) {
+          const m = snakeGroup.children[0];
+          snakeGroup.remove(m);
+          m.visible = false;
+          meshPool.push(m);
+        }
+      }
+
+      /* ============ State ============ */
+      let snake     = [];
+      let prevSnake = [];
       let direction = new THREE.Vector3(1, 0, 0);
       let queuedDir = direction.clone();
-      let food = { x: 0, y: 0, z: 0 };
-      let score = 0;
-      let best = Number(localStorage.getItem('snake3d-best') || 0);
-      let paused = false;
-      let gameOver = false;
+      let food      = { x: 0, y: 0, z: 0 };
+      let score     = 0;
+      let best      = Number(localStorage.getItem('snake3d-best') || 0);
+      let paused    = false;
+      let gameOver  = false;
 
-      const scoreEl = document.getElementById('score');
-      const bestEl = document.getElementById('best');
-      const overlay = document.getElementById('overlay');
-      const titleEl = document.getElementById('title');
-      const messageEl = document.getElementById('message');
+      const scoreEl    = document.getElementById('score');
+      const bestEl     = document.getElementById('best');
+      const overlay    = document.getElementById('overlay');
+      const titleEl    = document.getElementById('title');
+      const messageEl  = document.getElementById('message');
       const restartBtn = document.getElementById('restart');
       bestEl.textContent = String(best);
 
-      function toWorld(v) {
-        return new THREE.Vector3(v.x, v.y, v.z);
-      }
-
+      /* ============ Helpers ============ */
       function samePos(a, b) {
         return a.x === b.x && a.y === b.y && a.z === b.z;
       }
@@ -160,12 +243,10 @@
       }
 
       function spawnFood() {
-        let candidate = randomCell();
-        while (snake.some((part) => samePos(part, candidate))) {
-          candidate = randomCell();
-        }
-        food = candidate;
-        foodMesh.position.copy(toWorld(food));
+        let c = randomCell();
+        while (snake.some(p => samePos(p, c))) c = randomCell();
+        food = c;
+        foodMesh.position.set(food.x, food.y, food.z);
       }
 
       function resetSnake() {
@@ -174,6 +255,7 @@
           { x: -3, y: 0, z: 0 },
           { x: -4, y: 0, z: 0 },
         ];
+        prevSnake = snake.map(p => ({ ...p }));
         direction.set(1, 0, 0);
         queuedDir = direction.clone();
       }
@@ -191,7 +273,17 @@
           bestEl.textContent = String(best);
         }
         titleEl.textContent = '游戏结束';
-        setOverlay(true, `最终得分：${score}`);
+        setOverlay(true, '\u6700\u7ec8\u5f97\u5206\uff1a' + score);
+      }
+
+      /* ============ Sync visual meshes ============ */
+      function syncSnakeMeshes() {
+        recycleMeshes();
+        for (let i = 0; i < snake.length; i++) {
+          const mesh = getMesh(i === 0 ? headMat : snakeMat);
+          mesh.position.set(snake[i].x, snake[i].y, snake[i].z);
+          snakeGroup.add(mesh);
+        }
       }
 
       function restart() {
@@ -203,34 +295,30 @@
         resetSnake();
         spawnFood();
         setOverlay(false);
-        drawSnake();
+        syncSnakeMeshes();
       }
 
-      function drawSnake() {
-        snakeGroup.clear();
-        snake.forEach((part, idx) => {
-          const mesh = new THREE.Mesh(blockGeo, idx === 0 ? headMat : snakeMat);
-          mesh.position.copy(toWorld(part));
-          mesh.castShadow = true;
-          snakeGroup.add(mesh);
-        });
-      }
-
+      /* ============ Direction ============ */
       function isOpposite(next, cur) {
         return next.x + cur.x === 0 && next.z + cur.z === 0;
       }
 
+      function setDirection(next) {
+        if (!gameOver && !isOpposite(next, direction)) queuedDir = next.clone();
+      }
+
       const keyDir = {
-        ArrowUp: new THREE.Vector3(0, 0, -1),
-        KeyW: new THREE.Vector3(0, 0, -1),
-        ArrowDown: new THREE.Vector3(0, 0, 1),
-        KeyS: new THREE.Vector3(0, 0, 1),
-        ArrowLeft: new THREE.Vector3(-1, 0, 0),
-        KeyA: new THREE.Vector3(-1, 0, 0),
-        ArrowRight: new THREE.Vector3(1, 0, 0),
-        KeyD: new THREE.Vector3(1, 0, 0),
+        ArrowUp:    new THREE.Vector3( 0, 0, -1),
+        KeyW:       new THREE.Vector3( 0, 0, -1),
+        ArrowDown:  new THREE.Vector3( 0, 0,  1),
+        KeyS:       new THREE.Vector3( 0, 0,  1),
+        ArrowLeft:  new THREE.Vector3(-1, 0,  0),
+        KeyA:       new THREE.Vector3(-1, 0,  0),
+        ArrowRight: new THREE.Vector3( 1, 0,  0),
+        KeyD:       new THREE.Vector3( 1, 0,  0),
       };
 
+      /* ============ Input ============ */
       document.addEventListener('keydown', (e) => {
         if (e.code === 'Space') {
           if (!gameOver) {
@@ -240,25 +328,60 @@
           return;
         }
         if (!(e.code in keyDir) || gameOver) return;
-        const next = keyDir[e.code];
-        if (!isOpposite(next, direction)) queuedDir = next.clone();
+        setDirection(keyDir[e.code]);
       });
 
       restartBtn.addEventListener('click', restart);
 
+      document.querySelectorAll('#controls button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const d = btn.dataset.dir;
+          setDirection(keyDir['Arrow' + d[0].toUpperCase() + d.slice(1)]);
+        });
+      });
+
+      let touchStart = null;
+      renderer.domElement.addEventListener('touchstart', (e) => {
+        const t = e.changedTouches[0];
+        touchStart = { x: t.clientX, y: t.clientY };
+      }, { passive: true });
+
+      renderer.domElement.addEventListener('touchend', (e) => {
+        if (!touchStart) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - touchStart.x;
+        const dy = t.clientY - touchStart.y;
+        touchStart = null;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) < 28) return;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          setDirection(dx > 0 ? keyDir.ArrowRight : keyDir.ArrowLeft);
+        } else {
+          setDirection(dy > 0 ? keyDir.ArrowDown : keyDir.ArrowUp);
+        }
+      }, { passive: true });
+
+      /* ============ Main loop with smooth interpolation ============ */
       let lastStep = 0;
+      const _camTarget = new THREE.Vector3();
+      const _camLookAt = new THREE.Vector3();
+
       function step(t) {
         requestAnimationFrame(step);
 
         foodMesh.rotation.y += 0.03;
+
         if (paused || gameOver) {
           renderer.render(scene, camera);
           return;
         }
 
+        /* --- Logic tick (discrete, grid-based) --- */
         if (t - lastStep >= STEP_MS) {
           lastStep = t;
           direction.copy(queuedDir);
+
+          // Snapshot previous positions for interpolation
+          prevSnake = snake.map(p => ({ ...p }));
 
           const newHead = {
             x: snake[0].x + direction.x,
@@ -267,31 +390,51 @@
           };
 
           const hitWall =
-            newHead.x < -HALF ||
-            newHead.x > HALF ||
-            newHead.z < -HALF ||
-            newHead.z > HALF;
+            newHead.x < -HALF || newHead.x > HALF ||
+            newHead.z < -HALF || newHead.z > HALF;
 
-          const hitSelf = snake.some((part) => samePos(part, newHead));
+          const willEat  = samePos(newHead, food);
+          const bodyChk  = willEat ? snake : snake.slice(0, -1);
+          const hitSelf  = bodyChk.some(p => samePos(p, newHead));
+
           if (hitWall || hitSelf) {
             endGame();
           } else {
             snake.unshift(newHead);
-            if (samePos(newHead, food)) {
+            if (willEat) {
               score += 10;
               scoreEl.textContent = String(score);
               spawnFood();
+              // New tail segment: use its own position as prev (no jump)
+              prevSnake.push({ ...snake[snake.length - 1] });
             } else {
               snake.pop();
             }
-            drawSnake();
+            syncSnakeMeshes();
           }
         }
 
-        const head = snake[0];
-        const target = new THREE.Vector3(head.x + 12, 16, head.z + 16);
-        camera.position.lerp(target, 0.08);
-        camera.lookAt(head.x, 0, head.z);
+        /* --- Smooth interpolation between ticks --- */
+        const elapsed = t - lastStep;
+        const alpha   = Math.min(elapsed / STEP_MS, 1);
+
+        for (let i = 0; i < snake.length && i < snakeGroup.children.length; i++) {
+          const mesh = snakeGroup.children[i];
+          const cur  = snake[i];
+          const prev = prevSnake[i] || cur;
+          mesh.position.x = prev.x + (cur.x - prev.x) * alpha;
+          mesh.position.y = prev.y + (cur.y - prev.y) * alpha;
+          mesh.position.z = prev.z + (cur.z - prev.z) * alpha;
+        }
+
+        /* --- Smooth camera follow --- */
+        const hm = snakeGroup.children[0];
+        if (hm) {
+          _camTarget.set(hm.position.x + 12, 16, hm.position.z + 16);
+          camera.position.lerp(_camTarget, 0.045);
+          _camLookAt.set(hm.position.x, 0, hm.position.z);
+          camera.lookAt(_camLookAt);
+        }
 
         renderer.render(scene, camera);
       }

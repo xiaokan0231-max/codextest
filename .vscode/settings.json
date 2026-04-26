@@ -1,0 +1,7 @@
+{
+    "python.defaultInterpreterPath": "D:/Users/49662/miniconda3/envs/py310/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "terminal.integrated.env.windows": {
+        "PATH": "D:\\Users\\49662\\miniconda3\\envs\\py310;D:\\Users\\49662\\miniconda3\\envs\\py310\\Scripts;${env:PATH}"
+    }
+}
