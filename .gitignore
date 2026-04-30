@@ -1,2 +1,6 @@
 __pycache__/
 *.py[cod]
+
+# 用户上传的文件不纳入版本控制（保留目录结构用的 .gitkeep 除外）
+uploads/**/*
+!uploads/**/.gitkeep

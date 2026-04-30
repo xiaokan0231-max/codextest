@@ -1,452 +1,576 @@
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D 贪吃蛇（Python + Web）</title>
-    <style>
-      html, body {
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        touch-action: none;
-        background: #0b1020;
-        color: #fff;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      }
-      #hud {
-        position: fixed;
-        top: 12px;
-        left: 12px;
-        background: rgba(0, 0, 0, 0.45);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 10px;
-        padding: 10px 14px;
-        line-height: 1.5;
-        user-select: none;
-      }
-      #hint {
-        opacity: 0.8;
-        font-size: 13px;
-      }
-      #overlay {
-        position: fixed;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        background: rgba(0, 0, 0, 0.5);
-        text-align: center;
-      }
-      #overlay[hidden] {
-        display: none;
-      }
-      #panel {
-        background: rgba(12, 18, 40, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        border-radius: 14px;
-        padding: 24px;
-        max-width: 360px;
-      }
-      button {
-        margin-top: 12px;
-        border: none;
-        border-radius: 8px;
-        background: #4f83ff;
-        color: #fff;
-        padding: 10px 16px;
-        font-size: 14px;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #5f91ff;
-      }
-      #controls {
-        position: fixed;
-        right: max(16px, env(safe-area-inset-right));
-        bottom: max(16px, env(safe-area-inset-bottom));
-        display: grid;
-        grid-template-columns: repeat(3, 56px);
-        grid-template-rows: repeat(3, 56px);
-        gap: 8px;
-        user-select: none;
-        touch-action: manipulation;
-      }
-      #controls button {
-        margin: 0;
-        width: 56px;
-        height: 56px;
-        border-radius: 8px;
-        background: rgba(79, 131, 255, 0.84);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        font-size: 22px;
-        font-weight: 700;
-      }
-      #controls button:active {
-        transform: translateY(1px);
-        background: rgba(95, 145, 255, 0.95);
-      }
-      #controls [data-dir="up"] {
-        grid-column: 2;
-        grid-row: 1;
-      }
-      #controls [data-dir="left"] {
-        grid-column: 1;
-        grid-row: 2;
-      }
-      #controls [data-dir="right"] {
-        grid-column: 3;
-        grid-row: 2;
-      }
-      #controls [data-dir="down"] {
-        grid-column: 2;
-        grid-row: 3;
-      }
-      @media (pointer: fine) and (min-width: 900px) {
-        #controls {
-          opacity: 0.28;
-        }
-        #controls:hover {
-          opacity: 1;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="hud">
-      <div>分数：<span id="score">0</span></div>
-      <div>最高分：<span id="best">0</span></div>
-      <div id="hint">方向键 / WASD / 触屏按钮 / 滑动控制；空格暂停</div>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日本のビジネスマナー — 礼を尽くせば、心は必ず伝わる</title>
+  <meta name="description" content="席次・お茶出し・お見送り — 日本のビジネスシーンで欠かせない礼儀作法を、美しいイラストと共に学びましょう。" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Navigation -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">礼<span>マナー</span></div>
+  <ul class="nav-links">
+    <li><a href="#sekiji">席次</a></li>
+    <li><a href="#ocha">お茶出し</a></li>
+    <li><a href="#komatta">困った時</a></li>
+    <li><a href="#omiokuri">お見送り</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-badge">JAPANESE BUSINESS ETIQUETTE</div>
+  <h1 class="hero-title">
+    <span class="line">日本の</span>
+    <span class="line"><span class="accent">ビジネスマナー</span></span>
+  </h1>
+  <p class="hero-sub">
+    席次、お茶出し、お見送り ——<br>
+    ビジネスシーンで信頼を築く、日本の礼儀作法を学ぶ。
+  </p>
+  <div class="hero-scroll">
+    <a href="#sekiji">
+      SCROLL
+      <div class="scroll-line"></div>
+    </a>
+  </div>
+</header>
+
+<!-- ===== Section 1: 席次 ===== -->
+<div class="divider"></div>
+<section class="section" id="sekiji">
+  <div class="reveal">
+    <p class="section-number">01 — SEKIJI</p>
+    <h2 class="section-title">席次のルール</h2>
+    <p class="section-desc">
+      上座と下座 —— 座る位置ひとつで、敬意が伝わる。<br>
+      会議室・和室・車内、どの場面でも「出入口から遠い席が上座」。<br>
+      大切な人を気持ちよくお迎えするための、最初のマナーです。
+    </p>
+  </div>
+  <div class="features reveal reveal-delay-1">
+    <span class="chip">上座 = 出入口から遠い席</span>
+    <span class="chip">下座 = 出入口に近い席</span>
+    <span class="chip">お客様・上司が上座</span>
+    <span class="chip">席次は思いやり</span>
+  </div>
+  <div class="showcase">
+    <div class="showcase-card reveal reveal-delay-2">
+      <img src="/static/images/席次１.png" alt="席次の基本ルール — 上座と下座" loading="lazy" />
     </div>
-
-    <div id="overlay" hidden>
-      <div id="panel">
-        <h2 id="title">游戏结束</h2>
-        <p id="message"></p>
-        <button id="restart">重新开始</button>
-      </div>
+    <div class="showcase-card reveal reveal-delay-3">
+      <img src="/static/images/席次２.png" alt="席次の極意 — 会議室・和室・車内" loading="lazy" />
     </div>
+  </div>
+</section>
 
-    <div id="controls" aria-label="触屏方向控制">
-      <button type="button" data-dir="up" aria-label="向上">↑</button>
-      <button type="button" data-dir="left" aria-label="向左">←</button>
-      <button type="button" data-dir="right" aria-label="向右">→</button>
-      <button type="button" data-dir="down" aria-label="向下">↓</button>
+<!-- Quote -->
+<div class="quote-block reveal">
+  <p class="quote-text">
+    「遠い・奥・見晴らしがよい」<br>= <span class="accent">上座</span>
+  </p>
+  <p class="quote-author">—— 席次の基本ルール</p>
+</div>
+
+<!-- ===== Section 2: お茶出し ===== -->
+<div class="divider"></div>
+<section class="section" id="ocha">
+  <div class="reveal">
+    <p class="section-number">02 — OCHA-DASHI</p>
+    <h2 class="section-title">お茶の出し方</h2>
+    <p class="section-desc">
+      スマートな一杯は、心のこもったおもてなし。<br>
+      お盆の持ち方から茶碗の向き、退室の作法まで ——<br>
+      7つのステップで、完璧なお茶出しをマスターしましょう。
+    </p>
+  </div>
+  <div class="features reveal reveal-delay-1">
+    <span class="chip">① お盆にセット</span>
+    <span class="chip">② 胸の高さで運ぶ</span>
+    <span class="chip">③ ノック＆会釈</span>
+    <span class="chip">④ 茶托にセット</span>
+    <span class="chip">⑤ 右後ろから提供</span>
+    <span class="chip">⑥ 絵柄は相手の正面に</span>
+    <span class="chip">⑦ 一礼して退室</span>
+  </div>
+  <div class="showcase">
+    <div class="showcase-card reveal reveal-delay-2">
+      <img src="/static/images/お茶を出し方１.png" alt="お茶の出し方をマスターしよう" loading="lazy" />
     </div>
+    <div class="showcase-card reveal reveal-delay-3">
+      <img src="/static/images/お茶を出し方２.png" alt="茶の出し方、心得よ" loading="lazy" />
+    </div>
+  </div>
+</section>
 
-    <script type="module">
-      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
+<!-- Quote -->
+<div class="quote-block reveal">
+  <p class="quote-text">
+    ポイントは<span class="accent">「思いやり」</span>と<span class="accent">「ひと手間」</span><br>
+    あなたの一杯が、最高のおもてなしに。
+  </p>
+  <p class="quote-author">—— お茶出しの心得</p>
+</div>
 
-      const GRID = 18;
-      const HALF = Math.floor(GRID / 2);
-      const STEP_MS = 180;
+<!-- ===== Section 3: 困った時 ===== -->
+<div class="divider"></div>
+<section class="section" id="komatta">
+  <div class="reveal">
+    <p class="section-number">03 — KOMATTA TOKI</p>
+    <h2 class="section-title">お茶出しで困った時</h2>
+    <p class="section-desc">
+      サイドテーブルがない、スペースがない、右後ろから出せない ——<br>
+      イレギュラーな場面でも慌てない。<br>
+      臨機応変に対応する、プロフェッショナルの所作を学ぶ。
+    </p>
+  </div>
+  <div class="features reveal reveal-delay-1">
+    <span class="chip">壱：サイドテーブルがない場合</span>
+    <span class="chip">弐：カップの置き方（左 or 右）</span>
+    <span class="chip">参：右後ろから出せない場合</span>
+    <span class="chip">四：書類でスペースがない場合</span>
+  </div>
+  <div class="showcase reveal reveal-delay-2">
+    <div class="showcase-card">
+      <img src="/static/images/お茶を出しかたで困った時.png" alt="お茶の出し方で困ったときは" loading="lazy" />
+    </div>
+  </div>
+</section>
 
-      const scene = new THREE.Scene();
-      scene.fog = new THREE.Fog(0x0b1020, 20, 65);
+<!-- Quote -->
+<div class="quote-block reveal">
+  <p class="quote-text">
+    お茶を出すは形なり、<br><span class="accent">心はさらに大切なり。</span>
+  </p>
+  <p class="quote-author">—— 茶心道得</p>
+</div>
 
-      const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 200);
-      camera.position.set(17, 20, 23);
-      camera.lookAt(0, 0, 0);
+<!-- ===== Section 4: お見送り ===== -->
+<div class="divider"></div>
+<section class="section" id="omiokuri">
+  <div class="reveal">
+    <p class="section-number">04 — OMIOKURI</p>
+    <h2 class="section-title">お見送り</h2>
+    <p class="section-desc">
+      最後の印象が、すべてを決める。<br>
+      部屋の外、エレベーター前、玄関先 ——<br>
+      お見送りの距離は、敬意の深さを表します。
+    </p>
+  </div>
+  <div class="features reveal reveal-delay-1">
+    <span class="chip">★ 部屋の外まで</span>
+    <span class="chip">★★★ エレベーター前まで</span>
+    <span class="chip">★★★★★ 玄関先まで</span>
+    <span class="chip">測定不能 お客様の家の前まで</span>
+  </div>
+  <div class="showcase reveal reveal-delay-2">
+    <div class="showcase-card">
+      <img src="/static/images/お見送り.png" alt="お見送りの作法 — 敬意レベル" loading="lazy" />
+    </div>
+  </div>
+</section>
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.shadowMap.enabled = true;
-      document.body.appendChild(renderer.domElement);
+<!-- Final Quote -->
+<div class="quote-block reveal">
+  <p class="quote-text">
+    お見送りは、<span class="accent">遠いほど敬意が深い。</span><br>
+    ……ただし、深すぎると怖い。
+  </p>
+  <p class="quote-author">—— ビジネスマナーの真髄</p>
+</div>
 
-      const ambient = new THREE.AmbientLight(0xffffff, 0.45);
-      scene.add(ambient);
+<!-- ===== Section 5: 制作チーム ===== -->
+<div class="divider"></div>
+<section class="section" id="team">
+  <div class="reveal">
+    <p class="section-number">05 — PRODUCTION TEAM</p>
+    <h2 class="section-title">制作チーム</h2>
+    <p class="section-desc">
+      本プロジェクトの美しいイラストと構成を手がけたメンバーのご紹介。
+    </p>
+  </div>
+  <div class="team-grid reveal reveal-delay-1">
+    <div class="team-member">
+      <img src="https://ui-avatars.com/api/?name=Anthony&background=12121a&color=c9a96e&size=150" alt="Anthony" class="team-avatar" />
+      <h3 class="team-name">Anthony</h3>
+    </div>
+    <div class="team-member">
+      <img src="https://ui-avatars.com/api/?name=Kouni&background=12121a&color=c9a96e&size=150" alt="Kouni" class="team-avatar" />
+      <h3 class="team-name">Kouni</h3>
+    </div>
+    <div class="team-member">
+      <img src="https://ui-avatars.com/api/?name=チ&background=12121a&color=c9a96e&size=150" alt="チョウシン" class="team-avatar" />
+      <h3 class="team-name">チョウシン</h3>
+    </div>
+    <div class="team-member">
+      <img src="https://ui-avatars.com/api/?name=Xk&background=12121a&color=c9a96e&size=150" alt="Xk" class="team-avatar" />
+      <h3 class="team-name">Xk</h3>
+    </div>
+  </div>
+</section>
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
-      dirLight.position.set(12, 18, 8);
-      dirLight.castShadow = true;
-      scene.add(dirLight);
+<!-- Modal -->
+<div class="modal-overlay" id="kanjiModal">
+  <div class="modal-container">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div class="modal-header">
+      <h3 class="modal-title">語彙リスト (Vocabulary)</h3>
+    </div>
+    <div class="modal-body">
+      <table class="kanji-table" id="kanjiTable">
+        <thead>
+          <tr>
+            <th>漢字</th>
+            <th>ふりがな</th>
+            <th>意味 (Meaning)</th>
+            <th>中文 (Chinese)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-      const floor = new THREE.Mesh(
-        new THREE.PlaneGeometry(GRID + 2, GRID + 2),
-        new THREE.MeshStandardMaterial({ color: 0x101a3a, roughness: 0.9 })
-      );
-      floor.rotation.x = -Math.PI / 2;
-      floor.position.y = -0.55;
-      floor.receiveShadow = true;
-      scene.add(floor);
+<!-- Fullscreen Image Modal -->
+<div class="fullscreen-overlay" id="fullscreenModal">
+  <button class="modal-close fullscreen-close" id="fullscreenClose">&times;</button>
+  <img src="" alt="Fullscreen Image" id="fullscreenImage" />
+</div>
 
-      const gridHelper = new THREE.GridHelper(GRID + 1, GRID + 1, 0x5672c7, 0x324a89);
-      scene.add(gridHelper);
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo">礼マナー</div>
+  <p>日本のビジネスマナーガイド &copy; 2026</p>
+</footer>
 
-      const snakeMat  = new THREE.MeshStandardMaterial({ color: 0x47ff8a, emissive: 0x0a5522 });
-      const headMat   = new THREE.MeshStandardMaterial({ color: 0x8cffd5, emissive: 0x1b7c4b });
-      const foodMat   = new THREE.MeshStandardMaterial({ color: 0xff5c7a, emissive: 0x661324 });
-      const blockGeo  = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+<script>
+// ===== Scroll Progress Bar =====
+const progressBar = document.getElementById('progressBar');
+const nav = document.getElementById('nav');
 
-      const snakeGroup = new THREE.Group();
-      scene.add(snakeGroup);
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+  progressBar.style.transform = `scaleX(${progress})`;
+  nav.classList.toggle('scrolled', scrollTop > 60);
+}, { passive: true });
 
-      const foodMesh = new THREE.Mesh(blockGeo, foodMat);
-      foodMesh.castShadow = true;
-      scene.add(foodMesh);
+// ===== Intersection Observer for Reveal =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-      /* ============ Mesh Pool ============ */
-      const meshPool = [];
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-      function getMesh(material) {
-        let m = meshPool.pop();
-        if (!m) {
-          m = new THREE.Mesh(blockGeo, material);
-          m.castShadow = true;
-        } else {
-          m.material = material;
-        }
-        m.visible = true;
-        return m;
-      }
+// ===== Kanji Dictionary Data =====
+const kanjiDict = {
+  "/static/images/席次１.png": [
+    { kanji: '日本', kana: 'にほん', meaning: 'Japan', zh: '日本' },
+    { kanji: '席次', kana: 'せきじ', meaning: 'Seating order', zh: '座次 / 席位' },
+    { kanji: '上座', kana: 'かみざ', meaning: 'Seat of honor', zh: '上座 / 尊位' },
+    { kanji: '下座', kana: 'しもざ', meaning: 'Lowest-ranking seat', zh: '下座 / 末位' },
+    { kanji: 'ルール', kana: 'るーる', meaning: 'Rule', zh: '规则' },
+    { kanji: '基本', kana: 'きほん', meaning: 'Basic', zh: '基本' },
+    { kanji: '一番', kana: 'いちばん', meaning: 'Number one / Most', zh: '第一 / 最' },
+    { kanji: '偉い', kana: 'えらい', meaning: 'Great / High-ranking', zh: '地位高的 / 了不起的' },
+    { kanji: '出入口', kana: 'でいりぐち', meaning: 'Entrance/Exit', zh: '出入口' },
+    { kanji: '遠い', kana: 'とおい', meaning: 'Far', zh: '远的' },
+    { kanji: '近い', kana: 'ちかい', meaning: 'Near', zh: '近的' },
+    { kanji: '見晴らし', kana: 'みはらし', meaning: 'View', zh: '视野 / 眺望' },
+    { kanji: '奥', kana: 'おく', meaning: 'Inner part / Back', zh: '深处 / 里头' },
+    { kanji: '壁', kana: 'かべ', meaning: 'Wall', zh: '墙壁' },
+    { kanji: '側', kana: 'がわ', meaning: 'Side', zh: '侧 / 边' },
+    { kanji: '床の間', kana: 'とこのま', meaning: 'Alcove', zh: '壁龛 (日式房间装饰)' },
+    { kanji: 'お客様', kana: 'おきゃくさま', meaning: 'Guest / Client', zh: '客人 / 客户' },
+    { kanji: '上司', kana: 'じょうし', meaning: 'Boss / Superior', zh: '上司' },
+    { kanji: '大切な人', kana: 'たいせつなひと', meaning: 'Important person', zh: '重要的人' },
+    { kanji: '迎える', kana: 'むかえる', meaning: 'To welcome', zh: '迎接' },
+    { kanji: 'マナー', kana: 'まなー', meaning: 'Manners', zh: '礼仪' },
+    { kanji: '座る', kana: 'すわる', meaning: 'To sit', zh: '坐' },
+    { kanji: '自分', kana: 'じぶん', meaning: 'Oneself', zh: '自己' },
+    { kanji: '社内', kana: 'しゃない', meaning: 'Internal (company)', zh: '公司内部' },
+    { kanji: 'へりくだる', kana: 'へりくだる', meaning: 'To humble oneself', zh: '谦逊 / 谦虚' },
+    { kanji: 'お世話', kana: 'おせわ', meaning: 'Taking care of', zh: '照顾 / 关照' },
+    { kanji: '会議室', kana: 'かいぎしつ', meaning: 'Conference room', zh: '会议室' },
+    { kanji: '最上位', kana: 'さいじょうい', meaning: 'Highest rank', zh: '最高位' },
+    { kanji: '次上位', kana: 'じじょうい', meaning: 'Next highest rank', zh: '次高位' },
+    { kanji: '一般席', kana: 'いっぱんせき', meaning: 'General seat', zh: '普通席位' },
+    { kanji: '数字', kana: 'すうじ', meaning: 'Number', zh: '数字' },
+    { kanji: '小さい', kana: 'ちいさい', meaning: 'Small', zh: '小的' },
+    { kanji: '和室', kana: 'わしつ', meaning: 'Japanese-style room', zh: '和室 (日式房间)' },
+    { kanji: '車', kana: 'くるま', meaning: 'Car', zh: '车' },
+    { kanji: '運転手', kana: 'うんてんしゅ', meaning: 'Driver', zh: '司机' },
+    { kanji: '助手席', kana: 'じょしゅせき', meaning: 'Passenger seat', zh: '副驾驶座' },
+    { kanji: '後部座席', kana: 'こうぶざせき', meaning: 'Back seat', zh: '后排座位' },
+    { kanji: '右側', kana: 'みぎがわ', meaning: 'Right side', zh: '右侧' },
+    { kanji: '次席', kana: 'じせき', meaning: 'Next seat', zh: '次席' },
+    { kanji: '対象外', kana: 'たいしょうがい', meaning: 'Not applicable', zh: '对象外 / 不适用' },
+    { kanji: '順番', kana: 'じゅんばん', meaning: 'Order / Turn', zh: '顺序 / 轮流' },
+    { kanji: 'まとめ', kana: 'まとめ', meaning: 'Summary', zh: '总结' },
+    { kanji: 'おぼえる', kana: 'おぼえる', meaning: 'To memorize', zh: '记住' }
+  ],
+  "/static/images/席次２.png": [
+    { kanji: '極意', kana: 'ごくい', meaning: 'Deepest secret / Essence', zh: '精髓 / 秘诀' },
+    { kanji: '恥', kana: 'はじ', meaning: 'Shame / Embarrassment', zh: '耻辱 / 丢脸' },
+    { kanji: '迷う', kana: 'まよう', meaning: 'To hesitate / Get lost', zh: '迷失 / 犹豫' },
+    { kanji: '決まる', kana: 'きまる', meaning: 'To be decided', zh: '决定' },
+    { kanji: '最上席', kana: 'さいじょうせき', meaning: 'Highest seat', zh: '最上座' },
+    { kanji: '最も', kana: 'もっとも', meaning: 'Most', zh: '最' },
+    { kanji: '尊敬', kana: 'そんけい', meaning: 'Respect', zh: '尊敬' },
+    { kanji: '景色', kana: 'けしき', meaning: 'Scenery', zh: '景色' },
+    { kanji: '壁際', kana: 'かべぎわ', meaning: 'Close to the wall', zh: '靠墙处' },
+    { kanji: 'ベスト', kana: 'べすと', meaning: 'Best', zh: '最好' },
+    { kanji: '謙譲', kana: 'けんじょう', meaning: 'Modesty / Humility', zh: '谦让' },
+    { kanji: '気持ち', kana: 'きもち', meaning: 'Feeling', zh: '心情 / 心意' },
+    { kanji: '示す', kana: 'しめす', meaning: 'To show / Demonstrate', zh: '展现 / 表示' },
+    { kanji: '接待', kana: 'せったい', meaning: 'Entertainment / Reception', zh: '接待 / 应酬' },
+    { kanji: '若手', kana: 'わかて', meaning: 'Young person', zh: '年轻人 / 新手' },
+    { kanji: '進行役', kana: 'しんこうやく', meaning: 'Facilitator', zh: '主持人 / 推进者' },
+    { kanji: '例', kana: 'れい', meaning: 'Example', zh: '例子 / 案例' },
+    { kanji: '注意', kana: 'ちゅうい', meaning: 'Caution', zh: '注意' },
+    { kanji: 'ポイント', kana: 'ぽいんと', meaning: 'Point', zh: '要点' },
+    { kanji: '思いやり', kana: 'おもいやり', meaning: 'Consideration / Compassion', zh: '体贴 / 关怀' },
+    { kanji: '主役', kana: 'しゅやく', meaning: 'Leading role', zh: '主角' }
+  ],
+  "/static/images/お茶を出し方１.png": [
+    { kanji: 'マスター', kana: 'ますたー', meaning: 'Master', zh: '掌握' },
+    { kanji: 'スマート', kana: 'すまーと', meaning: 'Smart', zh: '聪明 / 优雅' },
+    { kanji: 'こもる', kana: 'こもる', meaning: 'Filled with', zh: '充满 (心意)' },
+    { kanji: 'お茶', kana: 'おちゃ', meaning: 'Tea', zh: '茶' },
+    { kanji: '出し方', kana: 'だしかた', meaning: 'How to serve', zh: '端法 / 提供方式' },
+    { kanji: '達人', kana: 'たつじん', meaning: 'Master / Expert', zh: '达人 / 专家' },
+    { kanji: '一杯', kana: 'いっぱい', meaning: 'One cup', zh: '一杯' },
+    { kanji: '心', kana: 'こころ', meaning: 'Heart / Mind', zh: '心 / 心意' },
+    { kanji: '人数分', kana: 'にんずうぶん', meaning: 'For the number of people', zh: '按人数份' },
+    { kanji: '茶碗', kana: 'ちゃわん', meaning: 'Tea cup', zh: '茶碗' },
+    { kanji: '重ねる', kana: 'かさねる', meaning: 'To stack', zh: '重叠' },
+    { kanji: '茶托', kana: 'ちゃたく', meaning: 'Tea cup saucer', zh: '茶托 (茶杯垫)' },
+    { kanji: '受け皿', kana: 'うけざら', meaning: 'Saucer', zh: '托盘 / 碟子' },
+    { kanji: 'ふきん', kana: 'ふきん', meaning: 'Dishcloth', zh: '抹布 / 茶巾' },
+    { kanji: 'お盆', kana: 'おぼん', meaning: 'Tray', zh: '托盘' },
+    { kanji: '命', kana: 'いのち', meaning: 'Life / Crucial', zh: '生命 / 关键' },
+    { kanji: '両手', kana: 'りょうて', meaning: 'Both hands', zh: '双手' },
+    { kanji: '持つ', kana: 'もつ', meaning: 'To hold', zh: '拿 / 握' },
+    { kanji: '胸', kana: 'むね', meaning: 'Chest', zh: '胸前' },
+    { kanji: '高さ', kana: 'たかさ', meaning: 'Height', zh: '高度' },
+    { kanji: '運ぶ', kana: 'はこぶ', meaning: 'To carry', zh: '搬运 / 端送' },
+    { kanji: '息', kana: 'いき', meaning: 'Breath', zh: '呼吸 / 气息' },
+    { kanji: '横', kana: 'よこ', meaning: 'Side', zh: '旁边' },
+    { kanji: 'ずらす', kana: 'ずらす', meaning: 'To shift', zh: '错开 / 移开' },
+    { kanji: '配慮', kana: 'はいりょ', meaning: 'Consideration', zh: '关怀 / 顾虑' },
+    { kanji: 'ノック', kana: 'のっく', meaning: 'Knock', zh: '敲门' },
+    { kanji: '失礼', kana: 'しつれい', meaning: 'Excuse me / Rudeness', zh: '失礼 / 打扰了' },
+    { kanji: '声', kana: 'こえ', meaning: 'Voice', zh: '声音' },
+    { kanji: '会釈', kana: 'えしゃく', meaning: 'Slight bow', zh: '点头致意 / 微微鞠躬' },
+    { kanji: '部屋', kana: 'へや', meaning: 'Room', zh: '房间' },
+    { kanji: '入る', kana: 'はいる', meaning: 'To enter', zh: '进入' },
+    { kanji: '置く', kana: 'おく', meaning: 'To place', zh: '放置' },
+    { kanji: '水分', kana: 'すいぶん', meaning: 'Moisture / Water', zh: '水分' },
+    { kanji: '防ぐ', kana: 'ふせぐ', meaning: 'To prevent', zh: '防止 / 预防' },
+    { kanji: '取る', kana: 'とる', meaning: 'To take/remove', zh: '拿走 / 去除' },
+    { kanji: '言葉', kana: 'ことば', meaning: 'Word', zh: '话语' },
+    { kanji: '添える', kana: 'そえる', meaning: 'To add / attach', zh: '添上 / 附上' },
+    { kanji: '右後ろ側', kana: 'みぎうしろがわ', meaning: 'Right rear side', zh: '右后方' },
+    { kanji: '自社', kana: 'じしゃ', meaning: 'One\'s own company', zh: '本公司' },
+    { kanji: '優先', kana: 'ゆうせん', meaning: 'Priority', zh: '优先' },
+    { kanji: '複数', kana: 'ふくすう', meaning: 'Multiple', zh: '复数 / 多个' },
+    { kanji: '向き', kana: 'むき', meaning: 'Direction', zh: '方向' },
+    { kanji: '気をつける', kana: 'きをつける', meaning: 'To be careful', zh: '小心 / 注意' },
+    { kanji: '絵柄', kana: 'えがら', meaning: 'Pattern / Design', zh: '图案' },
+    { kanji: '相手', kana: 'あいて', meaning: 'Partner / Other party', zh: '对方' },
+    { kanji: '正面', kana: 'しょうめん', meaning: 'Front', zh: '正面' },
+    { kanji: '木目', kana: 'もくめ', meaning: 'Wood grain', zh: '木纹' },
+    { kanji: '平行', kana: 'へいこう', meaning: 'Parallel', zh: '平行' },
+    { kanji: '脇', kana: 'わき', meaning: 'Armpit / Side', zh: '腋下 / 旁边' },
+    { kanji: '挟む', kana: 'はさむ', meaning: 'To hold between', zh: '夹住' },
+    { kanji: '挨拶', kana: 'あいさつ', meaning: 'Greeting', zh: '寒暄 / 打招呼' },
+    { kanji: '退室', kana: 'たいしつ', meaning: 'Leaving a room', zh: '退室 / 离开' },
+    { kanji: '閉める', kana: 'しめる', meaning: 'To close', zh: '关闭' },
+    { kanji: '丁寧', kana: 'ていねい', meaning: 'Polite', zh: '礼貌 / 仔细' },
+    { kanji: '印象', kana: 'いんしょう', meaning: 'Impression', zh: '印象' },
+    { kanji: '完璧', kana: 'かんぺき', meaning: 'Perfect', zh: '完美' },
+    { kanji: '素晴らしい', kana: 'すばらしい', meaning: 'Wonderful', zh: '绝佳的 / 极好的' },
+    { kanji: '最高', kana: 'さいこう', meaning: 'Best / Highest', zh: '最棒的' }
+  ],
+  "/static/images/お茶を出し方２.png": [
+    { kanji: '心得', kana: 'こころえ', meaning: 'Knowledge / Rules', zh: '心得 / 规矩' },
+    { kanji: '込める', kana: 'こめる', meaning: 'To put into', zh: '倾注' },
+    { kanji: '道', kana: 'みち', meaning: 'Way / Path', zh: '道 / 道路' },
+    { kanji: '静か', kana: 'しずか', meaning: 'Quiet', zh: '安静' },
+    { kanji: '進む', kana: 'すすむ', meaning: 'To proceed', zh: '前进 / 迈进' },
+    { kanji: '拭く', kana: 'ふく', meaning: 'To wipe', zh: '擦拭' },
+    { kanji: '水滴', kana: 'すいてき', meaning: 'Water drop', zh: '水滴' },
+    { kanji: '残す', kana: 'のこす', meaning: 'To leave behind', zh: '留下 / 遗留' },
+    { kanji: '担当者', kana: 'たんとうしゃ', meaning: 'Person in charge', zh: '负责人' },
+    { kanji: '細部', kana: 'さいぶ', meaning: 'Details', zh: '细节' },
+    { kanji: '宿る', kana: 'やどる', meaning: 'To dwell', zh: '寄宿 / 存在' },
+    { kanji: '神', kana: 'かみ', meaning: 'God / Spirit', zh: '神 / 精神' },
+    { kanji: '尽くす', kana: 'つくす', meaning: 'To exhaust / devote', zh: '竭尽' },
+    { kanji: '必ず', kana: 'かならず', meaning: 'Definitely', zh: '必然 / 一定' },
+    { kanji: '伝わる', kana: 'つたわる', meaning: 'To be conveyed', zh: '传达' }
+  ],
+  "/static/images/お茶を出しかたで困った時.png": [
+    { kanji: '困った', kana: 'こまった', meaning: 'Troubled', zh: '困扰 / 麻烦' },
+    { kanji: '整える', kana: 'ととのえる', meaning: 'To arrange / prepare', zh: '整理 / 准备' },
+    { kanji: '断る', kana: 'ことわる', meaning: 'To decline / ask permission', zh: '打招呼 / 拒绝' },
+    { kanji: '乗せる', kana: 'のせる', meaning: 'To place on', zh: '放上去' },
+    { kanji: '茶道', kana: 'さどう', meaning: 'Tea ceremony', zh: '茶道' },
+    { kanji: '低い', kana: 'ひくい', meaning: 'Low', zh: '低的' },
+    { kanji: '床', kana: 'ゆか', meaning: 'Floor', zh: '地板' },
+    { kanji: '膝', kana: 'ひざ', meaning: 'Knee', zh: '膝盖' },
+    { kanji: '正す', kana: 'ただす', meaning: 'To correct', zh: '端正' },
+    { kanji: '置き方', kana: 'おきかた', meaning: 'How to place', zh: '放置方法' },
+    { kanji: '取っ手', kana: 'とって', meaning: 'Handle', zh: '把手' },
+    { kanji: '左側', kana: 'ひだりがわ', meaning: 'Left side', zh: '左侧' },
+    { kanji: '右側', kana: 'みぎがわ', meaning: 'Right side', zh: '右侧' },
+    { kanji: '正解', kana: 'せいかい', meaning: 'Correct answer', zh: '正确答案' },
+    { kanji: '統一', kana: 'とういつ', meaning: 'Unification', zh: '统一' },
+    { kanji: '美徳', kana: 'びとく', meaning: 'Virtue', zh: '美德' },
+    { kanji: '狭い', kana: 'せまい', meaning: 'Narrow', zh: '狭窄的' },
+    { kanji: '原則', kana: 'げんそく', meaning: 'Principle', zh: '原则' },
+    { kanji: '関係', kana: 'かんけい', meaning: 'Relation', zh: '关系' },
+    { kanji: '難しい', kana: 'むずかしい', meaning: 'Difficult', zh: '困难的' },
+    { kanji: 'やむを得ず', kana: 'やむをえず', meaning: 'Unavoidably', zh: '不得已' },
+    { kanji: '一声', kana: 'ひとこえ', meaning: 'A word', zh: '一声 / 打个招呼' },
+    { kanji: '書類', kana: 'しょるい', meaning: 'Documents', zh: '文件' },
+    { kanji: 'スペース', kana: 'すぺーす', meaning: 'Space', zh: '空间' },
+    { kanji: '伺い', kana: 'うかがい', meaning: 'Inquiry', zh: '询问 / 请示' },
+    { kanji: '立てる', kana: 'たてる', meaning: 'To stand / set up', zh: '建立 / 提出' },
+    { kanji: '勝手', kana: 'かって', meaning: 'Selfish / As one pleases', zh: '随便 / 擅自' },
+    { kanji: '動かす', kana: 'うごかす', meaning: 'To move', zh: '移动' },
+    { kanji: '無作法', kana: 'ぶさほう', meaning: 'Bad manners', zh: '没规矩 / 无礼' },
+    { kanji: '形', kana: 'かたち', meaning: 'Form / Shape', zh: '形式 / 外表' },
+    { kanji: 'さらに', kana: 'さらに', meaning: 'Furthermore', zh: '更加' }
+  ],
+  "/static/images/お見送り.png": [
+    { kanji: '見送り', kana: 'みおくり', meaning: 'Seeing off', zh: '送客' },
+    { kanji: '外', kana: 'そと', meaning: 'Outside', zh: '外面' },
+    { kanji: '本日', kana: 'ほんじつ', meaning: 'Today', zh: '今天' },
+    { kanji: '敬意', kana: 'けいい', meaning: 'Respect', zh: '敬意' },
+    { kanji: 'レベル', kana: 'れべる', meaning: 'Level', zh: '等级 / 级别' },
+    { kanji: '来る', kana: 'くる', meaning: 'To come', zh: '来' },
+    { kanji: '前', kana: 'まえ', meaning: 'Front', zh: '前面' },
+    { kanji: '玄関先', kana: 'げんかんさき', meaning: 'Entrance', zh: '玄关处' },
+    { kanji: '気をつける', kana: 'きをつける', meaning: 'To take care', zh: '当心 / 注意' },
+    { kanji: '十分', kana: 'じゅうぶん', meaning: 'Enough', zh: '足够了' },
+    { kanji: 'ついに', kana: 'ついに', meaning: 'Finally / At last', zh: '终于 / 到底' },
+    { kanji: '家', kana: 'いえ', meaning: 'House', zh: '家 / 房屋' },
+    { kanji: '誠に', kana: 'まことに', meaning: 'Truly / Sincerely', zh: '诚挚地 / 非常' },
+    { kanji: 'お越し', kana: 'おこし', meaning: 'Coming / Visiting', zh: '光临 / 到来' },
+    { kanji: '測定不能', kana: 'そくていふのう', meaning: 'Unmeasurable', zh: '无法测量' },
+    { kanji: '冷たい', kana: 'つめたい', meaning: 'Cold', zh: '冷淡的 / 寒冷' },
+    { kanji: '一言', kana: 'ひとこと', meaning: 'A single word', zh: '一句话' },
+    { kanji: '遠い', kana: 'とおい', meaning: 'Far', zh: '远' },
+    { kanji: '深い', kana: 'ふかい', meaning: 'Deep', zh: '深的' },
+    { kanji: 'ただし', kana: 'ただし', meaning: 'However', zh: '但是' },
+    { kanji: '怖い', kana: 'こわい', meaning: 'Scary', zh: '可怕的' },
+    { kanji: '突破', kana: 'とっぱ', meaning: 'Breakthrough', zh: '突破' }
+  ]
+};
 
-      function recycleMeshes() {
-        while (snakeGroup.children.length) {
-          const m = snakeGroup.children[0];
-          snakeGroup.remove(m);
-          m.visible = false;
-          meshPool.push(m);
-        }
-      }
+// ===== Modal Logic =====
+const modal = document.getElementById('kanjiModal');
+const closeBtn = document.getElementById('modalClose');
+const tbody = document.querySelector('#kanjiTable tbody');
 
-      /* ============ State ============ */
-      let snake     = [];
-      let prevSnake = [];
-      let direction = new THREE.Vector3(1, 0, 0);
-      let queuedDir = direction.clone();
-      let food      = { x: 0, y: 0, z: 0 };
-      let score     = 0;
-      let best      = Number(localStorage.getItem('snake3d-best') || 0);
-      let paused    = false;
-      let gameOver  = false;
+function openModal(imgSrc) {
+  // Get filename to match dictionary keys
+  const url = new URL(imgSrc, window.location.origin);
+  const path = decodeURIComponent(url.pathname);
+  const data = kanjiDict[path];
 
-      const scoreEl    = document.getElementById('score');
-      const bestEl     = document.getElementById('best');
-      const overlay    = document.getElementById('overlay');
-      const titleEl    = document.getElementById('title');
-      const messageEl  = document.getElementById('message');
-      const restartBtn = document.getElementById('restart');
-      bestEl.textContent = String(best);
+  if (data && data.length > 0) {
+    tbody.innerHTML = ''; // Clear previous data
+    data.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${item.kanji}</td>
+        <td>${item.kana}</td>
+        <td>${item.meaning}</td>
+        <td>${item.zh}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+}
 
-      /* ============ Helpers ============ */
-      function samePos(a, b) {
-        return a.x === b.x && a.y === b.y && a.z === b.z;
-      }
+function closeModal() {
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
 
-      function randomCell() {
-        return {
-          x: Math.floor(Math.random() * GRID) - HALF,
-          y: 0,
-          z: Math.floor(Math.random() * GRID) - HALF,
-        };
-      }
+// Add click listeners to all showcase images
+document.querySelectorAll('.showcase-card img').forEach(img => {
+  let clickTimeout = null;
+  
+  img.addEventListener('click', () => {
+    if (clickTimeout !== null) {
+      // It's a double click
+      clearTimeout(clickTimeout);
+      clickTimeout = null;
+      openFullscreen(img.src);
+    } else {
+      // It's a single click, wait for potential second click
+      clickTimeout = setTimeout(() => {
+        openModal(img.src);
+        clickTimeout = null;
+      }, 250);
+    }
+  });
+});
 
-      function spawnFood() {
-        let c = randomCell();
-        while (snake.some(p => samePos(p, c))) c = randomCell();
-        food = c;
-        foodMesh.position.set(food.x, food.y, food.z);
-      }
+closeBtn.addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) closeModal();
+});
 
-      function resetSnake() {
-        snake = [
-          { x: -2, y: 0, z: 0 },
-          { x: -3, y: 0, z: 0 },
-          { x: -4, y: 0, z: 0 },
-        ];
-        prevSnake = snake.map(p => ({ ...p }));
-        direction.set(1, 0, 0);
-        queuedDir = direction.clone();
-      }
+// ===== Fullscreen Modal Logic =====
+const fullscreenModal = document.getElementById('fullscreenModal');
+const fullscreenClose = document.getElementById('fullscreenClose');
+const fullscreenImage = document.getElementById('fullscreenImage');
 
-      function setOverlay(show, msg = '') {
-        overlay.hidden = !show;
-        messageEl.textContent = msg;
-      }
+function openFullscreen(imgSrc) {
+  closeModal(); // Close dictionary modal if open
+  fullscreenImage.src = imgSrc;
+  fullscreenModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
 
-      function endGame() {
-        gameOver = true;
-        if (score > best) {
-          best = score;
-          localStorage.setItem('snake3d-best', String(best));
-          bestEl.textContent = String(best);
-        }
-        titleEl.textContent = '游戏结束';
-        setOverlay(true, '\u6700\u7ec8\u5f97\u5206\uff1a' + score);
-      }
+function closeFullscreen() {
+  fullscreenModal.classList.remove('active');
+  document.body.style.overflow = '';
+}
 
-      /* ============ Sync visual meshes ============ */
-      function syncSnakeMeshes() {
-        recycleMeshes();
-        for (let i = 0; i < snake.length; i++) {
-          const mesh = getMesh(i === 0 ? headMat : snakeMat);
-          mesh.position.set(snake[i].x, snake[i].y, snake[i].z);
-          snakeGroup.add(mesh);
-        }
-      }
+fullscreenClose.addEventListener('click', closeFullscreen);
+fullscreenModal.addEventListener('click', (e) => {
+  if (e.target === fullscreenModal) closeFullscreen();
+});
 
-      function restart() {
-        score = 0;
-        paused = false;
-        gameOver = false;
-        scoreEl.textContent = '0';
-        titleEl.textContent = '暂停';
-        resetSnake();
-        spawnFood();
-        setOverlay(false);
-        syncSnakeMeshes();
-      }
-
-      /* ============ Direction ============ */
-      function isOpposite(next, cur) {
-        return next.x + cur.x === 0 && next.z + cur.z === 0;
-      }
-
-      function setDirection(next) {
-        if (!gameOver && !isOpposite(next, direction)) queuedDir = next.clone();
-      }
-
-      const keyDir = {
-        ArrowUp:    new THREE.Vector3( 0, 0, -1),
-        KeyW:       new THREE.Vector3( 0, 0, -1),
-        ArrowDown:  new THREE.Vector3( 0, 0,  1),
-        KeyS:       new THREE.Vector3( 0, 0,  1),
-        ArrowLeft:  new THREE.Vector3(-1, 0,  0),
-        KeyA:       new THREE.Vector3(-1, 0,  0),
-        ArrowRight: new THREE.Vector3( 1, 0,  0),
-        KeyD:       new THREE.Vector3( 1, 0,  0),
-      };
-
-      /* ============ Input ============ */
-      document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') {
-          if (!gameOver) {
-            paused = !paused;
-            setOverlay(paused, paused ? '已暂停（空格继续）' : '');
-          }
-          return;
-        }
-        if (!(e.code in keyDir) || gameOver) return;
-        setDirection(keyDir[e.code]);
-      });
-
-      restartBtn.addEventListener('click', restart);
-
-      document.querySelectorAll('#controls button').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const d = btn.dataset.dir;
-          setDirection(keyDir['Arrow' + d[0].toUpperCase() + d.slice(1)]);
-        });
-      });
-
-      let touchStart = null;
-      renderer.domElement.addEventListener('touchstart', (e) => {
-        const t = e.changedTouches[0];
-        touchStart = { x: t.clientX, y: t.clientY };
-      }, { passive: true });
-
-      renderer.domElement.addEventListener('touchend', (e) => {
-        if (!touchStart) return;
-        const t = e.changedTouches[0];
-        const dx = t.clientX - touchStart.x;
-        const dy = t.clientY - touchStart.y;
-        touchStart = null;
-        if (Math.max(Math.abs(dx), Math.abs(dy)) < 28) return;
-        if (Math.abs(dx) > Math.abs(dy)) {
-          setDirection(dx > 0 ? keyDir.ArrowRight : keyDir.ArrowLeft);
-        } else {
-          setDirection(dy > 0 ? keyDir.ArrowDown : keyDir.ArrowUp);
-        }
-      }, { passive: true });
-
-      /* ============ Main loop with smooth interpolation ============ */
-      let lastStep = 0;
-      const _camTarget = new THREE.Vector3();
-      const _camLookAt = new THREE.Vector3();
-
-      function step(t) {
-        requestAnimationFrame(step);
-
-        foodMesh.rotation.y += 0.03;
-
-        if (paused || gameOver) {
-          renderer.render(scene, camera);
-          return;
-        }
-
-        /* --- Logic tick (discrete, grid-based) --- */
-        if (t - lastStep >= STEP_MS) {
-          lastStep = t;
-          direction.copy(queuedDir);
-
-          // Snapshot previous positions for interpolation
-          prevSnake = snake.map(p => ({ ...p }));
-
-          const newHead = {
-            x: snake[0].x + direction.x,
-            y: 0,
-            z: snake[0].z + direction.z,
-          };
-
-          const hitWall =
-            newHead.x < -HALF || newHead.x > HALF ||
-            newHead.z < -HALF || newHead.z > HALF;
-
-          const willEat  = samePos(newHead, food);
-          const bodyChk  = willEat ? snake : snake.slice(0, -1);
-          const hitSelf  = bodyChk.some(p => samePos(p, newHead));
-
-          if (hitWall || hitSelf) {
-            endGame();
-          } else {
-            snake.unshift(newHead);
-            if (willEat) {
-              score += 10;
-              scoreEl.textContent = String(score);
-              spawnFood();
-              // New tail segment: use its own position as prev (no jump)
-              prevSnake.push({ ...snake[snake.length - 1] });
-            } else {
-              snake.pop();
-            }
-            syncSnakeMeshes();
-          }
-        }
-
-        /* --- Smooth interpolation between ticks --- */
-        const elapsed = t - lastStep;
-        const alpha   = Math.min(elapsed / STEP_MS, 1);
-
-        for (let i = 0; i < snake.length && i < snakeGroup.children.length; i++) {
-          const mesh = snakeGroup.children[i];
-          const cur  = snake[i];
-          const prev = prevSnake[i] || cur;
-          mesh.position.x = prev.x + (cur.x - prev.x) * alpha;
-          mesh.position.y = prev.y + (cur.y - prev.y) * alpha;
-          mesh.position.z = prev.z + (cur.z - prev.z) * alpha;
-        }
-
-        /* --- Smooth camera follow --- */
-        const hm = snakeGroup.children[0];
-        if (hm) {
-          _camTarget.set(hm.position.x + 12, 16, hm.position.z + 16);
-          camera.position.lerp(_camTarget, 0.045);
-          _camLookAt.set(hm.position.x, 0, hm.position.z);
-          camera.lookAt(_camLookAt);
-        }
-
-        renderer.render(scene, camera);
-      }
-
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-
-      restart();
-      requestAnimationFrame(step);
-    </script>
-  </body>
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (fullscreenModal.classList.contains('active')) {
+      closeFullscreen();
+    } else if (modal.classList.contains('active')) {
+      closeModal();
+    }
+  }
+});
+</script>
+</body>
 </html>
