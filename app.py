@@ -1,21 +1,112 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
-app = FastAPI()
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
-# 挂载静态资源目录 —— 存放应用自身的 CSS / JS / 图片 / 字体等
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# 挂载用户上传目录 —— 存放用户上传的图片 / 视频 / 文档等
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+BASE_DIR = Path(__file__).parent
+TEMPLATES_DIR = BASE_DIR / "templates"
+
+app = FastAPI(title="Local Web Pages")
+
+# Static assets used by the web pages.
+app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+app.mount("/uploads", StaticFiles(directory=BASE_DIR / "uploads"), name="uploads")
+
+
+def render_template(filename: str) -> HTMLResponse:
+    html_path = TEMPLATES_DIR / filename
+    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
 
 
 @app.get("/", response_class=HTMLResponse)
-async def index() -> HTMLResponse:
-    html_path = Path(__file__).parent / "templates" / "index.html"
-    return HTMLResponse(content=html_path.read_text(encoding="utf-8"))
+async def home() -> HTMLResponse:
+    return HTMLResponse(
+        content="""
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>本地网页入口</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #0f172a;
+        color: #e5e7eb;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      main {
+        width: min(720px, calc(100% - 40px));
+      }
+      h1 {
+        margin: 0 0 24px;
+        font-size: 32px;
+      }
+      .links {
+        display: grid;
+        gap: 16px;
+      }
+      a {
+        display: block;
+        padding: 20px 22px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06);
+        color: inherit;
+        text-decoration: none;
+      }
+      a:hover {
+        border-color: #60a5fa;
+        background: rgba(96, 165, 250, 0.16);
+      }
+      strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 18px;
+      }
+      span {
+        color: #aab3c5;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>本地网页入口</h1>
+      <div class="links">
+        <a href="/snake">
+          <strong>3D 贪吃蛇</strong>
+          <span>Three.js 实现的浏览器小游戏。</span>
+        </a>
+        <a href="/etiquette">
+          <strong>日本商务礼仪页面</strong>
+          <span>席次、上茶、送客等礼仪展示页面。</span>
+        </a>
+      </div>
+    </main>
+  </body>
+</html>
+""".strip()
+    )
+
+
+@app.get("/snake", response_class=HTMLResponse)
+async def snake() -> HTMLResponse:
+    return render_template("snake.html")
+
+
+@app.get("/etiquette", response_class=HTMLResponse)
+async def etiquette() -> HTMLResponse:
+    return render_template("etiquette.html")
+
+
+@app.get("/index", include_in_schema=False)
+async def old_index() -> RedirectResponse:
+    return RedirectResponse(url="/")
 
 
 if __name__ == "__main__":
