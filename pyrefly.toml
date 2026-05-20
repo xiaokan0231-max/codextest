@@ -1,0 +1,6 @@
+project-includes = [
+    "**/*.py*",
+    "**/*.ipynb",
+]
+
+python-interpreter-path = "/Users/kanxiao/miniconda3/envs/py314/bin/python"

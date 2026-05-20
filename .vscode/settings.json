@@ -1,7 +1,8 @@
 {
-    "python.defaultInterpreterPath": "D:/Users/49662/miniconda3/envs/py310/python.exe",
+    "python.defaultInterpreterPath": "/Users/kanxiao/miniconda3/envs/py314/bin/python",
     "python.terminal.activateEnvironment": true,
-    "terminal.integrated.env.windows": {
-        "PATH": "D:\\Users\\49662\\miniconda3\\envs\\py310;D:\\Users\\49662\\miniconda3\\envs\\py310\\Scripts;${env:PATH}"
+    "terminal.integrated.env.osx": {
+        "CONDA_PREFIX": "/Users/kanxiao/miniconda3/envs/py314",
+        "PATH": "/Users/kanxiao/miniconda3/envs/py314/bin:${env:PATH}"
     }
 }

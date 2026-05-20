@@ -7,12 +7,14 @@ from fastapi.staticfiles import StaticFiles
 
 BASE_DIR = Path(__file__).parent
 TEMPLATES_DIR = BASE_DIR / "templates"
+UPLOADS_DIR = BASE_DIR / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
 
 app = FastAPI(title="Local Web Pages")
 
 # Static assets used by the web pages.
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
-app.mount("/uploads", StaticFiles(directory=BASE_DIR / "uploads"), name="uploads")
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 
 def render_template(filename: str) -> HTMLResponse:
@@ -25,11 +27,11 @@ async def home() -> HTMLResponse:
     return HTMLResponse(
         content="""
 <!doctype html>
-<html lang="zh-CN">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>本地网页入口</title>
+    <title>ローカルページ入口</title>
     <style>
       body {
         margin: 0;
@@ -76,15 +78,15 @@ async def home() -> HTMLResponse:
   </head>
   <body>
     <main>
-      <h1>本地网页入口</h1>
+      <h1>ローカルページ入口</h1>
       <div class="links">
         <a href="/snake">
-          <strong>3D 贪吃蛇</strong>
-          <span>Three.js 实现的浏览器小游戏。</span>
+          <strong>3D スネークゲーム</strong>
+          <span>Three.js で実装したブラウザ向けミニゲーム。</span>
         </a>
         <a href="/etiquette">
-          <strong>日本商务礼仪页面</strong>
-          <span>席次、上茶、送客等礼仪展示页面。</span>
+          <strong>日本のビジネスマナー</strong>
+          <span>席次、お茶出し、お見送りなどのマナー紹介ページ。</span>
         </a>
       </div>
     </main>
