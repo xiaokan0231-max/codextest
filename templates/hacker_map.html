@@ -1,0 +1,2444 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ハッカーの業界地図</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #060913;
+        --text: #f1f5f9;
+        --muted: #94a3b8;
+        --line: rgba(255, 255, 255, 0.12);
+        --panel: rgba(15, 23, 42, 0.65);
+        --panel-strong: rgba(30, 41, 59, 0.85);
+        --blue: #38bdf8;
+        --gold: #f59e0b;
+        --green: #10b981;
+        --pink: #f43f5e;
+        --purple: #a855f7;
+        --active: var(--blue);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", sans-serif;
+        transition: background 260ms ease;
+        position: relative;
+      }
+
+      /* Matrix Digital Rain Canvas */
+      #matrixCanvas {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        opacity: 0.12;
+      }
+
+      /* Glowing scan line overlay */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 4px, 6px 100%;
+        z-index: 9999;
+        opacity: 0.4;
+      }
+
+      .shell {
+        width: min(1200px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 26px 0 40px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .back-link {
+        color: #38bdf8;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: color 180ms ease;
+      }
+
+      .back-link:hover {
+        color: #7dd3fc;
+      }
+
+      .mode-label {
+        padding: 6px 14px;
+        border: 1px solid color-mix(in srgb, var(--active) 50%, transparent);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--active) 13%, transparent);
+        color: #f8fafc;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        box-shadow: 0 0 10px color-mix(in srgb, var(--active) 30%, transparent);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(320px, 1fr) 320px;
+        gap: 24px;
+        align-items: end;
+        margin-bottom: 22px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--gold);
+        font-size: 13px;
+        font-weight: 850;
+        letter-spacing: 0.1em;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 800px;
+        font-size: clamp(36px, 5vw, 68px);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        font-weight: 900;
+        text-shadow: 0 0 20px color-mix(in srgb, var(--active) 20%, transparent);
+      }
+
+      .lead {
+        margin: 12px 0 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .memo {
+        position: relative;
+        overflow: hidden;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .memo::after {
+        content: "";
+        position: absolute;
+        inset: auto -20% -55% 20%;
+        height: 120px;
+        background: radial-gradient(circle, color-mix(in srgb, var(--active) 40%, transparent), transparent 60%);
+        filter: blur(10px);
+        pointer-events: none;
+      }
+
+      .memo h2 {
+        margin: 0 0 8px;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+
+      .memo p {
+        position: relative;
+        z-index: 1;
+        margin: 0;
+        color: #e2e8f0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .progress-dots {
+        display: flex;
+        gap: 8px;
+        margin: 0 0 16px;
+      }
+
+      .progress-dot {
+        width: 32px;
+        height: 6px;
+        border: 0;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.15);
+        cursor: pointer;
+        transition: width 180ms ease, background 180ms ease, box-shadow 180ms ease;
+      }
+
+      .progress-dot.active {
+        width: 54px;
+        background: var(--active);
+        box-shadow: 0 0 15px color-mix(in srgb, var(--active) 65%, transparent);
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(520px, 1.2fr) minmax(330px, 0.8fr);
+        gap: 20px;
+        align-items: stretch;
+      }
+
+      .map-card,
+      .detail-card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--panel);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      }
+
+      .map-card {
+        position: relative;
+        min-height: 600px;
+        overflow: hidden;
+      }
+
+      .map-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("/static/images/hacker_vs_whitehacker.jpg") center / cover no-repeat;
+        opacity: 0.2;
+        filter: saturate(0.85) contrast(1.08);
+        pointer-events: none;
+      }
+
+      .map-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(6, 9, 19, 0.88), rgba(6, 9, 19, 0.58) 48%, rgba(6, 9, 19, 0.88)),
+          radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--active) 14%, transparent), transparent 46%),
+          linear-gradient(color-mix(in srgb, var(--active) 6%, transparent) 1px, transparent 1px),
+          linear-gradient(90deg, color-mix(in srgb, var(--active) 6%, transparent) 1px, transparent 1px);
+        background-size: auto, auto, 34px 34px, 34px 34px;
+        pointer-events: none;
+      }
+
+      .map-stage {
+        position: relative;
+        z-index: 1;
+        height: 100%;
+        min-height: 600px;
+        padding: 24px;
+      }
+
+      .edge-layer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .edge {
+        stroke: rgba(255, 255, 255, 0.12);
+        stroke-width: 1.2;
+        stroke-dasharray: 2 4;
+        transition: stroke 200ms ease, stroke-width 200ms ease, opacity 200ms ease;
+      }
+
+      .edge.active {
+        stroke: var(--active);
+        stroke-width: 2.2;
+        stroke-dasharray: 6 3;
+        animation: edgeFlow 1.2s linear infinite;
+        opacity: 0.9;
+      }
+
+      @keyframes edgeFlow {
+        to { stroke-dashoffset: -18; }
+      }
+
+      .map-node-button {
+        position: absolute;
+        width: 160px;
+        min-height: 90px;
+        padding: 12px;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 12px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
+          rgba(11, 15, 26, 0.85);
+        color: var(--text);
+        text-align: left;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        animation: nodeFadeIn 600ms ease-out forwards;
+        transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+
+      @keyframes nodeFadeIn {
+        from { opacity: 0; filter: blur(5px); transform: translate(-50%, -40%); }
+        to { opacity: 1; filter: blur(0); transform: translate(-50%, -50%); }
+      }
+
+      .map-node-button:hover,
+      .map-node-button:focus-visible {
+        outline: none;
+        transform: translate(-50%, -50%) scale(1.04);
+        border-color: color-mix(in srgb, var(--active) 75%, white 25%);
+        box-shadow: 0 0 15px color-mix(in srgb, var(--active) 35%, transparent);
+      }
+
+      .map-node-button.active {
+        border-color: var(--active);
+        background:
+          linear-gradient(180deg, color-mix(in srgb, var(--active) 15%, transparent), transparent),
+          rgba(11, 15, 26, 0.95);
+        box-shadow:
+          0 0 20px color-mix(in srgb, var(--active) 40%, transparent),
+          inset 0 0 10px color-mix(in srgb, var(--active) 20%, transparent);
+      }
+
+      .map-node-button.related {
+        border-color: color-mix(in srgb, var(--active) 40%, transparent);
+        box-shadow: 0 0 8px color-mix(in srgb, var(--active) 15%, transparent);
+      }
+
+      .node-kicker {
+        display: block;
+        margin-bottom: 4px;
+        color: color-mix(in srgb, var(--active) 75%, white 25%);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+      }
+
+      .node-title {
+        display: block;
+        font-size: 13px;
+        font-weight: 750;
+        line-height: 1.25;
+      }
+
+      .node-risk {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.35;
+      }
+
+      .detail-card {
+        min-height: 600px;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+      }
+
+      .detail-header {
+        padding: 22px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .step {
+        margin: 0 0 8px;
+        color: var(--gold);
+        font-size: 11px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+      }
+
+      .detail-title {
+        margin: 0;
+        font-size: 26px;
+        line-height: 1.2;
+        font-weight: 850;
+      }
+
+      .detail-body {
+        padding: 22px;
+        overflow-y: auto;
+      }
+
+      .summary {
+        margin: 0 0 18px;
+        color: #f1f5f9;
+        font-size: 15px;
+        line-height: 1.7;
+        font-weight: 500;
+      }
+
+      .info-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .info-box {
+        padding: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.45);
+      }
+
+      .info-box h3 {
+        margin: 0 0 6px;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .info-box h3::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: var(--active);
+        border-radius: 50%;
+        box-shadow: 0 0 6px var(--active);
+      }
+
+      .info-box p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.6;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 16px;
+        border-top: 1px solid var(--line);
+      }
+
+      .control-btn {
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        color: #ffffff;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 180ms ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .control-btn:hover,
+      .control-btn:focus-visible {
+        outline: none;
+        border-color: var(--active);
+        background: color-mix(in srgb, var(--active) 15%, transparent);
+        box-shadow: 0 0 10px color-mix(in srgb, var(--active) 20%, transparent);
+      }
+
+      .hint {
+        grid-column: 1 / -1;
+        margin: 6px 0 0;
+        color: #64748b;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      /* Infographic Section */
+      .infographic-section {
+        display: none;
+      }
+
+      .infographic-section h2 {
+        text-align: center;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--accent);
+        margin-bottom: 12px;
+        letter-spacing: 0.04em;
+        text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+      }
+
+      .infographic-frame {
+        position: relative;
+        max-width: min(1100px, 100%);
+        margin: 0 auto;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: rgba(8, 12, 24, 0.7);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(16, 185, 129, 0.08);
+        backdrop-filter: blur(12px);
+        transition: box-shadow 0.4s ease, transform 0.4s ease;
+        cursor: zoom-in;
+      }
+
+      .infographic-frame:hover {
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(16, 185, 129, 0.15);
+        transform: translateY(-4px);
+      }
+
+      .infographic-frame img {
+        width: 100%;
+        height: clamp(520px, 72vh, 680px);
+        object-fit: contain;
+        background: rgba(2, 6, 23, 0.72);
+        display: block;
+        transition: transform 0.4s ease;
+      }
+
+      .infographic-frame:hover img {
+        transform: scale(1.02);
+      }
+
+      .infographic-caption {
+        text-align: center;
+        padding: 10px 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 11.5px;
+        letter-spacing: 0.03em;
+      }
+
+      /* Fullscreen overlay for infographic zoom */
+      .infographic-fullscreen {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        background: rgba(2, 6, 23, 0.92);
+        backdrop-filter: blur(12px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        cursor: zoom-out;
+        padding: 24px;
+      }
+
+      .infographic-fullscreen.active {
+        display: flex;
+      }
+
+      .infographic-fullscreen img {
+        max-width: 95vw;
+        max-height: 95vh;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+        animation: infographic-zoom-in 0.3s ease;
+      }
+
+      @keyframes infographic-zoom-in {
+        from { transform: scale(0.85); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+
+      /* Glossary and Quiz Modals */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(2, 6, 23, 0.85);
+        backdrop-filter: blur(8px);
+        display: grid;
+        place-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 240ms ease;
+        padding: 20px;
+      }
+
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .modal-container {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 40px color-mix(in srgb, var(--active) 15%, transparent);
+        transform: scale(0.95);
+        transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      .modal-overlay.active .modal-container {
+        transform: scale(1);
+      }
+
+      .modal-close {
+        position: absolute;
+        right: 18px;
+        top: 18px;
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        font-size: 24px;
+        cursor: pointer;
+        transition: color 180ms ease;
+        line-height: 1;
+      }
+
+      .modal-close:hover {
+        color: #ffffff;
+      }
+
+      .modal-title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+
+      .modal-body {
+        margin-top: 16px;
+      }
+
+      /* Glossary definitions table */
+      .glossary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+
+      .glossary-table th, 
+      .glossary-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .glossary-table th {
+        color: var(--gold);
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .glossary-table td {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .glossary-table th:nth-child(1),
+      .glossary-table td:nth-child(1),
+      .glossary-table th:nth-child(2),
+      .glossary-table td:nth-child(2),
+      .glossary-table th:nth-child(4),
+      .glossary-table td:nth-child(4) {
+        white-space: nowrap;
+      }
+
+      .glossary-term {
+        color: #38bdf8;
+        border-bottom: 1px dashed #38bdf8;
+        cursor: help;
+        font-weight: 600;
+        transition: color 180ms ease, border-color 180ms ease;
+      }
+
+      .glossary-term:hover {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
+
+      .glossary-term.katakana-term {
+        position: relative;
+        color: #e9d5ff;
+        border-bottom: 1px dashed var(--purple);
+      }
+
+      .glossary-term.katakana-term:hover {
+        color: var(--purple);
+        border-bottom-color: var(--purple);
+      }
+
+      .glossary-term.katakana-term::after {
+        content: attr(data-origin);
+        position: absolute;
+        bottom: 115%;
+        left: 50%;
+        transform: translate(-50%, -4px) scale(0.85);
+        background: rgba(15, 23, 42, 0.95);
+        color: #e9d5ff;
+        border: 1px solid var(--purple);
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+        font-size: 10.5px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease, transform 180ms ease;
+        z-index: 10;
+        font-family: monospace;
+      }
+
+      .glossary-term.katakana-term:hover::after {
+        opacity: 1;
+        transform: translate(-50%, -4px) scale(1);
+      }
+
+      .katakana-badge {
+        font-size: 11px;
+        background: rgba(168, 85, 247, 0.08);
+        border: 1px solid rgba(168, 85, 247, 0.35);
+        padding: 4px 8px;
+        border-radius: 6px;
+        cursor: help;
+        color: #e9d5ff;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: all 180ms ease;
+      }
+
+      .katakana-badge:hover {
+        background: rgba(168, 85, 247, 0.18);
+        border-color: var(--purple);
+        box-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+      }
+
+      /* Personality Quiz Options */
+      .quiz-option {
+        width: 100%;
+        text-align: left;
+        padding: 14px 18px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: #ffffff;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 180ms ease;
+        line-height: 1.4;
+      }
+
+      .quiz-option:hover {
+        border-color: var(--active);
+        background: rgba(56, 189, 248, 0.08);
+        transform: translateY(-2px);
+      }
+
+      /* Company map section styles */
+      .companies {
+        margin-top: 24px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background:
+          radial-gradient(circle at 12% 0%, rgba(56, 189, 248, 0.16), transparent 36%),
+          radial-gradient(circle at 88% 10%, rgba(245, 158, 11, 0.12), transparent 34%),
+          rgba(15, 23, 42, 0.72);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      .companies-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 18px;
+        align-items: end;
+        margin-bottom: 22px;
+      }
+
+      .companies-eyebrow {
+        margin: 0 0 8px;
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 850;
+        letter-spacing: 0.12em;
+      }
+
+      .companies h2 {
+        margin: 0;
+        font-size: clamp(26px, 4vw, 42px);
+        line-height: 1.15;
+        font-weight: 900;
+      }
+
+      .companies-lead {
+        margin: 10px 0 0;
+        max-width: 720px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      .company-region-pill {
+        min-width: 150px;
+        padding: 10px 14px;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 999px;
+        background: rgba(56, 189, 248, 0.08);
+        color: #dbeafe;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
+      .company-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .company-card {
+        position: relative;
+        min-height: 210px;
+        padding: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+          rgba(3, 7, 18, 0.5);
+        overflow: hidden;
+        transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+      }
+
+      .company-card::before {
+        content: "";
+        position: absolute;
+        inset: -60% -30% auto auto;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle, color-mix(in srgb, var(--company-color) 24%, transparent), transparent 68%);
+        pointer-events: none;
+      }
+
+      .company-card:hover {
+        transform: translateY(-5px);
+        border-color: color-mix(in srgb, var(--company-color) 58%, transparent);
+        background: rgba(15, 23, 42, 0.72);
+        box-shadow: 0 20px 42px rgba(0, 0, 0, 0.34), 0 0 24px color-mix(in srgb, var(--company-color) 20%, transparent);
+      }
+
+      .company-topline {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .company-logo {
+        position: relative;
+        width: 64px;
+        height: 64px;
+        flex: 0 0 auto;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 16px;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.2), transparent),
+          color-mix(in srgb, var(--company-color) 22%, #0f172a);
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      }
+
+      .company-logo:hover,
+      .company-logo:focus-visible {
+        outline: none;
+        transform: translateY(-2px) scale(1.04);
+        border-color: rgba(255, 255, 255, 0.34);
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.34), 0 0 18px color-mix(in srgb, var(--company-color) 34%, transparent);
+      }
+
+      .company-logo::after {
+        position: absolute;
+        inset: 1px;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        content: "";
+        pointer-events: none;
+      }
+
+      .logo-text {
+        position: relative;
+        z-index: 1;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 950;
+        letter-spacing: 0.03em;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.34);
+      }
+
+      .logo-trend {
+        --company-color: #e11d48;
+      }
+
+      .logo-lac {
+        --company-color: #2563eb;
+      }
+
+      .logo-gmo {
+        --company-color: #0ea5e9;
+      }
+
+      .logo-ms {
+        --company-color: #22c55e;
+        background:
+          linear-gradient(90deg, #f25022 0 49%, transparent 49% 51%, #7fba00 51%),
+          linear-gradient(#00a4ef 0 49%, transparent 49% 51%, #ffb900 51%);
+      }
+
+      .logo-cs {
+        --company-color: #dc2626;
+      }
+
+      .logo-pan {
+        --company-color: #f97316;
+      }
+
+      .company-tag {
+        padding: 6px 10px;
+        border: 1px solid color-mix(in srgb, var(--company-color) 42%, transparent);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--company-color) 10%, transparent);
+        color: #f8fafc;
+        font-size: 11px;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .company-name {
+        position: relative;
+        display: block;
+        margin: 0 0 10px;
+        font-size: 21px;
+        color: #ffffff;
+        font-weight: 900;
+        line-height: 1.25;
+      }
+
+      .company-copy {
+        position: relative;
+        margin: 0;
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.75;
+      }
+
+      .company-card.japan {
+        --company-color: var(--blue);
+      }
+
+      .company-card.global {
+        --company-color: var(--gold);
+      }
+
+      /* Certification roadmap section styles */
+      .certifications {
+        margin-top: 24px;
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background:
+          radial-gradient(circle at 18% 0%, rgba(168, 85, 247, 0.16), transparent 34%),
+          radial-gradient(circle at 86% 16%, rgba(16, 185, 129, 0.12), transparent 34%),
+          rgba(15, 23, 42, 0.72);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      .cert-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 18px;
+        align-items: end;
+        margin-bottom: 22px;
+      }
+
+      .cert-eyebrow {
+        margin: 0 0 8px;
+        color: #c084fc;
+        font-size: 12px;
+        font-weight: 850;
+        letter-spacing: 0.12em;
+      }
+
+      .certifications h2 {
+        margin: 0;
+        font-size: clamp(26px, 4vw, 42px);
+        line-height: 1.15;
+        font-weight: 900;
+      }
+
+      .cert-lead {
+        margin: 10px 0 0;
+        max-width: 780px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.8;
+      }
+
+      .cert-pill {
+        min-width: 150px;
+        padding: 10px 14px;
+        border: 1px solid rgba(168, 85, 247, 0.38);
+        border-radius: 999px;
+        background: rgba(168, 85, 247, 0.1);
+        color: #f3e8ff;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
+      .cert-roadmap {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .cert-step {
+        position: relative;
+        min-height: 260px;
+        padding: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+          rgba(3, 7, 18, 0.5);
+        overflow: hidden;
+      }
+
+      .cert-step::before {
+        content: attr(data-step);
+        position: absolute;
+        right: 14px;
+        top: 10px;
+        color: color-mix(in srgb, var(--cert-color) 40%, transparent);
+        font-size: 48px;
+        font-weight: 950;
+        line-height: 1;
+      }
+
+      .cert-step:nth-child(1) { --cert-color: #38bdf8; }
+      .cert-step:nth-child(2) { --cert-color: #10b981; }
+      .cert-step:nth-child(3) { --cert-color: #f59e0b; }
+      .cert-step:nth-child(4) { --cert-color: #a855f7; }
+
+      .cert-level {
+        position: relative;
+        display: inline-flex;
+        margin-bottom: 12px;
+        padding: 6px 10px;
+        border: 1px solid color-mix(in srgb, var(--cert-color) 38%, transparent);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--cert-color) 10%, transparent);
+        color: #f8fafc;
+        font-size: 11px;
+        font-weight: 850;
+      }
+
+      .cert-step h3 {
+        position: relative;
+        margin: 0 0 10px;
+        font-size: 20px;
+        line-height: 1.35;
+      }
+
+      .cert-step p {
+        position: relative;
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .cert-list {
+        position: relative;
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .cert-list li {
+        display: flex;
+        gap: 8px;
+        align-items: flex-start;
+        color: #dbeafe;
+        font-size: 12.5px;
+        line-height: 1.55;
+      }
+
+      .cert-list li::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        flex: 0 0 auto;
+        margin-top: 7px;
+        border-radius: 50%;
+        background: var(--cert-color);
+        box-shadow: 0 0 10px color-mix(in srgb, var(--cert-color) 55%, transparent);
+      }
+
+      .cert-paths {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .cert-path-card {
+        padding: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        background: rgba(2, 6, 23, 0.4);
+      }
+
+      .cert-path-card strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #ffffff;
+        font-size: 15px;
+      }
+
+      .cert-path-card span {
+        color: var(--muted);
+        font-size: 12.5px;
+        line-height: 1.7;
+      }
+
+      .cert-link-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .cert-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 38px;
+        padding: 9px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        color: #dbeafe;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 800;
+        transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+      }
+
+      .cert-link:hover,
+      .cert-link:focus-visible {
+        outline: none;
+        transform: translateY(-2px);
+        border-color: rgba(168, 85, 247, 0.5);
+        background: rgba(168, 85, 247, 0.12);
+      }
+
+      /* Media Queries */
+      @media (max-width: 980px) {
+        .hero,
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .companies-header {
+          grid-template-columns: 1fr;
+        }
+
+        .cert-header {
+          grid-template-columns: 1fr;
+        }
+
+        .company-region-pill {
+          width: fit-content;
+        }
+
+        .cert-pill {
+          width: fit-content;
+        }
+
+        .company-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .cert-roadmap,
+        .cert-paths {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .shell {
+          width: min(100% - 24px, 1200px);
+          padding-top: 16px;
+        }
+
+        .hero {
+          margin-bottom: 16px;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 12px;
+          margin-bottom: 16px;
+        }
+
+        .map-card,
+        .detail-card {
+          min-height: auto;
+        }
+
+        .map-stage {
+          min-height: auto;
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+          padding: 12px;
+        }
+
+        .edge-layer {
+          display: none;
+        }
+
+        .map-node-button {
+          position: relative;
+          left: auto !important;
+          top: auto !important;
+          width: 100%;
+          min-height: auto;
+          transform: none;
+          animation: none;
+        }
+
+        .map-node-button:hover,
+        .map-node-button:focus-visible,
+        .map-node-button.active {
+          transform: none;
+        }
+
+        .detail-card {
+          grid-template-rows: auto auto auto;
+        }
+
+        .controls {
+          grid-template-columns: 1fr;
+        }
+
+        .companies {
+          padding: 20px;
+        }
+
+        .certifications {
+          padding: 20px;
+        }
+
+        .company-card {
+          min-height: 190px;
+        }
+
+        .infographic-section {
+          margin-top: 18px;
+        }
+
+        .infographic-section h2 {
+          font-size: 18px;
+        }
+
+        .infographic-frame img {
+          height: clamp(360px, 64vh, 520px);
+        }
+
+        .infographic-caption {
+          padding: 9px 12px;
+          font-size: 11px;
+          line-height: 1.5;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .company-grid,
+        .cert-roadmap,
+        .cert-paths {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Canvas for Matrix Rain -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <div class="shell" id="shell">
+      <header class="topbar">
+        <a class="back-link" href="/">← ローカルページ入口へ</a>
+        <div class="mode-label" id="activeModeLabel">2-3 MIN INTRO</div>
+      </header>
+
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">CYBERSECURITY FIRST MAP</p>
+          <h1 id="page-title">ハッカーの業界地図</h1>
+          <p class="lead">
+            サイバーセキュリティの役割や攻撃・防御の概念を、インタラクティブに学ぶための地図です。8つのノードをクリックして詳細を見てみましょう。
+          </p>
+        </div>
+        <aside class="memo" aria-live="polite">
+          <h2>解説メモ</h2>
+          <p id="talkMemo">ノードを選択すると、ここに学習アドバイスやトリビアが表示されます。</p>
+        </aside>
+      </section>
+
+      <div class="progress-dots" id="progressDots" aria-label="学習の進み具合"></div>
+
+      <main class="workspace">
+        <section class="map-card" aria-label="セキュリティ業界の入門地図">
+          <div class="map-stage" id="mapStage">
+            <svg class="edge-layer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" id="edgeLayer"></svg>
+            <!-- Nodes will be injected here by JS -->
+          </div>
+        </section>
+
+        <aside class="detail-card" aria-live="polite" aria-label="選択中の説明">
+          <div class="detail-header">
+            <p class="step" id="stepLabel">1 / 8</p>
+            <h2 class="detail-title" id="detailTitle">ロード中...</h2>
+          </div>
+          <div class="detail-body" id="detailBody">
+            <p class="summary" id="detailSummary"></p>
+            <div class="info-grid">
+              <section class="info-box">
+                <h3>どのような概念？</h3>
+                <p id="detailKind"></p>
+              </section>
+              <section class="info-box">
+                <h3>具体例</h3>
+                <p id="detailCompanies"></p>
+              </section>
+              <section class="info-box">
+                <h3>主な仕事・活動</h3>
+                <p id="detailWork"></p>
+              </section>
+              <section class="info-box">
+                <h3>適正・向いている人</h3>
+                <p id="detailFit"></p>
+              </section>
+              <section class="info-box" id="katakanaSection" style="display: none; border-color: rgba(168, 85, 247, 0.3); background: rgba(88, 28, 135, 0.05);">
+                <h3 style="color: var(--purple); display: flex; align-items: center; gap: 6px;">
+                  <span style="font-size: 14px;">🔠</span> 片仮名・英語原词对照 (Katakana Decrypter)
+                </h3>
+                <div id="katakanaList" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;"></div>
+              </section>
+            </div>
+          </div>
+          <div class="controls">
+            <button class="control-btn" type="button" id="prevBtn">← 戻る</button>
+            <button class="control-btn" type="button" id="nextBtn">次へ →</button>
+            <p class="hint">クリック、キーボード（←/→/スペース）で切り替えできます。</p>
+          </div>
+        </aside>
+      </main>
+
+      <!-- Personality Quiz Trigger -->
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="control-btn" id="startQuizBtn" style="padding: 14px 28px; font-size: 15px; border-color: var(--gold); background: rgba(245, 158, 11, 0.1);">
+          ⚡ ハッカー適性診断を始める
+        </button>
+      </div>
+
+      <!-- Infographic: Hacker vs White Hacker -->
+      <section class="infographic-section" aria-label="ハッカー vs ホワイトハッカー 情報図">
+        <h2>🔥 攻撃 vs 防御 ― サイバーセキュリティの全体像</h2>
+        <div class="infographic-frame" id="infographicFrame" onclick="openInfographic()">
+          <img src="/static/images/hacker_vs_whitehacker.jpg" alt="ハッカー vs ホワイトハッカー ― 攻撃側（レッドチーム）と防御側（ブルーチーム）の対比、攻防の主なフェーズ、主な攻撃手法と防御手法の一覧" loading="lazy" />
+          <div class="infographic-caption">
+            📋 クリックで拡大表示 ｜ ハッカー（攻撃側）vs ホワイトハッカー（防御側）の攻防フェーズ・手法・対策を完全網羅
+          </div>
+        </div>
+      </section>
+
+      <!-- Fullscreen Infographic Overlay -->
+      <div class="infographic-fullscreen" id="infographicFullscreen" onclick="closeInfographic()">
+        <img src="/static/images/hacker_vs_whitehacker.jpg" alt="拡大表示: ハッカー vs ホワイトハッカー" />
+      </div>
+
+      <!-- Security Company Map -->
+      <section class="companies" aria-labelledby="companies-title">
+        <div class="companies-header">
+          <div>
+            <p class="companies-eyebrow">SECURITY COMPANY MAP</p>
+            <h2 id="companies-title">日本と世界の有名セキュリティ企業</h2>
+            <p class="companies-lead">
+              ハッカーの知識は、製品開発、監視、調査、コンサルティングなど、さまざまな会社で社会を守る力として使われています。
+            </p>
+          </div>
+          <div class="company-region-pill">JAPAN / GLOBAL</div>
+        </div>
+
+        <div class="company-grid">
+          <article class="company-card japan">
+            <div class="company-topline">
+              <a class="company-logo logo-trend" href="https://www.trendmicro.com/" target="_blank" rel="noopener noreferrer" aria-label="Trend Micro 公式サイトを開く">
+                <span class="logo-text">TM</span>
+              </a>
+              <span class="company-tag">日本</span>
+            </div>
+            <h3 class="company-name">Trend Micro</h3>
+            <p class="company-copy">日本発の大手セキュリティ企業。個人・企業向けにウイルス対策やクラウド防御を提供します。</p>
+          </article>
+
+          <article class="company-card japan">
+            <div class="company-topline">
+              <a class="company-logo logo-lac" href="https://www.lac.co.jp/" target="_blank" rel="noopener noreferrer" aria-label="LAC 公式サイトを開く">
+                <span class="logo-text">LAC</span>
+              </a>
+              <span class="company-tag">日本</span>
+            </div>
+            <h3 class="company-name">LAC</h3>
+            <p class="company-copy">監視、診断、事故対応に強い日本の専門企業。SOCやCSIRT支援でも知られています。</p>
+          </article>
+
+          <article class="company-card japan">
+            <div class="company-topline">
+              <a class="company-logo logo-gmo" href="https://gmo-cybersecurity.com/" target="_blank" rel="noopener noreferrer" aria-label="GMO Cybersecurity by Ierae 公式サイトを開く">
+                <span class="logo-text">GMO</span>
+              </a>
+              <span class="company-tag">日本</span>
+            </div>
+            <h3 class="company-name">GMO Cybersecurity by Ierae</h3>
+            <p class="company-copy">ホワイトハッカーによる脆弱性診断で有名。攻撃者視点のテストを企業防御に活かします。</p>
+          </article>
+
+          <article class="company-card global">
+            <div class="company-topline">
+              <a class="company-logo logo-ms" href="https://www.microsoft.com/security" target="_blank" rel="noopener noreferrer" aria-label="Microsoft Security 公式サイトを開く">
+                <span class="logo-text">MS</span>
+              </a>
+              <span class="company-tag">世界</span>
+            </div>
+            <h3 class="company-name">Microsoft Security</h3>
+            <p class="company-copy">OS、クラウド、IDを横断して守る世界的企業。企業のゼロトラスト導入でも存在感があります。</p>
+          </article>
+
+          <article class="company-card global">
+            <div class="company-topline">
+              <a class="company-logo logo-cs" href="https://www.crowdstrike.com/" target="_blank" rel="noopener noreferrer" aria-label="CrowdStrike 公式サイトを開く">
+                <span class="logo-text">CS</span>
+              </a>
+              <span class="company-tag">世界</span>
+            </div>
+            <h3 class="company-name">CrowdStrike</h3>
+            <p class="company-copy">端末防御と脅威調査で有名。攻撃の兆候を素早く見つけ、被害を広げないことに強みがあります。</p>
+          </article>
+
+          <article class="company-card global">
+            <div class="company-topline">
+              <a class="company-logo logo-pan" href="https://www.paloaltonetworks.com/" target="_blank" rel="noopener noreferrer" aria-label="Palo Alto Networks 公式サイトを開く">
+                <span class="logo-text">PAN</span>
+              </a>
+              <span class="company-tag">世界</span>
+            </div>
+            <h3 class="company-name">Palo Alto Networks</h3>
+            <p class="company-copy">ネットワーク、クラウド、SOCを広く守る大手企業。企業向け防御プラットフォームで知られます。</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Certification Roadmap -->
+      <section class="certifications" aria-labelledby="cert-title">
+        <div class="cert-header">
+          <div>
+            <p class="cert-eyebrow">CERTIFICATION ROADMAP</p>
+            <h2 id="cert-title">安全業界に入るための資格ルート</h2>
+            <p class="cert-lead">
+              資格だけで採用が決まるわけではありません。ただし日本では、基礎力、専門性、学習意欲を説明しやすくする「共通言語」になります。
+            </p>
+          </div>
+          <div class="cert-pill">JAPAN PATH</div>
+        </div>
+
+        <div class="cert-roadmap">
+          <article class="cert-step" data-step="01">
+            <span class="cert-level">入門</span>
+            <h3>まずITと安全の言葉に慣れる</h3>
+            <p>未経験や文系から入る人は、最初にIT全体と情報セキュリティの基本を押さえます。</p>
+            <ul class="cert-list">
+              <li>ITパスポート試験</li>
+              <li>情報セキュリティマネジメント試験</li>
+              <li>個人情報、パスワード、更新、リスクの基本</li>
+            </ul>
+          </article>
+
+          <article class="cert-step" data-step="02">
+            <span class="cert-level">基礎技術</span>
+            <h3>エンジニアとしての土台を作る</h3>
+            <p>セキュリティだけでなく、ネットワーク、OS、DB、開発の基礎があると強くなります。</p>
+            <ul class="cert-list">
+              <li>基本情報技術者試験</li>
+              <li>応用情報技術者試験</li>
+              <li>Linux、クラウド、ログを見る練習</li>
+            </ul>
+          </article>
+
+          <article class="cert-step" data-step="03">
+            <span class="cert-level">専門</span>
+            <h3>日本で強い専門資格を狙う</h3>
+            <p>セキュリティ職を本気で目指すなら、国家試験として認知度が高い資格が目標になります。</p>
+            <ul class="cert-list">
+              <li>情報処理安全確保支援士試験</li>
+              <li>合格後、登録すると「登録セキスペ」へ</li>
+              <li>SOC、診断、CSIRT、コンサルの説明材料になる</li>
+            </ul>
+          </article>
+
+          <article class="cert-step" data-step="04">
+            <span class="cert-level">実務・国際</span>
+            <h3>仕事で使う視点を広げる</h3>
+            <p>外資系、グローバル企業、コンサルでは国際資格も評価されることがあります。</p>
+            <ul class="cert-list">
+              <li>CompTIA Security+</li>
+              <li>CISSP（実務経験者向け）</li>
+              <li>資格 + 実務経験 + 発表できる成果物</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="cert-paths" aria-label="職種別の学習ルート">
+          <div class="cert-path-card">
+            <strong>SOC・ブルーチーム</strong>
+            <span>情報セキュリティマネジメント → 基本情報 → Security+。ログ、監視、インシデント対応の言葉に慣れる。</span>
+          </div>
+          <div class="cert-path-card">
+            <strong>診断・ホワイトハット</strong>
+            <span>基本情報 → 応用情報 → 情報処理安全確保支援士。CTFや検証環境で、合法的に学んだ記録を作る。</span>
+          </div>
+          <div class="cert-path-card">
+            <strong>コンサル・管理</strong>
+            <span>応用情報 → 情報処理安全確保支援士 → CISSP。技術だけでなく、リスク説明と社内調整の力を伸ばす。</span>
+          </div>
+        </div>
+
+        <div class="cert-link-row" aria-label="資格の公式情報">
+          <a class="cert-link" href="https://www.ipa.go.jp/shiken/about/index.html" target="_blank" rel="noopener noreferrer">IPA 国家試験一覧</a>
+          <a class="cert-link" href="https://www.comptia.org/ja-jp/certifications/security/" target="_blank" rel="noopener noreferrer">CompTIA Security+</a>
+          <a class="cert-link" href="https://www.isc2.org/certifications/cissp/cissp-experience-requirements" target="_blank" rel="noopener noreferrer">ISC2 CISSP</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Glossary Modal -->
+    <div class="modal-overlay" id="glossaryModal">
+      <div class="modal-container">
+        <button class="modal-close" id="glossaryCloseBtn">&times;</button>
+        <div class="modal-header">
+          <h3 class="modal-title" id="glossaryModalTitle">セキュリティ用語解説</h3>
+        </div>
+        <div class="modal-body">
+          <table class="glossary-table" id="glossaryTable">
+            <thead>
+              <tr>
+                <th>用語 (Term)</th>
+                <th>ふりがな</th>
+                <th>解説 (Description)</th>
+                <th>中文 (Chinese)</th>
+              </tr>
+            </thead>
+            <tbody id="glossaryTbody">
+              <!-- Content injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="modal-overlay" id="quizModal">
+      <div class="modal-container" style="max-width: 500px;">
+        <button class="modal-close" id="quizCloseBtn">&times;</button>
+        <div class="modal-header">
+          <h3 class="modal-title" style="color: var(--gold);">💻 ハッカー適性診断</h3>
+        </div>
+        <div class="modal-body" id="quizBody">
+          <!-- Quiz Question Window -->
+          <div id="quizQuestionContainer">
+            <p id="quizQuestionText" style="font-size: 16px; line-height: 1.6; margin-bottom: 20px; font-weight: bold;"></p>
+            <div id="quizAnswers" style="display: grid; gap: 12px;">
+              <!-- Answers injected by JS -->
+            </div>
+          </div>
+          <!-- Quiz Result Window -->
+          <div id="quizResultContainer" style="display: none; text-align: center; padding: 10px 0;">
+            <h4 id="quizResultTitle" style="font-size: 20px; color: var(--green); margin-bottom: 12px;"></h4>
+            <p id="quizResultDesc" style="font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 20px;"></p>
+            <div id="quizResultDetail" class="info-box" style="text-align: left; background: rgba(15,23,42,0.6); padding: 16px;"></div>
+            <button class="control-btn" id="restartQuizBtn" style="margin-top: 20px; width: 100%;">もう一度診断する</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* ============ 1. Matrix Rain Background ============ */
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      // Matrix characters (mix of half-width Japanese and binary/hex digits)
+      const matrixChars = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ10ABCDEF";
+      const fontSize = 16;
+      const columns = Math.floor(width / fontSize) + 1;
+      const ypos = Array(columns).fill(0).map(() => Math.random() * -height);
+
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(6, 9, 19, 0.1)';
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.fillStyle = '#10b981'; // Green text
+        ctx.font = fontSize + 'px monospace';
+
+        ypos.forEach((y, ind) => {
+          const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+          const x = ind * fontSize;
+          ctx.fillText(char, x, y);
+
+          if (y > height + Math.random() * 500) {
+            ypos[ind] = -fontSize;
+          } else {
+            ypos[ind] = y + fontSize;
+          }
+        });
+      }
+      setInterval(drawMatrix, 40);
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      /* ============ 2. Cybersecurity Dictionary Data ============ */
+      const glossaryDict = {
+        // --- Cybersecurity Terminology ---
+        "脆弱性": { kanji: "脆弱性", kana: "ぜいじゃくせい", meaning: "Vulnerability / Security flaw in a software system", zh: "安全漏洞 / 脆弱性" },
+        "ペネトレーションテスト": { kanji: "ペネトレーションテスト", kana: "ぺねとれーしょんてすと", meaning: "Penetration Testing / Simulated cyberattack to evaluate defense", zh: "渗透测试" },
+        "ランサムウェア": { kanji: "ランサムウェア", kana: "らんさむうぇあ", meaning: "Ransomware / Malware that encrypts files and demands ransom", zh: "勒索软件" },
+        "SOC": { kanji: "SOC", kana: "そっく (Security Operations Center)", meaning: "Security Operations Center monitoring network traffic 24/7", zh: "安全运行中心 / 安全运营中心" },
+        "CSIRT": { kanji: "CSIRT", kana: "しーさーと (Computer Security Incident Response Team)", meaning: "Incident response team dedicated to resolving security events", zh: "安全事件响应组" },
+        "CISO": { kanji: "CISO", kana: "しーあいえすおー", meaning: "Chief Information Security Officer driving security policies", zh: "首席信息安全官" },
+        "バグバウンティ": { kanji: "バグバウンティ", kana: "ばぐばうんてぃ", meaning: "Bug Bounty / Rewards researchers for reporting vulnerabilities", zh: "漏洞赏金计划" },
+        "リバースエンジニアリング": { kanji: "リバースエンジニアリング", kana: "りばーすえんじにありんぐ", meaning: "Reverse Engineering / Decompiling software to study internal workings", zh: "逆向工程" },
+
+        // --- Katakana Loanwords & Origins ---
+        "サイバーセキュリティ": { kanji: "サイバーセキュリティ", kana: "さいばーせきゅりてぃ", meaning: "Cybersecurity / Protection of systems, networks, and data", zh: "网络安全" },
+        "ハッカー": { kanji: "ハッカー", kana: "はっかー", meaning: "Hacker / IT expert who uses bugs or exploits to access systems", zh: "黑客 / 骇客" },
+        "ホワイトハットハッカー": { kanji: "ホワイトハットハッカー", kana: "ほわいとはっとはっかー", meaning: "White Hat Hacker / Ethical security expert helping organizations defend", zh: "白帽黑客" },
+        "ホワイトハット": { kanji: "ホワイトハット", kana: "ほわいとはっと", meaning: "White Hat / Ethical hackers or cyber defenders", zh: "白帽" },
+        "ブラックハットハッカー": { kanji: "ブラックハットハッカー", kana: "ぶらっくはっとはっかー", meaning: "Black Hat Hacker / Malicious hacker violating security for personal gain", zh: "黑帽黑客" },
+        "ブラックハット": { kanji: "ブラックハット", kana: "ぶらっくはっと", meaning: "Black Hat / Malicious cyber criminals", zh: "黑帽" },
+        "レッドチーム": { kanji: "レッドチーム", kana: "れっどちーむ", meaning: "Red Team / Offensively simulating real cyberattacks to test defenses", zh: "红队 / 进攻方" },
+        "ブルーチーム": { kanji: "ブルーチーム", kana: "ぶるーちーむ", meaning: "Blue Team / Defending computer networks and responding to security incidents", zh: "蓝队 / 防守方" },
+        "コミュニティ": { kanji: "コミュニティ", kana: "こみゅにてぃ", meaning: "Community / Group of interacting people sharing goals or interests", zh: "社区 / 共同体" },
+        "キャリアパス": { kanji: "キャリアパス", kana: "きゃりあぱす", meaning: "Career Path / Progression or development plan in a profession", zh: "职业路径 / 职业生涯规划" },
+        "インフラ": { kanji: "インフラ", kana: "いんふら", meaning: "Infrastructure / Underlying physical and software systems", zh: "基础设施 / 基建" },
+        "プライバシー": { kanji: "プライバシー", kana: "ぷらいばしー", meaning: "Privacy / Right to keep personal information secure", zh: "隐私" },
+        "データ": { kanji: "データ", kana: "でーた", meaning: "Data / Digital information processed by a computer", zh: "数据" },
+        "インターネット": { kanji: "インターネット", kana: "いんたーねっと", meaning: "Internet / Global interconnected computer network", zh: "互联网" },
+        "プラットフォーム": { kanji: "プラットフォーム", kana: "ぷらっとふぉーむ", meaning: "Platform / Standard software environment or service foundation", zh: "平台" },
+        "バグハンティング": { kanji: "バグハンティング", kana: "ばぐはんてぃんぐ", meaning: "Bug Hunting / Looking for software vulnerabilities for rewards", zh: "漏洞寻找 / 找Bug" },
+        "ウイルス": { kanji: "ウイルス", kana: "ういるす", meaning: "Virus / Malicious code designed to spread and infect systems", zh: "计算机病毒" },
+        "マルウェア": { kanji: "マルウェア", kana: "まるうぇあ", meaning: "Malware / Malicious software designed to compromise computers", zh: "恶意软件" },
+        "フィッシング": { kanji: "フィッシング", kana: "ふぃっしんぐ", meaning: "Phishing / Social engineering scams to steal credentials", zh: "网络钓鱼" },
+        "シミュレーター": { kanji: "シミュレーター", kana: "しみゅれーたー", meaning: "Simulator / System that models or emulates a real-world scenario", zh: "模拟器" },
+        "ツールスキャン": { kanji: "ツールスキャン", kana: "つーるすきゃん", meaning: "Tool Scan / Automated scanning using software tools", zh: "工具扫描" },
+        "コンサルティング": { kanji: "コンサルティング", kana: "こんさるてぃんぐ", meaning: "Consulting / Giving expert advisory services to businesses", zh: "咨询服务 / 顾问咨询" },
+        "コンサルタント": { kanji: "コンサルタント", kana: "こんさるたんと", meaning: "Consultant / Expert professional providing advice", zh: "顾问 / 咨询师" },
+        "フォレンジック": { kanji: "フォレンジック", kana: "ふぉれんじっく", meaning: "Forensics / Digital forensics, recovery and investigation of digital evidence", zh: "数字取证 / 计算机取证" },
+        "ログ": { kanji: "ログ", kana: "ろぐ", meaning: "Log / Automatically generated record of system activity", zh: "日志" },
+        "インシデント": { kanji: "インシデント", kana: "いんしでんと", meaning: "Incident / An event that disrupts operations or security", zh: "安全事件 / 协同事件" },
+        "バイナリ": { kanji: "バイナリ", kana: "ばいなり", meaning: "Binary / Compiled software executable or raw machine data", zh: "二进制 / 二进制文件" },
+        "スカウト": { kanji: "スカウト", kana: "すかうと", meaning: "Scout / Act of seeking and recruiting talent", zh: "猎头 / 招募" },
+        "ベンダー": { kanji: "ベンダー", kana: "べんだー", meaning: "Vendor / Company supplying technology products or services", zh: "厂商 / 服务商" },
+        "マネジメント": { kanji: "マネジメント", kana: "まねじめんと", meaning: "Management / Process of leading and controlling an organization", zh: "管理" },
+        "アーキテクト": { kanji: "アーキテクト", kana: "あーきてくと", meaning: "Architect / Senior engineer designing system structures", zh: "架构师" },
+        "エヴァンジェリスト": { kanji: "エヴァンジェリスト", kana: "えゔぁんじぇりすと", meaning: "Evangelist / Technology promoter or advocate", zh: "技术传道者 / 布道师" },
+        "ビジネス": { kanji: "ビジネス", kana: "びじねす", meaning: "Business / Commercial, industrial, or professional operations", zh: "业务 / 商业" },
+        "システム": { kanji: "システム", kana: "しすてむ", meaning: "System / Interconnected software components or machines", zh: "系统" },
+        "ソフトウェア": { kanji: "ソフトウェア", kana: "そふとうぇあ", meaning: "Software / Programs running on a computer system", zh: "软件" },
+        "ポートスキャン": { kanji: "ポートスキャン", kana: "ぽーとすきゃん", meaning: "Port Scan / Surveying computer ports to find active services", zh: "端口扫描" },
+        "デバッグモード": { kanji: "デバッグモード", kana: "でばっぐもーど", meaning: "Debug Mode / Developer troubleshooting mode in an application", zh: "调试模式" },
+
+        // --- Japanese Vocabulary & Phrases ---
+        "第一歩": { kanji: "第一歩", kana: "だいいっぽ", meaning: "The first step / Initial action", zh: "第一步" },
+        "盾": { kanji: "盾", kana: "たて", meaning: "Shield / Protection", zh: "盾牌" },
+        "防衛": { kanji: "防衛", kana: "ぼうえい", meaning: "Defense / Guarding", zh: "防卫" },
+        "悪意": { kanji: "悪意", kana: "あくい", meaning: "Malice / Bad intent", zh: "恶意 / 怀有恶意" },
+        "先に見つけ": { kanji: "先に見つけ", kana: "さきにみつけ", meaning: "Find beforehand / Find first", zh: "先发现 / 抢先找到" },
+        "生計を立てる": { kanji: "生計を立てる", kana: "せいけいをたてる", meaning: "Make a living / Earn a livelihood", zh: "维持生计 / 谋生" },
+        "暗躍する": { kanji: "暗躍する", kana: "あんやくする", meaning: "Pulling strings in the dark / Secret maneuvers", zh: "暗中活动 / 幕后活跃" },
+        "標的型攻撃": { kanji: "標的型攻撃", kana: "ひょうてきがたこうげき", meaning: "Targeted attack / Spear phishing", zh: "针对性攻击" },
+        "模して": { kanji: "模して", kana: "もして", meaning: "Imitating / Modeling after (from 模する)", zh: "模拟 / 模仿" },
+        "実戦訓練": { kanji: "実戦訓練", kana: "じっせんくんれん", meaning: "Combat drill / Hands-on training", zh: "实战训练" },
+        "絶え間ない": { kanji: "絶え間ない", kana: "たえまない", meaning: "Incessant / Continuous / Unending", zh: "不断的 / 连续不断的" },
+        "砦": { kanji: "砦", kana: "とりで", meaning: "Fortress / Stronghold", zh: "要塞 / 堡垒" },
+        "腕を競い合います": { kanji: "腕を競い合います", kana: "うでをきそいあいます", meaning: "Compete with skills (from 腕を競い合う)", zh: "切磋武艺 / 竞技比赛" },
+        "徹夜": { kanji: "徹夜", kana: "てつや", meaning: "Staying up all night", zh: "熬夜 / 通宵" },
+        "一手に引き受ける": { kanji: "一手に引き受ける", kana: "いってにひきうける", meaning: "Take sole responsibility / Undertake all by oneself", zh: "一手承担 / 独揽" },
+        "生き抜く": { kanji: "生き抜く", kana: "いきぬく", meaning: "Survive / Live through", zh: "生存下去 / 活下去" },
+        "官公庁": { kanji: "官公庁", kana: "かんこうちょう", meaning: "Government offices / Public agencies", zh: "政府机关 / 官公厅" },
+        "意思決定": { kanji: "意思決定", kana: "いしけってい", meaning: "Decision making", zh: "决策 / 做出决定" },
+        "監査": { kanji: "監査", kana: "かんさ", meaning: "Audit / Inspection", zh: "审计 / 监察" },
+        "策定": { kanji: "策定", kana: "さくてい", meaning: "Formulating / Drafting policies", zh: "制定 / 拟定" },
+        "脅威": { kanji: "脅威", kana: "きょうい", meaning: "Threat / Menace", zh: "威胁 / 恐吓" },
+        "全般": { kanji: "全般", kana: "ぜんぱん", meaning: "Overall / In general", zh: "全体 / 全般" },
+        // --- Added Vocabulary & Terminology ---
+        "ガイドライン": { kanji: "ガイドライン", kana: "がいどらいん", meaning: "Guideline / Set of rules or principles", zh: "指导方针 / 准则" },
+        "ルール": { kanji: "ルール", kana: "るーる", meaning: "Rule / Regulation", zh: "规则 / 规章" },
+        "侵入テスト": { kanji: "侵入テスト", kana: "しんにゅうてすと", meaning: "Penetration Test / Intrusion test", zh: "渗透测试 / 侵入测试" },
+        "ソーシャルエンジニアリング": { kanji: "ソーシャルエンジニアリング", kana: "そーしゃるえんじにありんぐ", meaning: "Social Engineering / Manipulating people to get sensitive info", zh: "社会工程学" },
+        "デジタル": { kanji: "デジタル", kana: "でじたる", meaning: "Digital", zh: "数字化 / 数字" },
+        "クリエイティブ": { kanji: "クリエイティブ", kana: "くりえいてぃぶ", meaning: "Creative", zh: "创造性的 / 有创意的" },
+        "マニュアル": { kanji: "マニュアル", kana: "まにゅある", meaning: "Manual / Guidebook", zh: "手册 / 指南" },
+        "リアルタイム": { kanji: "リアルタイム", kana: "りあるたいむ", meaning: "Real-time", zh: "实时" },
+        "MSSP": { kanji: "MSSP", kana: "えむえすえすぴー (Managed Security Service Provider)", meaning: "Managed Security Service Provider outsourced for IT defense", zh: "托管安全服务提供商" },
+        "プログラム": { kanji: "プログラム", kana: "ぷろぐらむ", meaning: "Program", zh: "程序" },
+        "ハッキング": { kanji: "ハッキング", kana: "はっきんぐ", meaning: "Hacking", zh: "黑客行为 / 攻击" },
+        "コーディング": { kanji: "コーディング", kana: "こーでぃんぐ", meaning: "Coding", zh: "编码 / 写代码" },
+        "サポート": { kanji: "サポート", kana: "さぽーと", meaning: "Support", zh: "支持 / 协助" },
+        "スペシャリスト": { kanji: "スペシャリスト", kana: "すぺしゃりすと", meaning: "Specialist", zh: "专家 / 专员" },
+        "メガベンチャー": { kanji: "メガベンチャー", kana: "めがべんちゃー", meaning: "Mega Venture (和製英語) / Large-scale tech startup", zh: "大型创业公司" },
+        "グローバル": { kanji: "グローバル", kana: "ぐろーばる", meaning: "Global", zh: "全球性的 / 国际化" },
+        "発見": { kanji: "発見", kana: "はっけん", meaning: "Discovery / Detection", zh: "发现" },
+        "報告": { kanji: "報告", kana: "ほうこく", meaning: "Report / Notification", zh: "报告 / 汇报" },
+        "修復": { kanji: "修復", kana: "しゅうふく", meaning: "Repair / Restoration", zh: "修复 / 修补" },
+        "調査": { kanji: "調査", kana: "ちょうさ", meaning: "Investigation / Survey / Research", zh: "调查 / 审查" },
+        "パズル": { kanji: "パズル", kana: "ぱずる", meaning: "Puzzle", zh: "拼图 / 谜题" },
+        "弱点": { kanji: "弱点", kana: "じゃくてん", meaning: "Weakness / Weak point / Vulnerability", zh: "弱点 / 缺点" },
+
+        "報奨金": { kanji: "報奨金", kana: "ほうしょうきん", meaning: "Bounty / Reward money", zh: "奖金 / 赏金" },
+        "存在": { kanji: "存在", kana: "そんざい", meaning: "Existence / Being", zh: "存在" },
+        "窃取": { kanji: "窃取", kana: "せっしゅ", meaning: "Theft / Stealing", zh: "窃取 / 偷盗" },
+        "身代金": { kanji: "身代金", kana: "みのしろきん", meaning: "Ransom", zh: "赎金" },
+        "要求": { kanji: "要求", kana: "ようきゅう", meaning: "Demand / Request", zh: "要求 / 索要" },
+        "情報漏洩": { kanji: "情報漏洩", kana: "じょうほうろうえい", meaning: "Information Leak / Data breach", zh: "信息泄露" },
+        "詐欺": { kanji: "詐欺", kana: "さぎ", meaning: "Fraud / Scam / Swindle", zh: "诈骗 / 欺诈" },
+        "手法": { kanji: "手法", kana: "しゅほう", meaning: "Method / Technique", zh: "手法 / 方法" },
+        "心理": { kanji: "心理", kana: "しんり", meaning: "Psychology / Mental state", zh: "心理" },
+        "手口": { kanji: "手口", kana: "てぐち", meaning: "Method / Trick / Modus operandi of a crime", zh: "作案手法 / 招数" },
+        "分析": { kanji: "分析", kana: "ぶんせき", meaning: "Analysis", zh: "分析" },
+        "追跡": { kanji: "追跡", kana: "ついせき", meaning: "Tracking / Pursuit", zh: "追踪 / 追捕" },
+        "近道": { kanji: "近道", kana: "ちかみち", meaning: "Shortcut", zh: "捷径" },
+        "機能": { kanji: "機能", kana: "きのう", meaning: "Function / Feature / Operation", zh: "功能 / 职能" },
+        "侵入": { kanji: "侵入", kana: "しんにゅう", meaning: "Intrusion / Penetration / Break-in", zh: "侵入 / 渗透" },
+        "物理": { kanji: "物理", kana: "ぶつり", meaning: "Physical / Physics", zh: "物理 / 实体" },
+        "発想": { kanji: "発想", kana: "はっそう", meaning: "Idea / Conceptualization / Way of thinking", zh: "想法 / 构思" },
+        "模索": { kanji: "模索", kana: "もさく", meaning: "Groping / Searching for a solution", zh: "摸索 / 探索" },
+        "隙": { kanji: "隙", kana: "すき", meaning: "Gap / Vulnerability / Opening", zh: "空隙 / 漏洞 / 破绽" },
+        "検知": { kanji: "検知", kana: "けんち", meaning: "Detection / Sensing", zh: "检测 / 感知" },
+        "防御": { kanji: "防御", kana: "ぼうぎょ", meaning: "Defense / Protection", zh: "防御 / 防守" },
+        "発生": { kanji: "発生", kana: "はっせい", meaning: "Occurrence / Outbreak", zh: "发生" },
+        "対処": { kanji: "対処", kana: "たいしょ", meaning: "Dealing with / Coping with / Response", zh: "应对 / 处置" },
+        "監視": { kanji: "監視", kana: "かんし", meaning: "Monitoring / Surveillance", zh: "监视 / 监控" },
+        "事案": { kanji: "事案", kana: "じあん", meaning: "Case / Matter / Incident", zh: "案情 / 事项 / 事件" },
+        "封じ込め": { kanji: "封じ込め", kana: "ふうじこめ", meaning: "Containment / Isolation of threats", zh: "封锁 / 遏制" },
+        "慎重": { kanji: "慎重", kana: "しんちょう", meaning: "Prudence / Discretion / Caution", zh: "慎重 / 谨慎" },
+        "観察力": { kanji: "観察力", kana: "かんさつりょく", meaning: "Observation skills", zh: "观察力" },
+        "異常": { kanji: "異常", kana: "いじょう", meaning: "Anomaly / Abnormality", zh: "异常" },
+        "細部": { kanji: "細部", kana: "さいぶ", meaning: "Details / Fine parts", zh: "细节 / 局部" },
+        "遮断": { kanji: "遮断", kana: "しゃだん", meaning: "Blockade / Isolation / Disconnection", zh: "阻断 / 遮断" },
+        "最小限": { kanji: "最小限", kana: "さいしょうげん", meaning: "Minimum", zh: "最小限度 / 尽量少" },
+        "使命": { kanji: "使命", kana: "しめい", meaning: "Mission / Calling", zh: "使命 / 天职" },
+        "競技": { kanji: "競技", kana: "きょうぎ", meaning: "Competition / Contest / Game", zh: "竞技 / 比赛" },
+        "暗号解読": { kanji: "暗号解読", kana: "あんごうかいどく", meaning: "Cryptography / Codebreaking", zh: "解密 / 密码破译" },
+        "解析": { kanji: "解析", kana: "かいせき", meaning: "Analysis / Parsing", zh: "分析 / 解析" },
+        "課題": { kanji: "課題", kana: "かだい", meaning: "Task / Challenge / Assignment", zh: "课题 / 任务 / 挑战" },
+        "隠された": { kanji: "隠された", kana: "かくされた", meaning: "Hidden / Concealed (from 隠す)", zh: "隐藏的 / 被隐匿的" },
+        "主催": { kanji: "主催", kana: "しゅさい", meaning: "Hosting / Sponsorship", zh: "主办 / 举办" },
+        "負けず嫌い": { kanji: "負けず嫌い", kana: "まけずぎらい", meaning: "Hating to lose / Highly competitive", zh: "好胜 / 不服输" },
+        "多々": { kanji: "多々", kana: "たた", meaning: "Many / A lot / Frequently", zh: "很多 / 频繁" },
+        "開発": { kanji: "開発", kana: "かいはつ", meaning: "Development", zh: "开发" },
+        "製品": { kanji: "製品", kana: "せいひん", meaning: "Product", zh: "产品" },
+        "派遣": { kanji: "派遣", kana: "はけん", meaning: "Dispatch / Deployment", zh: "派遣 / 派驻" },
+        "対策": { kanji: "対策", kana: "たいさく", meaning: "Countermeasure / Action plan", zh: "对策 / 防治措施" },
+        "顧客": { kanji: "顧客", kana: "こきゃく", meaning: "Customer / Client", zh: "顾客 / 客户" },
+        "説明": { kanji: "説明", kana: "せつめい", meaning: "Explanation / Description", zh: "解释 / 说明" },
+        "市場": { kanji: "市場", kana: "しじょう", meaning: "Market", zh: "市场" },
+        "成長": { kanji: "成長", kana: "せいちょう", meaning: "Growth / Development", zh: "增长 / 发展" },
+        "人材": { kanji: "人材", kana: "じんざい", meaning: "Human resources / Talent", zh: "人才 / 人力资源" },
+        "不足": { kanji: "不足", kana: "ふそく", meaning: "Shortage / Lack", zh: "不足 / 匮乏" },
+        "多様": { kanji: "多様", kana: "たよう", meaning: "Diverse / Various", zh: "多样 / 多元化" },
+        "責任者": { kanji: "責任者", kana: "せきにんしゃ", meaning: "Person in charge / Director / Officer", zh: "负责人 / 主管" },
+        "主体的に": { kanji: "主体的に", kana: "しゅたいてきに", meaning: "Proactively / Independently", zh: "主动地 / 自主地" },
+        "意欲": { kanji: "意欲", kana: "いよく", meaning: "Motivation / Will / Eagerness", zh: "意愿 / 积极性" },
+        "最強": { kanji: "最強", kana: "さいきょう", meaning: "Strongest / Most powerful", zh: "最强" },
+        "武器": { kanji: "武器", kana: "ぶき", meaning: "Weapon", zh: "武器" },
+        "安全": { kanji: "安全", kana: "あんぜん", meaning: "Safety / Security", zh: "安全" },
+        "確保": { kanji: "確保", kana: "かくほ", meaning: "Securing / Guaranteeing", zh: "确保 / 保障" },
+        "攻撃": { kanji: "攻撃", kana: "こうげき", meaning: "Attack / Offensive", zh: "攻击 / 攻势" },
+        "評価": { kanji: "評価", kana: "ひょうか", meaning: "Evaluation / Assessment / Rating", zh: "评估 / 评价" },
+        "価値": { kanji: "価値", kana: "かち", meaning: "Value / Worth", zh: "价值" },
+        "重要": { kanji: "重要", kana: "じゅうよう", meaning: "Important / Crucial", zh: "重要 / 关键" },
+        "正義": { kanji: "正義", kana: "せいぎ", meaning: "Justice / Righteousness", zh: "正义" },
+        "保護": { kanji: "保護", kana: "ほご", meaning: "Protection / Safeguarding", zh: "保护" },
+        "知的好奇心": { kanji: "知的好奇心", kana: "ちてきこうきしん", meaning: "Intellectual Curiosity", zh: "求知欲 / 好奇心" },
+        "得意": { kanji: "得意", kana: "とくい", meaning: "Strong point / Specialty / Good at", zh: "擅长 / 拿手" },
+        "個人情報": { kanji: "個人情報", kana: "こじんじょうほう", meaning: "Personal Information / PII", zh: "个人信息 / 个人隐私" },
+        "脅迫": { kanji: "脅迫", kana: "きょうはく", meaning: "Threat / Coercion / Blackmail", zh: "威胁 / 恐吓 / 胁迫" },
+};
+
+      function formatGlossaryTerms(text) {
+        const terms = Object.keys(glossaryDict).sort((a, b) => b.length - a.length);
+        let result = text;
+        const replacements = [];
+
+        // 1. Mark terms sequentially with temporary index placeholders to avoid double-wrapping
+        terms.forEach((term, index) => {
+          const escapedTerm = term.replace(/[-\/\^$*+?.()|[\]{}]/g, '\$&');
+          const regex = new RegExp(escapedTerm, 'g');
+          if (regex.test(result)) {
+            const placeholder = `___GLOSSARY_${index}___`;
+            replacements.push({ placeholder, term });
+            result = result.replace(regex, placeholder);
+          }
+        });
+
+        // 2. Substitute placeholders with styled HTML spans
+        replacements.forEach(({ placeholder, term }) => {
+          const isKatakana = /^[゠-ヿー]+$/.test(term);
+          if (isKatakana) {
+            const item = glossaryDict[term];
+            const origin = item.meaning.includes(" / ") ? item.meaning.split(" / ")[0] : item.meaning;
+            result = result.replace(
+              new RegExp(placeholder, 'g'),
+              `<span class="glossary-term katakana-term" data-term="${term}" data-origin="${origin}">${term}</span>`
+            );
+          } else {
+            result = result.replace(
+              new RegExp(placeholder, 'g'),
+              `<span class="glossary-term" data-term="${term}">${term}</span>`
+            );
+          }
+        });
+
+        return result;
+      }
+
+      /* ============ 3. Nodes Data ============ */
+      const nodes = [
+        {
+          id: 'intro',
+          title: 'サイバーセキュリティ入門',
+          kicker: '01. INTRO',
+          risk: '安全の第一歩',
+          x: 50,
+          y: 15,
+          color: '#10b981',
+          summary: 'サイバーセキュリティは、データ、プライバシー、社会インフラを脅威から守る現代の盾です。',
+          kind: 'インターネット上の安全を確保し、悪意ある攻撃からシステムを防衛する活動全般。',
+          companies: 'すべてのIT企業、政府機関、および専門組織。',
+          work: 'セキュリティ監査、リスク評価、ガイドライン策定。',
+          fit: '新しい技術に興味があり、ルールや社会を守ることに価値を感じる人。',
+          memo: 'まずはここから！セキュリティがなぜ現代社会で重要なのかを理解しましょう。',
+          related: ['whitehat', 'blackhat']
+        },
+        {
+          id: 'whitehat',
+          title: 'ホワイトハットハッカー',
+          kicker: '02. WHITE HAT',
+          risk: '正義の技術者',
+          x: 28,
+          y: 38,
+          color: '#38bdf8',
+          summary: '高い技術力を持ち、システム保護や脆弱性の発見にその力を使う正義のハッカーです。',
+          kind: '脆弱性（システムの穴）を攻撃者より先に見つけ、企業に報告・修復します。',
+          companies: 'バグバウンティ・プラットフォーム、セキュリティ監査法人。',
+          work: 'バグハンティング、脆弱性調査、セキュリティ研究開発。',
+          fit: '知的好奇心が旺盛で、パズルや謎解きのように弱点を探すのが得意な人。',
+          memo: 'バグバウンティ（脆弱性報奨金制度）で生計を立てる独立系ハッカーも世界中に存在します。',
+          related: ['intro', 'redteam', 'blueteam', 'ctf']
+        },
+        {
+          id: 'blackhat',
+          title: 'ブラックハットハッカー',
+          kicker: '03. BLACK HAT',
+          risk: 'サイバー犯罪者',
+          x: 72,
+          y: 38,
+          color: '#f43f5e',
+          summary: '個人情報の窃取、金銭脅迫、破壊活動など、悪意を持って攻撃を行うハッカーです。',
+          kind: 'ランサムウェア（身代金要求ウイルス）や情報漏洩を仕掛け、社会を脅かします。',
+          companies: '国家支援型ハッカー集団（APT）、サイバー地下犯罪組織。',
+          work: '標的型攻撃、マルウェア開発、フィッシング詐欺の実行。',
+          fit: '防衛側が立ち向かうべき「敵」としての攻撃手法と心理。',
+          memo: '彼らの手口（TTPs）を分析・追跡することが、防衛力を高める一番の近道です。',
+          related: ['intro', 'ctf']
+        },
+        {
+          id: 'redteam',
+          title: 'レッドチーム（擬似攻撃側）',
+          kicker: '04. RED TEAM',
+          risk: '安全性の検証役',
+          x: 12,
+          y: 62,
+          color: '#ff5c7a',
+          summary: '実際のサイバー攻撃者を模して、組織の防衛体制が機能するかをテストするチームです。',
+          kind: '許可を得て標的に「ペネトレーションテスト（侵入テスト）」を行います。',
+          companies: 'グローバルセキュリティファーム、大企業の社内内部監査チーム。',
+          work: 'ソーシャルエンジニアリング（なりすまし等）、物理・デジタル侵入。',
+          fit: 'クリエイティブな発想でマニュアル外の道を模索できる人。',
+          memo: '単なるツールスキャンではなく、人の心の隙や物理セキュリティを含めた実戦訓練を行います。',
+          related: ['whitehat', 'blueteam', 'careers']
+        },
+        {
+          id: 'blueteam',
+          title: 'ブルーチーム（防衛・運用側）',
+          kicker: '05. BLUE TEAM',
+          risk: '絶え間ない防衛',
+          x: 37,
+          y: 62,
+          color: '#3b82f6',
+          summary: 'サイバー攻撃をリアルタイムで検知・防御し、インシデント（事故）発生時に素早く対処します。',
+          kind: 'SOC（セキュリティ監視センター）やCSIRT（事案対処チーム）でシステムを防御。',
+          companies: '大企業のセキュリティ部門、MSSP（セキュリティ運用受託会社）。',
+          work: 'ログ監視、マルウェア解析（フォレンジック）、被害封じ込め。',
+          fit: '慎重で観察力があり、異常な変化やログの細部に気づくことができる人。',
+          memo: 'レッドチームの攻撃を検知・遮断し、被害を最小限に抑えるのが彼らの使命です。',
+          related: ['whitehat', 'redteam', 'industry', 'careers']
+        },
+        {
+          id: 'ctf',
+          title: 'CTF & コミュニティ',
+          kicker: '06. CTF & SOCIAL',
+          risk: '技術競技場',
+          x: 63,
+          y: 62,
+          color: '#a855f7',
+          summary: 'CTF（Capture The Flag）というハッキング競技で、世界のハッカーと腕を競い合います。',
+          kind: '暗号解読、プログラム解析、Webハッキング等の課題を解き、隠された旗（Flag）を探します。',
+          companies: 'DEF CON、SECCONなどの各種大会主催団体、ハッカーコミュニティ。',
+          work: 'リバースエンジニアリング、バイナリ解析、競技用ツールの作成。',
+          fit: '負けず嫌いで、徹夜でコーディングやパズルを解くのが大好きな人。',
+          memo: '世界トップクラスのCTFチームは、企業から直接スカウトされることも多々あります。',
+          related: ['whitehat', 'blackhat', 'careers']
+        },
+        {
+          id: 'industry',
+          title: 'セキュリティ企業',
+          kicker: '07. INDUSTRY',
+          risk: 'ビジネスと防衛',
+          x: 88,
+          y: 62,
+          color: '#f59e0b',
+          summary: '他の企業のシステム開発や安全管理をサポートする、専門のセキュリティベンダーです。',
+          kind: 'セキュリティ製品の販売、コンサルティング、インシデント対応の派遣を行います。',
+          companies: 'トレンドマイクロ、ラック（LAC）、ラックのSOC、GMOサイバーセキュリティ。',
+          work: 'セキュリティ製品開発、セキュリティ対策コンサルティング。',
+          fit: '顧客のビジネスを深く理解し、専門知識を優しく説明できるコミュニケーション力のある人。',
+          memo: '日本では、専門会社が複数の企業の防御を一手に引き受ける「MSSP」市場が大きく成長しています。',
+          related: ['blueteam', 'careers']
+        },
+        {
+          id: 'careers',
+          title: 'キャリアパス',
+          kicker: '08. CAREERS',
+          risk: '自分だけの道',
+          x: 50,
+          y: 85,
+          color: '#ffd700',
+          summary: 'セキュリティ人材は世界中で圧倒的に不足しており、多くの多様なキャリアが存在します。',
+          kind: '技術極振りスペシャリストから、組織マネジメントを行うCISO（情報セキュリティ最高責任者）まで。',
+          companies: '官公庁、金融機関、メガベンチャー、グローバル企業。',
+          work: 'セキュリティアーキテクト、CISO、セキュリティエヴァンジェリスト。',
+          fit: '変化を恐れず、常に新しい知識を主体的に学び続ける学習意欲がある人。',
+          memo: 'ハッカーのスキルは、デジタル社会を生き抜くための最強の武器になります。',
+          related: ['redteam', 'blueteam', 'ctf', 'industry']
+        }
+      ];
+
+      const edges = [
+        ['intro', 'whitehat'],
+        ['intro', 'blackhat'],
+        ['whitehat', 'redteam'],
+        ['whitehat', 'blueteam'],
+        ['whitehat', 'ctf'],
+        ['blackhat', 'ctf'],
+        ['redteam', 'blueteam'],
+        ['blueteam', 'industry'],
+        ['ctf', 'careers'],
+        ['industry', 'careers'],
+        ['redteam', 'careers'],
+        ['blueteam', 'careers']
+      ];
+
+      /* ============ 4. Map & Nodes Rendering Logic ============ */
+      const shell = document.getElementById('shell');
+      const stage = document.getElementById('mapStage');
+      const edgeLayer = document.getElementById('edgeLayer');
+      const dots = document.getElementById('progressDots');
+      const stepLabel = document.getElementById('stepLabel');
+      const detailTitle = document.getElementById('detailTitle');
+      const detailSummary = document.getElementById('detailSummary');
+      const detailKind = document.getElementById('detailKind');
+      const detailCompanies = document.getElementById('detailCompanies');
+      const detailWork = document.getElementById('detailWork');
+      const detailFit = document.getElementById('detailFit');
+      const talkMemo = document.getElementById('talkMemo');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const activeModeLabel = document.getElementById('activeModeLabel');
+
+      let activeIndex = 0;
+
+      function nodeById(id) {
+        return nodes.find(node => node.id === id);
+      }
+
+      function renderEdges() {
+        edgeLayer.innerHTML = '';
+        edges.forEach(([fromId, toId]) => {
+          const from = nodeById(fromId);
+          const to = nodeById(toId);
+          if (!from || !to) return;
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', from.x);
+          line.setAttribute('y1', from.y);
+          line.setAttribute('x2', to.x);
+          line.setAttribute('y2', to.y);
+          line.dataset.from = fromId;
+          line.dataset.to = toId;
+          line.classList.add('edge');
+          edgeLayer.appendChild(line);
+        });
+      }
+
+      function renderNodes() {
+        nodes.forEach((node, index) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'map-node-button';
+          button.style.left = `${node.x}%`;
+          button.style.top = `${node.y}%`;
+          button.style.animationDelay = `${index * 80}ms`;
+          button.dataset.id = node.id;
+          button.innerHTML = `
+            <span class="node-kicker">${node.kicker}</span>
+            <span class="node-title">${node.title}</span>
+            <span class="node-risk">${node.risk}</span>
+          `;
+          button.addEventListener('click', () => setActive(index, true));
+          stage.appendChild(button);
+        });
+      }
+
+      function renderDots() {
+        nodes.forEach((node, index) => {
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.className = 'progress-dot';
+          dot.setAttribute('aria-label', `${index + 1}: ${node.title}`);
+          dot.addEventListener('click', () => setActive(index, true));
+          dots.appendChild(dot);
+        });
+      }
+
+      function setActive(index, shouldFocus = false) {
+        activeIndex = (index + nodes.length) % nodes.length;
+        const active = nodes[activeIndex];
+        const related = new Set(active.related);
+
+        document.body.style.setProperty('--active', active.color);
+        shell.style.setProperty('--active', active.color);
+        activeModeLabel.style.setProperty('--active', active.color);
+
+        document.querySelectorAll('.map-node-button').forEach(button => {
+          const id = button.dataset.id;
+          button.classList.toggle('active', id === active.id);
+          button.classList.toggle('related', related.has(id));
+          button.setAttribute('aria-pressed', id === active.id ? 'true' : 'false');
+        });
+
+        document.querySelectorAll('.edge').forEach(line => {
+          const from = line.dataset.from;
+          const to = line.dataset.to;
+          const isActive = from === active.id || to === active.id;
+          line.classList.toggle('active', isActive);
+        });
+
+        document.querySelectorAll('.progress-dot').forEach((dot, dotIndex) => {
+          dot.classList.toggle('active', dotIndex === activeIndex);
+        });
+
+        stepLabel.textContent = `${activeIndex + 1} / ${nodes.length}`;
+        detailTitle.textContent = active.title;
+        
+        // Dynamically apply term glossary formatting
+        detailSummary.innerHTML = formatGlossaryTerms(active.summary);
+        detailKind.innerHTML = formatGlossaryTerms(active.kind);
+        detailCompanies.innerHTML = formatGlossaryTerms(active.companies);
+        detailWork.innerHTML = formatGlossaryTerms(active.work);
+        detailFit.innerHTML = formatGlossaryTerms(active.fit);
+        
+        talkMemo.innerHTML = formatGlossaryTerms(active.memo);
+
+        // Scan the active node's text for Katakana words to show English origins dynamically
+        const textToScan = [active.summary, active.kind, active.companies, active.work, active.fit, active.memo].join(" ");
+        const katakanaWords = Array.from(new Set(textToScan.match(/[\u30A0-\u30FF]+/g) || []));
+        const matchedOrigins = katakanaWords
+          .map(word => {
+            const item = glossaryDict[word];
+            if (item) {
+              const origin = item.meaning.includes(" / ") ? item.meaning.split(" / ")[0] : item.meaning;
+              return { word, origin };
+            }
+            return null;
+          })
+          .filter(item => item);
+
+        const katakanaSection = document.getElementById('katakanaSection');
+        const katakanaList = document.getElementById('katakanaList');
+        if (matchedOrigins.length > 0) {
+          katakanaSection.style.display = 'block';
+          katakanaList.innerHTML = matchedOrigins.map(item => `
+            <span class="katakana-badge" title="${item.word} = ${item.origin}" onclick="openGlossaryModal('${item.word}')" style="cursor: pointer;">
+              <strong>${item.word}</strong>: <code>${item.origin}</code>
+            </span>
+          `).join("");
+        } else {
+          katakanaSection.style.display = 'none';
+        }
+
+        if (shouldFocus) {
+          const activeButton = document.querySelector(`.map-node-button[data-id="${active.id}"]`);
+          if (activeButton) activeButton.focus({ preventScroll: true });
+        }
+      }
+
+      function goNext() {
+        setActive(activeIndex + 1, true);
+      }
+
+      function goPrev() {
+        setActive(activeIndex - 1, true);
+      }
+
+      prevBtn.addEventListener('click', goPrev);
+      nextBtn.addEventListener('click', goNext);
+
+      window.addEventListener('keydown', event => {
+        const tag = document.activeElement?.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        if (event.key === 'ArrowRight' || event.key === ' ') {
+          event.preventDefault();
+          goNext();
+        }
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goPrev();
+        }
+      });
+
+      /* ============ 5. Cybersecurity Glossary Modal Logic ============ */
+      const glossaryModal = document.getElementById('glossaryModal');
+      const glossaryCloseBtn = document.getElementById('glossaryCloseBtn');
+      const glossaryTbody = document.getElementById('glossaryTbody');
+
+      function openGlossaryModal(termKey) {
+        const item = glossaryDict[termKey];
+        if (item) {
+          glossaryTbody.innerHTML = `
+            <tr>
+              <td><strong>${item.kanji}</strong></td>
+              <td>${item.kana}</td>
+              <td>${item.meaning}</td>
+              <td>${item.zh}</td>
+            </tr>
+          `;
+          glossaryModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      }
+
+      function closeGlossaryModal() {
+        glossaryModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      glossaryCloseBtn.addEventListener('click', closeGlossaryModal);
+      glossaryModal.addEventListener('click', (e) => {
+        if (e.target === glossaryModal) closeGlossaryModal();
+      });
+
+      // Event delegation for dynamic glossary terms inside detail view
+      document.getElementById('detailBody').addEventListener('click', (e) => {
+        const termSpan = e.target.closest('.glossary-term');
+        if (termSpan) {
+          openGlossaryModal(termSpan.dataset.term);
+        }
+      });
+      document.getElementById('talkMemo').addEventListener('click', (e) => {
+        const termSpan = e.target.closest('.glossary-term');
+        if (termSpan) {
+          openGlossaryModal(termSpan.dataset.term);
+        }
+      });
+
+      /* ============ 6. Personality Quiz Logic ============ */
+      const quizModal = document.getElementById('quizModal');
+      const startQuizBtn = document.getElementById('startQuizBtn');
+      const quizCloseBtn = document.getElementById('quizCloseBtn');
+      const quizBody = document.getElementById('quizBody');
+      const quizQuestionContainer = document.getElementById('quizQuestionContainer');
+      const quizQuestionText = document.getElementById('quizQuestionText');
+      const quizAnswers = document.getElementById('quizAnswers');
+      const quizResultContainer = document.getElementById('quizResultContainer');
+      const quizResultTitle = document.getElementById('quizResultTitle');
+      const quizResultDesc = document.getElementById('quizResultDesc');
+      const quizResultDetail = document.getElementById('quizResultDetail');
+      const restartQuizBtn = document.getElementById('restartQuizBtn');
+
+      const quizQuestions = [
+        {
+          question: "Q1. パズルや謎解き、またはソフトウェアでバグを見つけた時、どう感じますか？",
+          answers: [
+            { text: "どうやってそのバグが起きたのか、仕組みを徹底的に追求したくなる", score: { redteam: 3, whitehat: 2 } },
+            { text: "バグを利用して有利に進めるより、すぐに修正して綺麗に直したい", score: { blueteam: 3, intro: 2 } },
+            { text: "とりあえず他の人にも教えて、みんなで競い合って楽しみたい", score: { ctf: 3, careers: 1 } },
+            { text: "そのバグが会社全体の製品価値にどう影響するかビジネスの視点で考える", score: { industry: 3, careers: 2 } },
+            { text: "自分には関係ないと思って、そのまま放置する", score: { passiveRisk: 3, overconfidenceRisk: 1 } }
+          ]
+        },
+        {
+          question: "Q2. パソコンやスマートフォンのOSアップデートの通知が来たら？",
+          answers: [
+            { text: "新しい脆弱性の修正リスト（CVE）をチェックして、何が直ったか調べる", score: { whitehat: 3, ctf: 2 } },
+            { text: "すぐにアップデートを実行して、セキュリティ設定が安全であることを確認する", score: { blueteam: 3, intro: 2 } },
+            { text: "「今回のアップデートでどんなハッキング手法が防がれたのか」を探る", score: { redteam: 3, blackhat: 1 } },
+            { text: "会社の全端末にどう適用させるか、効率的な方法やコストを考える", score: { industry: 3, careers: 2 } },
+            { text: "面倒なので無視する。今まで被害がないから今回も大丈夫だと思う", score: { updateRisk: 4, overconfidenceRisk: 2 } }
+          ]
+        },
+        {
+          question: "Q3. 自分の得意な作業スタイルはどれですか？",
+          answers: [
+            { text: "泥臭くても、粘り強く手を動かして未知の領域を調べること", score: { whitehat: 2, ctf: 3 } },
+            { text: "ログや数字を細かくチェックし、ささいな変化や異常を見逃さないこと", score: { blueteam: 3, redteam: 1 } },
+            { text: "他の人が考えつかないような「裏ルート」やアイデアを閃くこと", score: { redteam: 3, blackhat: 2 } },
+            { text: "他人の話をじっくり聞き、課題を整理して分かりやすくアドバイスすること", score: { industry: 3, careers: 3 } },
+            { text: "早く済ませたいので、パスワードや設定はいつも同じでよいと思う", score: { passwordRisk: 4, passiveRisk: 1 } }
+          ]
+        },
+        {
+          question: "Q4. ハッカーという言葉を聞いて、一番ワクワクする役割は？",
+          answers: [
+            { text: "脆弱性を探し出し、防壁の弱点を暴く「侵入シミュレーター」", score: { redteam: 3, whitehat: 2 } },
+            { text: "あらゆる攻撃を予知し、背後からシステムを守り抜く「防衛の守護神」", score: { blueteam: 3, industry: 1 } },
+            { text: "超難解な暗号やプログラムを解析してフラッグを奪い取る「競技ハッカー」", score: { ctf: 3, whitehat: 1 } },
+            { text: "チームを統率し、組織全体のセキュリティ戦略を決定する「CISO・軍師」", score: { careers: 3, industry: 2 } },
+            { text: "難しそうなので、セキュリティは専門家だけに任せればよいと思う", score: { passiveRisk: 4, overconfidenceRisk: 1 } }
+          ]
+        }
+      ];
+
+      const quizResults = {
+        redteam: {
+          title: "🎯 レッドチーム・侵入テストスペシャリスト",
+          desc: "あなたはクリエイティブな突破口を見つける才能があります！",
+          detail: "攻撃者の視点に立ち、システムの隙間をすり抜ける戦術家タイプです。ペネトレーションテスト（侵入テスト）や、ソーシャルエンジニアリングを駆使して、組織の防衛力の限界を試す役割が適しています。"
+        },
+        blueteam: {
+          title: "🛡️ ブルーチーム・防衛＆フォレンジック監視員",
+          desc: "あなたは抜群の観察力と堅実さを持った防衛の要です！",
+          detail: "押し寄せる攻撃ログを監視し、いち早く侵入の兆候（インシデント）を検知して遮断するガーディアンタイプです。SOC（セキュリティ監視センター）でのログ分析や、インシデントハンドラーとして活躍できます。"
+        },
+        whitehat: {
+          title: "🔬 ホワイトハットハッカー / 脆弱性リサーチャー",
+          desc: "あなたは深い技術探究心と正義感を秘めた技術の専門家です！",
+          detail: "システムのソースコードや構造を詳細に分析し、未知の脆弱性を発見して修正へと導くドクタータイプです。バグバウンティ（脆弱性報奨金制度）で活躍したり、セキュリティ研究開発（R&D）の分野がぴったりです。"
+        },
+        ctf: {
+          title: "🏁 CTFプレイヤー / バイナリ解析エキスパート",
+          desc: "あなたは謎解きと競争が何より大好きなトップアスリートです！",
+          detail: "プログラムのバイナリを解析したり、高度な暗号を解読するハッキング競技（CTF）のファイタータイプです。難しい課題に何時間も没頭する集中力があり、リバースエンジニアリングや競技会での実績で名を馳せることができます。"
+        },
+        industry: {
+          title: "💼 セキュリティコンサルタント / エヴァンジェリスト",
+          desc: "あなたは技術とビジネスの架け橋となるスマートなアドバイザーです！",
+          detail: "セキュリティの専門知識を持ちながら、クライアントの経営課題に寄り添い、最適な対策プランを提案する軍師タイプです。セキュリティ製品の選定や、組織のポリシー策定、講演活動など幅広く活躍できます。"
+        },
+        careers: {
+          title: "👑 CISO（最高情報セキュリティ責任者）/ セキュリティアーキテクト",
+          desc: "あなたは全体像を俯瞰し、戦略を練る統率力のあるリーダーです！",
+          detail: "単一の技術にとどまらず、企業やサービス全体のセキュリティ設計を構想する建築家タイプです。組織全体の安全基準を定め、経営陣と対話してセキュリティを推進するリーダーに最も適しています。"
+        },
+        updateRisk: {
+          title: "⚠️ アップデート後回しタイプ",
+          desc: "あなたは『今まで大丈夫だったから』で一番狙われやすいタイプです。",
+          detail: "更新を無視すると、すでに知られている弱点がそのまま残ります。攻撃者は新しい技よりも、古い弱点を放置している人をよく狙います。まずはOS、ブラウザ、スマホアプリの更新通知を見たら早めに対応しましょう。"
+        },
+        passwordRisk: {
+          title: "🔓 パスワード使い回しタイプ",
+          desc: "あなたは1つのサービス漏洩から、他のアカウントまで連鎖的に危なくなるタイプです。",
+          detail: "同じパスワードを何度も使うと、どこか1つで漏れた時にメール、SNS、買い物サイトまで一気に入られる可能性があります。長くて別々のパスワード、パスワード管理ツール、二段階認証が現実的な対策です。"
+        },
+        overconfidenceRisk: {
+          title: "😅 まだ被害ゼロだから大丈夫タイプ",
+          desc: "あなたは『自分だけは大丈夫』という思い込みで危険に近づきやすいタイプです。",
+          detail: "被害がないように見えても、気づいていないだけの場合があります。攻撃は有名人や大企業だけでなく、普通の個人にも届きます。小さな違和感に気づく習慣と、基本設定の見直しが守りの第一歩です。"
+        },
+        passiveRisk: {
+          title: "🚨 セキュリティ他人任せタイプ",
+          desc: "あなたは攻撃者から見ると、とても入りやすい入口になりやすいタイプです。",
+          detail: "『専門家が守ってくれる』だけでは足りません。怪しいリンクを押さない、更新する、パスワードを分ける、二段階認証を使う。この4つだけでも被害にあう確率はかなり下げられます。"
+        }
+      };
+
+      let currentQuestionIndex = 0;
+      const initialQuizScores = {
+        redteam: 0,
+        blueteam: 0,
+        whitehat: 0,
+        ctf: 0,
+        industry: 0,
+        careers: 0,
+        updateRisk: 0,
+        passwordRisk: 0,
+        overconfidenceRisk: 0,
+        passiveRisk: 0
+      };
+      let scores = { ...initialQuizScores };
+
+      function startQuiz() {
+        currentQuestionIndex = 0;
+        scores = { ...initialQuizScores };
+        quizQuestionContainer.style.display = 'block';
+        quizResultContainer.style.display = 'none';
+        showQuestion();
+        quizModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function showQuestion() {
+        const q = quizQuestions[currentQuestionIndex];
+        quizQuestionText.textContent = q.question;
+        quizAnswers.innerHTML = '';
+        
+        q.answers.forEach(ans => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'quiz-option';
+          btn.textContent = ans.text;
+          btn.addEventListener('click', () => selectAnswer(ans.score));
+          quizAnswers.appendChild(btn);
+        });
+      }
+
+      function selectAnswer(scoreMap) {
+        for (let role in scoreMap) {
+          if (!(role in scores)) scores[role] = 0;
+          scores[role] += scoreMap[role];
+        }
+        
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizQuestions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      }
+
+      function showResult() {
+        let maxScore = -1;
+        let topRole = 'careers';
+        
+        for (let role in scores) {
+          if (scores[role] > maxScore) {
+            maxScore = scores[role];
+            topRole = role;
+          }
+        }
+        
+        const result = quizResults[topRole] || quizResults.careers;
+        quizResultTitle.textContent = result.title;
+        quizResultDesc.textContent = result.desc;
+        quizResultDetail.textContent = result.detail;
+        
+        quizQuestionContainer.style.display = 'none';
+        quizResultContainer.style.display = 'block';
+      }
+
+      function closeQuiz() {
+        quizModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      startQuizBtn.addEventListener('click', startQuiz);
+      quizCloseBtn.addEventListener('click', closeQuiz);
+      restartQuizBtn.addEventListener('click', startQuiz);
+      quizModal.addEventListener('click', (e) => {
+        if (e.target === quizModal) closeQuiz();
+      });
+
+      /* Simulated Terminal Logic removed */
+
+      /* ============ 8. Infographic Fullscreen Logic ============ */
+      const infographicFullscreen = document.getElementById('infographicFullscreen');
+
+      function openInfographic() {
+        infographicFullscreen.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeInfographic() {
+        infographicFullscreen.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      /* ============ 9. Initialization ============ */
+      renderEdges();
+      renderNodes();
+      renderDots();
+      setActive(0);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeGlossaryModal();
+          closeQuiz();
+          closeInfographic();
+        }
+      });
+    </script>
+  </body>
+</html>
