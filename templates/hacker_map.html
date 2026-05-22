@@ -350,24 +350,16 @@
       .news-trigger {
         position: absolute;
         z-index: 4;
-        width: 58px;
-        height: 58px;
+        width: 40px;
+        height: 48px;
         padding: 0;
-        border: 1px solid rgba(250, 204, 21, 0.8);
-        border-radius: 18px;
-        background:
-          radial-gradient(circle at 32% 25%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 18%),
-          radial-gradient(circle at 50% 50%, rgba(250, 204, 21, 0.92), rgba(245, 158, 11, 0.22) 48%, rgba(15, 23, 42, 0.88) 72%);
-        color: #fff7ed;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: #ffd84d;
         cursor: pointer;
-        overflow: hidden;
-        backdrop-filter: blur(10px);
         display: grid;
         place-items: center;
-        box-shadow:
-          0 0 20px rgba(250, 204, 21, 0.46),
-          0 0 46px rgba(244, 63, 94, 0.2),
-          inset 0 0 18px rgba(255, 255, 255, 0.22);
         animation: newsPulse 1.8s ease-in-out infinite;
       }
 
@@ -384,56 +376,58 @@
       .news-trigger::before {
         content: "";
         position: absolute;
-        inset: -12px;
-        border: 1px solid rgba(250, 204, 21, 0.54);
-        border-radius: 24px;
-        opacity: 0.8;
-        animation: newsOrbit 2.4s linear infinite;
+        inset: 5px 2px 1px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, rgba(255, 216, 77, 0.46), rgba(245, 158, 11, 0.14) 38%, transparent 68%);
+        filter: blur(3px);
+        opacity: 0.9;
+        animation: questGlow 2s ease-in-out infinite;
       }
 
       .news-trigger::after {
-        content: "";
-        position: absolute;
-        inset: 7px;
-        border-radius: 50%;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.26);
+        content: none;
       }
 
       .news-spark {
         position: relative;
         z-index: 1;
-        font-size: 30px;
+        transform: translateY(-4px);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 43px;
+        font-weight: 950;
         line-height: 1;
-        text-shadow: 0 0 8px rgba(255, 255, 255, 0.96), 0 0 18px rgba(250, 204, 21, 0.9);
-        animation: newsTwinkle 1.4s ease-in-out infinite;
+        color: #ffd84d;
+        text-shadow:
+          -1.4px 0 #5e3a00,
+          0 1.4px #5e3a00,
+          1.4px 0 #5e3a00,
+          0 -1.4px #5e3a00,
+          0 0 8px rgba(255, 245, 157, 0.95),
+          0 0 16px rgba(245, 158, 11, 0.88),
+          0 0 28px rgba(245, 158, 11, 0.48);
+        animation: questBounce 1.65s ease-in-out infinite;
       }
 
       .news-trigger:hover,
       .news-trigger:focus-visible {
         outline: none;
-        border-color: var(--gold);
-        transform: translateY(-2px) scale(1.06);
-        box-shadow:
-          0 0 30px rgba(250, 204, 21, 0.72),
-          0 0 62px rgba(244, 63, 94, 0.32),
-          inset 0 0 22px rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px) scale(1.08);
       }
 
       @keyframes newsPulse {
-        0%, 100% { filter: saturate(1); transform: translateY(0) scale(1); }
-        50% { filter: saturate(1.35); transform: translateY(-1px) scale(1.04); }
+        0%, 100% { filter: saturate(1); }
+        50% { filter: saturate(1.3); }
       }
 
-      @keyframes newsOrbit {
-        0% { transform: rotate(0deg) scale(0.92); opacity: 0.35; }
-        50% { opacity: 0.9; }
-        100% { transform: rotate(360deg) scale(1.08); opacity: 0.35; }
+      @keyframes questGlow {
+        0%, 100% { transform: scale(0.9); opacity: 0.48; }
+        50% { transform: scale(1.16); opacity: 0.95; }
       }
 
-      @keyframes newsTwinkle {
-        0%, 100% { transform: rotate(-7deg) scale(0.92); opacity: 0.82; }
-        45% { transform: rotate(8deg) scale(1.18); opacity: 1; }
+      @keyframes questBounce {
+        0%, 100% { transform: translateY(-4px) scale(1); }
+        50% { transform: translateY(-9px) scale(1.04); }
       }
 
       .detail-card {
@@ -516,11 +510,9 @@
       }
 
       .controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
         padding: 16px;
         border-top: 1px solid var(--line);
+        text-align: center;
       }
 
       .control-btn {
@@ -548,8 +540,7 @@
       }
 
       .hint {
-        grid-column: 1 / -1;
-        margin: 6px 0 0;
+        margin: 0;
         color: #64748b;
         font-size: 11px;
         text-align: center;
@@ -741,42 +732,7 @@
         object-fit: contain;
       }
 
-      /* Glossary definitions table */
-      .glossary-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-      }
-
-      .glossary-table th, 
-      .glossary-table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .glossary-table th {
-        color: var(--gold);
-        font-size: 13px;
-        font-weight: 800;
-        text-transform: uppercase;
-      }
-
-      .glossary-table td {
-        font-size: 14px;
-        line-height: 1.6;
-      }
-
-      .glossary-table th:nth-child(1),
-      .glossary-table td:nth-child(1),
-      .glossary-table th:nth-child(2),
-      .glossary-table td:nth-child(2),
-      .glossary-table th:nth-child(4),
-      .glossary-table td:nth-child(4) {
-        white-space: nowrap;
-      }
-
-      .glossary-term {
+            .glossary-term {
         color: #38bdf8;
         border-bottom: 1px dashed #38bdf8;
         cursor: help;
@@ -790,7 +746,6 @@
       }
 
       .glossary-term.katakana-term {
-        position: relative;
         color: #e9d5ff;
         border-bottom: 1px dashed var(--purple);
       }
@@ -800,50 +755,59 @@
         border-bottom-color: var(--purple);
       }
 
-      .glossary-term.katakana-term::after {
-        content: attr(data-origin);
+      /* Glossary Tooltip */
+      .glossary-tooltip {
         position: absolute;
-        bottom: 115%;
-        left: 50%;
-        transform: translate(-50%, -4px) scale(0.85);
-        background: rgba(15, 23, 42, 0.95);
-        color: #e9d5ff;
-        border: 1px solid var(--purple);
-        box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
-        font-size: 10.5px;
-        padding: 3px 8px;
-        border-radius: 6px;
-        white-space: nowrap;
-        opacity: 0;
+        z-index: 99999;
         pointer-events: none;
-        transition: opacity 180ms ease, transform 180ms ease;
-        z-index: 10;
-        font-family: monospace;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5), 0 0 15px rgba(56, 189, 248, 0.15);
+        color: #f8fafc;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        line-height: 1.5;
+        max-width: 280px;
+        opacity: 0;
+        transform: translateY(4px) scale(0.95);
+        transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1), transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .glossary-term.katakana-term:hover::after {
+      .glossary-tooltip.active {
         opacity: 1;
-        transform: translate(-50%, -4px) scale(1);
+        transform: translateY(0) scale(1);
       }
 
-      .katakana-badge {
+      .glossary-tooltip.katakana-tooltip {
+        border-color: rgba(168, 85, 247, 0.45);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5), 0 0 15px rgba(168, 85, 247, 0.15);
+      }
+
+      .glossary-tooltip-kana {
+        font-family: var(--font-mono);
         font-size: 11px;
-        background: rgba(168, 85, 247, 0.08);
-        border: 1px solid rgba(168, 85, 247, 0.35);
-        padding: 4px 8px;
-        border-radius: 6px;
-        cursor: help;
-        color: #e9d5ff;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        transition: all 180ms ease;
+        color: #94a3b8;
+        margin-bottom: 5px;
+        font-weight: 500;
+        letter-spacing: 0.05em;
       }
 
-      .katakana-badge:hover {
-        background: rgba(168, 85, 247, 0.18);
-        border-color: var(--purple);
-        box-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+      .glossary-tooltip-meaning {
+        font-weight: 600;
+        color: #f1f5f9;
+        margin-bottom: 5px;
+        font-size: 13px;
+      }
+
+      .glossary-tooltip-zh {
+        font-size: 12.5px;
+        color: var(--gold);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 5px;
+        margin-top: 5px;
       }
 
       /* Personality Quiz Options */
@@ -1212,9 +1176,8 @@
       }
 
       .cert-list li {
-        display: flex;
-        gap: 8px;
-        align-items: flex-start;
+        position: relative;
+        padding-left: 15px;
         color: #dbeafe;
         font-size: 12.5px;
         line-height: 1.55;
@@ -1222,10 +1185,11 @@
 
       .cert-list li::before {
         content: "";
+        position: absolute;
+        left: 0;
+        top: 6px;
         width: 7px;
         height: 7px;
-        flex: 0 0 auto;
-        margin-top: 7px;
         border-radius: 50%;
         background: var(--cert-color);
         box-shadow: 0 0 10px color-mix(in srgb, var(--cert-color) 55%, transparent);
@@ -1374,8 +1338,8 @@
         .news-trigger {
           position: absolute;
           top: 12px;
-          width: 54px;
-          height: 54px;
+          width: 40px;
+          height: 48px;
         }
 
         .news-trigger.blackhat-news {
@@ -1396,7 +1360,7 @@
         }
 
         .controls {
-          grid-template-columns: 1fr;
+          text-align: center;
         }
 
         .companies {
@@ -1474,10 +1438,10 @@
           <div class="map-stage" id="mapStage">
             <svg class="edge-layer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" id="edgeLayer"></svg>
             <button class="news-trigger whitehat-ai" type="button" id="aiTrigger" aria-label="AIとハッカー画像を表示">
-              <span class="news-spark" aria-hidden="true">✦</span>
+              <span class="news-spark" aria-hidden="true">!</span>
             </button>
             <button class="news-trigger blackhat-news" type="button" id="newsTrigger" aria-label="ニュース画像を表示">
-              <span class="news-spark" aria-hidden="true">✦</span>
+              <span class="news-spark" aria-hidden="true">!</span>
             </button>
             <!-- Nodes will be injected here by JS -->
           </div>
@@ -1507,18 +1471,10 @@
                 <h3>適正・向いている人</h3>
                 <p id="detailFit"></p>
               </section>
-              <section class="info-box" id="katakanaSection" style="display: none; border-color: rgba(168, 85, 247, 0.3); background: rgba(88, 28, 135, 0.05);">
-                <h3 style="color: var(--purple); display: flex; align-items: center; gap: 6px;">
-                  <span style="font-size: 14px;">🔠</span> 片仮名・英語原词对照 (Katakana Decrypter)
-                </h3>
-                <div id="katakanaList" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;"></div>
-              </section>
             </div>
           </div>
           <div class="controls">
-            <button class="control-btn" type="button" id="prevBtn">← 戻る</button>
-            <button class="control-btn" type="button" id="nextBtn">次へ →</button>
-            <p class="hint">クリック、キーボード（←/→/スペース）で切り替えできます。</p>
+            <p class="hint">キーボード（← / → / スペースキー）またはノードをクリックして切り替えることができます。</p>
           </div>
         </aside>
       </main>
@@ -1710,30 +1666,7 @@
       </section>
     </div>
 
-    <!-- Glossary Modal -->
-    <div class="modal-overlay" id="glossaryModal">
-      <div class="modal-container">
-        <button class="modal-close" id="glossaryCloseBtn">&times;</button>
-        <div class="modal-header">
-          <h3 class="modal-title" id="glossaryModalTitle">セキュリティ用語解説</h3>
-        </div>
-        <div class="modal-body">
-          <table class="glossary-table" id="glossaryTable">
-            <thead>
-              <tr>
-                <th>用語 (Term)</th>
-                <th>ふりがな</th>
-                <th>解説 (Description)</th>
-                <th>中文 (Chinese)</th>
-              </tr>
-            </thead>
-            <tbody id="glossaryTbody">
-              <!-- Content injected by JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+
 
     <!-- Quiz Modal -->
     <div class="modal-overlay" id="quizModal">
@@ -2023,6 +1956,119 @@
         return result;
       }
 
+      /* ============ 2.1 Glossary Hover Tooltip & Dynamic Formatting ============ */
+      let activeTooltip = null;
+
+      function hideTooltip() {
+        if (activeTooltip) {
+          activeTooltip.classList.remove('active');
+          activeTooltip.remove();
+          activeTooltip = null;
+        }
+      }
+
+      function showTooltip(e) {
+        const termEl = e.target.closest('.glossary-term');
+        if (!termEl) return;
+        const termKey = termEl.dataset.term;
+        const item = glossaryDict[termKey];
+        if (!item) return;
+
+        if (!activeTooltip) {
+          activeTooltip = document.createElement('div');
+          activeTooltip.className = 'glossary-tooltip';
+          document.body.appendChild(activeTooltip);
+        }
+
+        if (termEl.classList.contains('katakana-term')) {
+          activeTooltip.className = 'glossary-tooltip katakana-tooltip';
+        } else {
+          activeTooltip.className = 'glossary-tooltip';
+        }
+
+        activeTooltip.innerHTML = `
+          <div class="glossary-tooltip-kana">【${item.kana}】</div>
+          <div class="glossary-tooltip-meaning">${item.meaning}</div>
+          <div class="glossary-tooltip-zh">${item.zh}</div>
+        `;
+
+        activeTooltip.classList.add('active');
+
+        const rect = termEl.getBoundingClientRect();
+        const tooltipWidth = activeTooltip.offsetWidth;
+        const tooltipHeight = activeTooltip.offsetHeight;
+
+        let left = rect.left + window.scrollX + (rect.width - tooltipWidth) / 2;
+        let top = rect.top + window.scrollY - tooltipHeight - 8;
+
+        if (left < 10) {
+          left = 10;
+        } else if (left + tooltipWidth > window.innerWidth - 10) {
+          left = window.innerWidth - tooltipWidth - 10;
+        }
+        if (top < window.scrollY + 10) {
+          top = rect.bottom + window.scrollY + 8;
+        }
+
+        activeTooltip.style.left = `${left}px`;
+        activeTooltip.style.top = `${top}px`;
+      }
+
+      document.addEventListener('mouseover', showTooltip);
+      document.addEventListener('mouseout', (e) => {
+        const termEl = e.target.closest('.glossary-term');
+        if (termEl) {
+          const relatedTarget = e.relatedTarget;
+          if (!relatedTarget || !relatedTarget.closest('.glossary-term')) {
+            hideTooltip();
+          }
+        }
+      });
+      document.addEventListener('scroll', hideTooltip, { passive: true });
+      document.addEventListener('click', hideTooltip);
+
+      function formatElementText(el) {
+        if (!el) return;
+        const skipTags = ['SCRIPT', 'STYLE', 'SVG', 'PATH', 'CANVAS', 'TEXTAREA', 'INPUT', 'BUTTON'];
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+          acceptNode: function(node) {
+            const parent = node.parentNode;
+            if (!parent) return NodeFilter.FILTER_REJECT;
+            if (skipTags.includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+            if (parent.closest('.glossary-term')) return NodeFilter.FILTER_REJECT;
+            if (parent.closest('.company-logo')) return NodeFilter.FILTER_REJECT;
+            if (parent.closest('.news-trigger') || parent.closest('.map-node-button')) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }, false);
+        const textNodes = [];
+        let node;
+        while (node = walker.nextNode()) {
+          textNodes.push(node);
+        }
+
+        for (let i = textNodes.length - 1; i >= 0; i--) {
+          const textNode = textNodes[i];
+          const parent = textNode.parentNode;
+          if (!parent) continue;
+
+          const text = textNode.nodeValue;
+          if (!text.trim()) continue;
+
+          const formatted = formatGlossaryTerms(text);
+          if (formatted !== text) {
+            const temp = document.createElement('div');
+            temp.innerHTML = formatted;
+            
+            const fragment = document.createDocumentFragment();
+            while (temp.firstChild) {
+              fragment.appendChild(temp.firstChild);
+            }
+            parent.replaceChild(fragment, textNode);
+          }
+        }
+      }
+
       /* ============ 3. Nodes Data ============ */
       const nodes = [
         {
@@ -2183,8 +2229,6 @@
       const detailWork = document.getElementById('detailWork');
       const detailFit = document.getElementById('detailFit');
       const talkMemo = document.getElementById('talkMemo');
-      const prevBtn = document.getElementById('prevBtn');
-      const nextBtn = document.getElementById('nextBtn');
       const activeModeLabel = document.getElementById('activeModeLabel');
 
       let activeIndex = 0;
@@ -2269,7 +2313,7 @@
         });
 
         stepLabel.textContent = `${activeIndex + 1} / ${nodes.length}`;
-        detailTitle.textContent = active.title;
+        detailTitle.innerHTML = formatGlossaryTerms(active.title);
         
         // Dynamically apply term glossary formatting
         detailSummary.innerHTML = formatGlossaryTerms(active.summary);
@@ -2280,32 +2324,7 @@
         
         talkMemo.innerHTML = formatGlossaryTerms(active.memo);
 
-        // Scan the active node's text for Katakana words to show English origins dynamically
-        const textToScan = [active.summary, active.kind, active.companies, active.work, active.fit, active.memo].join(" ");
-        const katakanaWords = Array.from(new Set(textToScan.match(/[\u30A0-\u30FF]+/g) || []));
-        const matchedOrigins = katakanaWords
-          .map(word => {
-            const item = glossaryDict[word];
-            if (item) {
-              const origin = item.meaning.includes(" / ") ? item.meaning.split(" / ")[0] : item.meaning;
-              return { word, origin };
-            }
-            return null;
-          })
-          .filter(item => item);
 
-        const katakanaSection = document.getElementById('katakanaSection');
-        const katakanaList = document.getElementById('katakanaList');
-        if (matchedOrigins.length > 0) {
-          katakanaSection.style.display = 'block';
-          katakanaList.innerHTML = matchedOrigins.map(item => `
-            <span class="katakana-badge" title="${item.word} = ${item.origin}" onclick="openGlossaryModal('${item.word}')" style="cursor: pointer;">
-              <strong>${item.word}</strong>: <code>${item.origin}</code>
-            </span>
-          `).join("");
-        } else {
-          katakanaSection.style.display = 'none';
-        }
 
         if (shouldFocus) {
           const activeButton = document.querySelector(`.map-node-button[data-id="${active.id}"]`);
@@ -2321,8 +2340,7 @@
         setActive(activeIndex - 1, true);
       }
 
-      prevBtn.addEventListener('click', goPrev);
-      nextBtn.addEventListener('click', goNext);
+
 
       window.addEventListener('keydown', event => {
         const tag = document.activeElement?.tagName;
@@ -2337,50 +2355,7 @@
         }
       });
 
-      /* ============ 5. Cybersecurity Glossary Modal Logic ============ */
-      const glossaryModal = document.getElementById('glossaryModal');
-      const glossaryCloseBtn = document.getElementById('glossaryCloseBtn');
-      const glossaryTbody = document.getElementById('glossaryTbody');
 
-      function openGlossaryModal(termKey) {
-        const item = glossaryDict[termKey];
-        if (item) {
-          glossaryTbody.innerHTML = `
-            <tr>
-              <td><strong>${item.kanji}</strong></td>
-              <td>${item.kana}</td>
-              <td>${item.meaning}</td>
-              <td>${item.zh}</td>
-            </tr>
-          `;
-          glossaryModal.classList.add('active');
-          document.body.style.overflow = 'hidden';
-        }
-      }
-
-      function closeGlossaryModal() {
-        glossaryModal.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-
-      glossaryCloseBtn.addEventListener('click', closeGlossaryModal);
-      glossaryModal.addEventListener('click', (e) => {
-        if (e.target === glossaryModal) closeGlossaryModal();
-      });
-
-      // Event delegation for dynamic glossary terms inside detail view
-      document.getElementById('detailBody').addEventListener('click', (e) => {
-        const termSpan = e.target.closest('.glossary-term');
-        if (termSpan) {
-          openGlossaryModal(termSpan.dataset.term);
-        }
-      });
-      document.getElementById('talkMemo').addEventListener('click', (e) => {
-        const termSpan = e.target.closest('.glossary-term');
-        if (termSpan) {
-          openGlossaryModal(termSpan.dataset.term);
-        }
-      });
 
       /* ============ 6. Personality Quiz Logic ============ */
       const quizModal = document.getElementById('quizModal');
@@ -2519,14 +2494,14 @@
 
       function showQuestion() {
         const q = quizQuestions[currentQuestionIndex];
-        quizQuestionText.textContent = q.question;
+        quizQuestionText.innerHTML = formatGlossaryTerms(q.question);
         quizAnswers.innerHTML = '';
         
         q.answers.forEach(ans => {
           const btn = document.createElement('button');
           btn.type = 'button';
           btn.className = 'quiz-option';
-          btn.textContent = ans.text;
+          btn.innerHTML = formatGlossaryTerms(ans.text);
           btn.addEventListener('click', () => selectAnswer(ans.score));
           quizAnswers.appendChild(btn);
         });
@@ -2558,9 +2533,9 @@
         }
         
         const result = quizResults[topRole] || quizResults.careers;
-        quizResultTitle.textContent = result.title;
-        quizResultDesc.textContent = result.desc;
-        quizResultDetail.textContent = result.detail;
+        quizResultTitle.innerHTML = formatGlossaryTerms(result.title);
+        quizResultDesc.innerHTML = formatGlossaryTerms(result.desc);
+        quizResultDetail.innerHTML = formatGlossaryTerms(result.detail);
         
         quizQuestionContainer.style.display = 'none';
         quizResultContainer.style.display = 'block';
@@ -2638,9 +2613,11 @@
       renderDots();
       setActive(0);
 
+      // Scan all text nodes in the body for glossary terms on page load
+      formatElementText(document.body);
+
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          closeGlossaryModal();
           closeQuiz();
           closeInfographic();
           closeNewsModal();
