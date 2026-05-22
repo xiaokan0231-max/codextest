@@ -347,6 +347,95 @@
         line-height: 1.35;
       }
 
+      .news-trigger {
+        position: absolute;
+        z-index: 4;
+        width: 58px;
+        height: 58px;
+        padding: 0;
+        border: 1px solid rgba(250, 204, 21, 0.8);
+        border-radius: 18px;
+        background:
+          radial-gradient(circle at 32% 25%, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 18%),
+          radial-gradient(circle at 50% 50%, rgba(250, 204, 21, 0.92), rgba(245, 158, 11, 0.22) 48%, rgba(15, 23, 42, 0.88) 72%);
+        color: #fff7ed;
+        cursor: pointer;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        display: grid;
+        place-items: center;
+        box-shadow:
+          0 0 20px rgba(250, 204, 21, 0.46),
+          0 0 46px rgba(244, 63, 94, 0.2),
+          inset 0 0 18px rgba(255, 255, 255, 0.22);
+        animation: newsPulse 1.8s ease-in-out infinite;
+      }
+
+      .news-trigger.blackhat-news {
+        left: 83%;
+        top: 31%;
+      }
+
+      .news-trigger.whitehat-ai {
+        left: 39%;
+        top: 31%;
+      }
+
+      .news-trigger::before {
+        content: "";
+        position: absolute;
+        inset: -12px;
+        border: 1px solid rgba(250, 204, 21, 0.54);
+        border-radius: 24px;
+        opacity: 0.8;
+        animation: newsOrbit 2.4s linear infinite;
+      }
+
+      .news-trigger::after {
+        content: "";
+        position: absolute;
+        inset: 7px;
+        border-radius: 50%;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.26);
+      }
+
+      .news-spark {
+        position: relative;
+        z-index: 1;
+        font-size: 30px;
+        line-height: 1;
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.96), 0 0 18px rgba(250, 204, 21, 0.9);
+        animation: newsTwinkle 1.4s ease-in-out infinite;
+      }
+
+      .news-trigger:hover,
+      .news-trigger:focus-visible {
+        outline: none;
+        border-color: var(--gold);
+        transform: translateY(-2px) scale(1.06);
+        box-shadow:
+          0 0 30px rgba(250, 204, 21, 0.72),
+          0 0 62px rgba(244, 63, 94, 0.32),
+          inset 0 0 22px rgba(255, 255, 255, 0.3);
+      }
+
+      @keyframes newsPulse {
+        0%, 100% { filter: saturate(1); transform: translateY(0) scale(1); }
+        50% { filter: saturate(1.35); transform: translateY(-1px) scale(1.04); }
+      }
+
+      @keyframes newsOrbit {
+        0% { transform: rotate(0deg) scale(0.92); opacity: 0.35; }
+        50% { opacity: 0.9; }
+        100% { transform: rotate(360deg) scale(1.08); opacity: 0.35; }
+      }
+
+      @keyframes newsTwinkle {
+        0%, 100% { transform: rotate(-7deg) scale(0.92); opacity: 0.82; }
+        45% { transform: rotate(8deg) scale(1.18); opacity: 1; }
+      }
+
       .detail-card {
         min-height: 600px;
         display: grid;
@@ -618,6 +707,38 @@
 
       .modal-body {
         margin-top: 16px;
+      }
+
+      .news-modal-container {
+        width: auto;
+        max-width: calc(100vw - 32px);
+        max-height: calc(100vh - 32px);
+        overflow: hidden;
+        padding: 0;
+        background: #ffffff;
+        color: #0f172a;
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
+      }
+
+      .news-modal-container .modal-close {
+        color: #0f172a;
+        background: rgba(255, 255, 255, 0.72);
+        border-radius: 50%;
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        z-index: 3;
+      }
+
+      .news-image {
+        display: block;
+        width: min(1180px, calc(100vw - 32px));
+        max-height: calc(100vh - 32px);
+        height: auto;
+        object-fit: contain;
       }
 
       /* Glossary definitions table */
@@ -1250,6 +1371,26 @@
           transform: none;
         }
 
+        .news-trigger {
+          position: absolute;
+          top: 12px;
+          width: 54px;
+          height: 54px;
+        }
+
+        .news-trigger.blackhat-news {
+          right: 12px;
+        }
+
+        .news-trigger.whitehat-ai {
+          left: 12px;
+        }
+
+        .news-trigger:hover,
+        .news-trigger:focus-visible {
+          transform: none;
+        }
+
         .detail-card {
           grid-template-rows: auto auto auto;
         }
@@ -1268,6 +1409,10 @@
 
         .company-card {
           min-height: 190px;
+        }
+
+        .news-image {
+          width: calc(100vw - 32px);
         }
 
         .infographic-section {
@@ -1328,6 +1473,12 @@
         <section class="map-card" aria-label="セキュリティ業界の入門地図">
           <div class="map-stage" id="mapStage">
             <svg class="edge-layer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" id="edgeLayer"></svg>
+            <button class="news-trigger whitehat-ai" type="button" id="aiTrigger" aria-label="AIとハッカー画像を表示">
+              <span class="news-spark" aria-hidden="true">✦</span>
+            </button>
+            <button class="news-trigger blackhat-news" type="button" id="newsTrigger" aria-label="ニュース画像を表示">
+              <span class="news-spark" aria-hidden="true">✦</span>
+            </button>
             <!-- Nodes will be injected here by JS -->
           </div>
         </section>
@@ -1607,6 +1758,22 @@
             <button class="control-btn" id="restartQuizBtn" style="margin-top: 20px; width: 100%;">もう一度診断する</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- News Modal -->
+    <div class="modal-overlay" id="newsModal">
+      <div class="modal-container news-modal-container">
+        <button class="modal-close" id="newsCloseBtn">&times;</button>
+        <img class="news-image" src="/static/images/news.png" alt="アメリカの教育アプリがハッキング被害" />
+      </div>
+    </div>
+
+    <!-- AI and Hacker Modal -->
+    <div class="modal-overlay" id="aiModal">
+      <div class="modal-container news-modal-container">
+        <button class="modal-close" id="aiCloseBtn">&times;</button>
+        <img class="news-image" src="/static/images/aiとハッカー.png" alt="AI とハッカー" />
       </div>
     </div>
 
@@ -2411,6 +2578,45 @@
         if (e.target === quizModal) closeQuiz();
       });
 
+      /* ============ 7. News Case Modal Logic ============ */
+      const newsTrigger = document.getElementById('newsTrigger');
+      const newsModal = document.getElementById('newsModal');
+      const newsCloseBtn = document.getElementById('newsCloseBtn');
+      const aiTrigger = document.getElementById('aiTrigger');
+      const aiModal = document.getElementById('aiModal');
+      const aiCloseBtn = document.getElementById('aiCloseBtn');
+
+      function openNewsModal() {
+        newsModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeNewsModal() {
+        newsModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      function openAiModal() {
+        aiModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeAiModal() {
+        aiModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      newsTrigger.addEventListener('click', openNewsModal);
+      newsCloseBtn.addEventListener('click', closeNewsModal);
+      newsModal.addEventListener('click', (e) => {
+        if (e.target === newsModal) closeNewsModal();
+      });
+      aiTrigger.addEventListener('click', openAiModal);
+      aiCloseBtn.addEventListener('click', closeAiModal);
+      aiModal.addEventListener('click', (e) => {
+        if (e.target === aiModal) closeAiModal();
+      });
+
       /* Simulated Terminal Logic removed */
 
       /* ============ 8. Infographic Fullscreen Logic ============ */
@@ -2437,6 +2643,8 @@
           closeGlossaryModal();
           closeQuiz();
           closeInfographic();
+          closeNewsModal();
+          closeAiModal();
         }
       });
     </script>
