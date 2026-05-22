@@ -25,6 +25,11 @@
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+        scroll-snap-type: y proximity;
+      }
+
       body {
         margin: 0;
         min-height: 100vh;
@@ -58,11 +63,67 @@
       }
 
       .shell {
-        width: min(1200px, calc(100% - 40px));
-        margin: 0 auto;
-        padding: 26px 0 40px;
+        width: 100%;
+        margin: 0;
+        padding: 0;
         position: relative;
         z-index: 1;
+      }
+
+      .story-panel {
+        width: min(1200px, calc(100% - 44px));
+        min-height: 100svh;
+        margin: 0 auto;
+        padding: clamp(46px, 7vh, 84px) 0;
+        position: relative;
+        display: grid;
+        align-content: center;
+        scroll-snap-align: start;
+        overflow: clip;
+      }
+
+      .story-panel::before {
+        content: "";
+        position: absolute;
+        inset: 5vh -8vw auto;
+        height: 58vh;
+        border-radius: 999px;
+        background: radial-gradient(circle, color-mix(in srgb, var(--active) 13%, transparent), transparent 62%);
+        filter: blur(24px);
+        opacity: 0.78;
+        pointer-events: none;
+      }
+
+      .chapter-copy {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 12px;
+        max-width: 780px;
+        margin-bottom: 28px;
+      }
+
+      .chapter-kicker {
+        margin: 0;
+        color: var(--gold);
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+      }
+
+      .chapter-title {
+        margin: 0;
+        font-size: clamp(34px, 5vw, 64px);
+        line-height: 1.08;
+        font-weight: 950;
+        letter-spacing: -0.01em;
+      }
+
+      .chapter-lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(15px, 1.7vw, 19px);
+        line-height: 1.8;
       }
 
       .topbar {
@@ -98,6 +159,31 @@
         font-weight: 800;
         letter-spacing: 0.05em;
         box-shadow: 0 0 10px color-mix(in srgb, var(--active) 30%, transparent);
+      }
+
+      .hero-image-slot {
+        aspect-ratio: 1672 / 941;
+        width: min(1180px, 100%);
+        min-height: 0;
+        margin: 0 auto;
+        border: 1px solid rgba(56, 189, 248, 0.18);
+        border-radius: 22px;
+        background:
+          linear-gradient(135deg, rgba(56, 189, 248, 0.08), transparent 44%),
+          rgba(15, 23, 42, 0.28);
+        backdrop-filter: blur(8px);
+        overflow: hidden;
+        box-shadow: 0 34px 100px rgba(0, 0, 0, 0.58), 0 0 50px rgba(56, 189, 248, 0.08);
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-image-slot img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background: rgba(2, 6, 23, 0.54);
       }
 
       .hero {
@@ -176,6 +262,8 @@
         display: flex;
         gap: 8px;
         margin: 0 0 16px;
+        position: relative;
+        z-index: 1;
       }
 
       .progress-dot {
@@ -199,6 +287,8 @@
         grid-template-columns: minmax(520px, 1.2fr) minmax(330px, 0.8fr);
         gap: 20px;
         align-items: stretch;
+        position: relative;
+        z-index: 1;
       }
 
       .map-card,
@@ -833,7 +923,7 @@
 
       /* Company map section styles */
       .companies {
-        margin-top: 24px;
+        margin: 0 auto;
         padding: 28px;
         border: 1px solid var(--line);
         border-radius: 18px;
@@ -843,6 +933,13 @@
           rgba(15, 23, 42, 0.72);
         backdrop-filter: blur(16px);
         box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      .companies.story-panel {
+        width: min(1200px, calc(100% - 44px));
+        min-height: 100svh;
+        padding: clamp(48px, 7vh, 72px) 28px;
+        align-content: center;
       }
 
       .companies-header {
@@ -1047,7 +1144,7 @@
 
       /* Certification roadmap section styles */
       .certifications {
-        margin-top: 24px;
+        margin: 0 auto;
         padding: 28px;
         border: 1px solid var(--line);
         border-radius: 18px;
@@ -1057,6 +1154,13 @@
           rgba(15, 23, 42, 0.72);
         backdrop-filter: blur(16px);
         box-shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
+      }
+
+      .certifications.story-panel {
+        width: min(1200px, calc(100% - 44px));
+        min-height: 100svh;
+        padding: clamp(48px, 7vh, 72px) 28px;
+        align-content: center;
       }
 
       .cert-header {
@@ -1252,9 +1356,43 @@
         background: rgba(168, 85, 247, 0.12);
       }
 
+      .quiz-story {
+        text-align: center;
+        justify-items: center;
+      }
+
+      .quiz-story .chapter-copy {
+        margin: 0 auto 26px;
+        text-align: center;
+      }
+
+      .quiz-launch {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 18px;
+        justify-items: center;
+        padding: clamp(36px, 7vw, 70px);
+        width: min(760px, 100%);
+        border: 1px solid rgba(245, 158, 11, 0.24);
+        border-radius: 28px;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.22), transparent 42%),
+          rgba(15, 23, 42, 0.58);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 32px 90px rgba(0, 0, 0, 0.46);
+      }
+
+      .quiz-launch .control-btn {
+        min-width: min(320px, 100%);
+        min-height: 56px;
+        border-color: rgba(245, 158, 11, 0.58);
+        background: rgba(245, 158, 11, 0.13);
+        font-size: 15px;
+      }
+
       /* Media Queries */
       @media (max-width: 980px) {
-        .hero,
         .workspace {
           grid-template-columns: 1fr;
         }
@@ -1287,19 +1425,17 @@
 
       @media (max-width: 760px) {
         .shell {
+          width: 100%;
+        }
+
+        .hero-image-slot {
+          border-radius: 16px;
+        }
+
+        .story-panel {
           width: min(100% - 24px, 1200px);
-          padding-top: 16px;
-        }
-
-        .hero {
-          margin-bottom: 16px;
-        }
-
-        .topbar {
-          align-items: flex-start;
-          flex-direction: column;
-          gap: 12px;
-          margin-bottom: 16px;
+          min-height: auto;
+          padding: 36px 0;
         }
 
         .map-card,
@@ -1371,6 +1507,13 @@
           padding: 20px;
         }
 
+        .companies.story-panel,
+        .certifications.story-panel {
+          width: min(100% - 24px, 1200px);
+          min-height: auto;
+          padding: 28px 20px;
+        }
+
         .company-card {
           min-height: 190px;
         }
@@ -1412,79 +1555,72 @@
     <canvas id="matrixCanvas"></canvas>
 
     <div class="shell" id="shell">
-      <header class="topbar">
-        <a class="back-link" href="/">← ローカルページ入口へ</a>
-        <div class="mode-label" id="activeModeLabel">2-3 MIN INTRO</div>
-      </header>
-
-      <section class="hero" aria-labelledby="page-title">
-        <div>
-          <p class="eyebrow">CYBERSECURITY FIRST MAP</p>
-          <h1 id="page-title">ハッカーの業界地図</h1>
-          <p class="lead">
-            サイバーセキュリティの役割や攻撃・防御の概念を、インタラクティブに学ぶための地図です。8つのノードをクリックして詳細を見てみましょう。
-          </p>
+      <section class="story-panel intro-story" aria-label="ハッカーの業界地図画像">
+        <div class="hero-image-slot">
+          <img src="/static/images/業界地図.png" alt="ハッカーの業界地図" />
         </div>
-        <aside class="memo" aria-live="polite">
-          <h2>解説メモ</h2>
-          <p id="talkMemo">ノードを選択すると、ここに学習アドバイスやトリビアが表示されます。</p>
-        </aside>
       </section>
 
-      <div class="progress-dots" id="progressDots" aria-label="学習の進み具合"></div>
-
-      <main class="workspace">
-        <section class="map-card" aria-label="セキュリティ業界の入門地図">
-          <div class="map-stage" id="mapStage">
-            <svg class="edge-layer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" id="edgeLayer"></svg>
-            <button class="news-trigger whitehat-ai" type="button" id="aiTrigger" aria-label="AIとハッカー画像を表示">
-              <span class="news-spark" aria-hidden="true">!</span>
-            </button>
-            <button class="news-trigger blackhat-news" type="button" id="newsTrigger" aria-label="ニュース画像を表示">
-              <span class="news-spark" aria-hidden="true">!</span>
-            </button>
-            <!-- Nodes will be injected here by JS -->
-          </div>
-        </section>
-
-        <aside class="detail-card" aria-live="polite" aria-label="選択中の説明">
-          <div class="detail-header">
-            <p class="step" id="stepLabel">1 / 8</p>
-            <h2 class="detail-title" id="detailTitle">ロード中...</h2>
-          </div>
-          <div class="detail-body" id="detailBody">
-            <p class="summary" id="detailSummary"></p>
-            <div class="info-grid">
-              <section class="info-box">
-                <h3>どのような概念？</h3>
-                <p id="detailKind"></p>
-              </section>
-              <section class="info-box">
-                <h3>具体例</h3>
-                <p id="detailCompanies"></p>
-              </section>
-              <section class="info-box">
-                <h3>主な仕事・活動</h3>
-                <p id="detailWork"></p>
-              </section>
-              <section class="info-box">
-                <h3>適正・向いている人</h3>
-                <p id="detailFit"></p>
-              </section>
+      <section class="story-panel map-story" aria-label="インタラクティブな業界地図">
+        <main class="workspace">
+          <section class="map-card" aria-label="セキュリティ業界の入門地図">
+            <div class="map-stage" id="mapStage">
+              <svg class="edge-layer" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" id="edgeLayer"></svg>
+              <button class="news-trigger whitehat-ai" type="button" id="aiTrigger" aria-label="AIとハッカー画像を表示">
+                <span class="news-spark" aria-hidden="true">!</span>
+              </button>
+              <button class="news-trigger blackhat-news" type="button" id="newsTrigger" aria-label="ニュース画像を表示">
+                <span class="news-spark" aria-hidden="true">!</span>
+              </button>
+              <!-- Nodes will be injected here by JS -->
             </div>
-          </div>
-          <div class="controls">
-            <p class="hint">キーボード（← / → / スペースキー）またはノードをクリックして切り替えることができます。</p>
-          </div>
-        </aside>
-      </main>
+          </section>
 
-      <!-- Personality Quiz Trigger -->
-      <div style="text-align: center; margin-top: 24px;">
-        <button class="control-btn" id="startQuizBtn" style="padding: 14px 28px; font-size: 15px; border-color: var(--gold); background: rgba(245, 158, 11, 0.1);">
-          ⚡ ハッカー適性診断を始める
-        </button>
-      </div>
+          <aside class="detail-card" aria-live="polite" aria-label="選択中の説明">
+            <div class="detail-header">
+              <p class="step" id="stepLabel">1 / 8</p>
+              <h2 class="detail-title" id="detailTitle">ロード中...</h2>
+            </div>
+            <div class="detail-body" id="detailBody">
+              <p class="summary" id="detailSummary"></p>
+              <div class="info-grid">
+                <section class="info-box">
+                  <h3>どのような概念？</h3>
+                  <p id="detailKind"></p>
+                </section>
+                <section class="info-box">
+                  <h3>具体例</h3>
+                  <p id="detailCompanies"></p>
+                </section>
+                <section class="info-box">
+                  <h3>主な仕事・活動</h3>
+                  <p id="detailWork"></p>
+                </section>
+                <section class="info-box">
+                  <h3>適正・向いている人</h3>
+                  <p id="detailFit"></p>
+                </section>
+              </div>
+            </div>
+            <div class="controls">
+              <p class="hint">キーボード（← / → / スペースキー）またはノードをクリックして切り替えることができます。</p>
+            </div>
+          </aside>
+        </main>
+      </section>
+
+      <section class="story-panel quiz-story" aria-labelledby="quiz-story-title">
+        <div class="chapter-copy">
+          <p class="chapter-kicker">PERSONAL CHECK</p>
+          <h2 class="chapter-title" id="quiz-story-title">自分の入口を見つける</h2>
+          <p class="chapter-lead">4つの質問で、興味の方向と注意すべきセキュリティ習慣を短く確認します。</p>
+        </div>
+        <div class="quiz-launch">
+          <button class="control-btn" id="startQuizBtn" onclick="startQuiz()">
+            ⚡ ハッカー適性診断を始める
+          </button>
+        </div>
+      </section>
 
       <!-- Infographic: Hacker vs White Hacker -->
       <section class="infographic-section" aria-label="ハッカー vs ホワイトハッカー 情報図">
@@ -1503,7 +1639,7 @@
       </div>
 
       <!-- Security Company Map -->
-      <section class="companies" aria-labelledby="companies-title">
+      <section class="companies story-panel" aria-labelledby="companies-title">
         <div class="companies-header">
           <div>
             <p class="companies-eyebrow">SECURITY COMPANY MAP</p>
@@ -1585,7 +1721,7 @@
       </section>
 
       <!-- Certification Roadmap -->
-      <section class="certifications" aria-labelledby="cert-title">
+      <section class="certifications story-panel" aria-labelledby="cert-title">
         <div class="cert-header">
           <div>
             <p class="cert-eyebrow">CERTIFICATION ROADMAP</p>
@@ -1846,6 +1982,26 @@
         "修復": { kanji: "修復", kana: "しゅうふく", meaning: "Repair / Restoration", zh: "修复 / 修补" },
         "調査": { kanji: "調査", kana: "ちょうさ", meaning: "Investigation / Survey / Research", zh: "调查 / 审查" },
         "パズル": { kanji: "パズル", kana: "ぱずる", meaning: "Puzzle", zh: "拼图 / 谜题" },
+        "謎解き": { kanji: "謎解き", kana: "なぞとき", meaning: "Riddle solving / Solving puzzles by reasoning", zh: "解谜 / 解答谜题" },
+        "バグ": { kanji: "バグ", kana: "ばぐ", meaning: "Bug / Mistake or defect in software", zh: "程序错误 / Bug" },
+        "見つけた": { kanji: "見つけた", kana: "みつけた", meaning: "Found / Discovered", zh: "发现了 / 找到了" },
+        "感じます": { kanji: "感じます", kana: "かんじます", meaning: "Feel / Sense / Think emotionally", zh: "感觉 / 觉得" },
+        "仕組み": { kanji: "仕組み", kana: "しくみ", meaning: "Mechanism / How something works", zh: "机制 / 原理" },
+        "徹底的に": { kanji: "徹底的に", kana: "てっていてきに", meaning: "Thoroughly / Completely", zh: "彻底地 / 全面地" },
+        "追求": { kanji: "追求", kana: "ついきゅう", meaning: "Pursuit / Digging deeply into a topic", zh: "追求 / 深究" },
+        "利用": { kanji: "利用", kana: "りよう", meaning: "Use / Take advantage of", zh: "利用 / 使用" },
+        "有利": { kanji: "有利", kana: "ゆうり", meaning: "Advantageous / Having an advantage", zh: "有利 / 占优势" },
+        "進める": { kanji: "進める", kana: "すすめる", meaning: "Proceed / Move forward", zh: "推进 / 进行" },
+        "修正": { kanji: "修正", kana: "しゅうせい", meaning: "Correction / Fixing a mistake", zh: "修正 / 修改" },
+        "綺麗": { kanji: "綺麗", kana: "きれい", meaning: "Clean / Neat / Beautiful", zh: "漂亮 / 干净整洁" },
+        "直したい": { kanji: "直したい", kana: "なおしたい", meaning: "Want to fix / Want to repair", zh: "想修好 / 想改正" },
+        "競い合って": { kanji: "競い合って", kana: "きそいあって", meaning: "Competing with each other", zh: "互相竞争 / 切磋" },
+        "楽しみたい": { kanji: "楽しみたい", kana: "たのしみたい", meaning: "Want to enjoy / Want to have fun", zh: "想享受 / 想玩得开心" },
+        "製品価値": { kanji: "製品価値", kana: "せいひんかち", meaning: "Product value / Value of a product", zh: "产品价值" },
+        "影響": { kanji: "影響", kana: "えいきょう", meaning: "Influence / Impact", zh: "影响" },
+        "視点": { kanji: "視点", kana: "してん", meaning: "Point of view / Perspective", zh: "视角 / 观点" },
+        "関係ない": { kanji: "関係ない", kana: "かんけいない", meaning: "Not related / None of my business", zh: "没关系 / 与我无关" },
+        "放置": { kanji: "放置", kana: "ほうち", meaning: "Leaving something as it is / Ignoring it", zh: "放置 / 不管不顾" },
         "弱点": { kanji: "弱点", kana: "じゃくてん", meaning: "Weakness / Weak point / Vulnerability", zh: "弱点 / 缺点" },
 
         "報奨金": { kanji: "報奨金", kana: "ほうしょうきん", meaning: "Bounty / Reward money", zh: "奖金 / 赏金" },
@@ -2275,6 +2431,7 @@
       }
 
       function renderDots() {
+        if (!dots) return;
         nodes.forEach((node, index) => {
           const dot = document.createElement('button');
           dot.type = 'button';
@@ -2292,7 +2449,9 @@
 
         document.body.style.setProperty('--active', active.color);
         shell.style.setProperty('--active', active.color);
-        activeModeLabel.style.setProperty('--active', active.color);
+        if (activeModeLabel) {
+          activeModeLabel.style.setProperty('--active', active.color);
+        }
 
         document.querySelectorAll('.map-node-button').forEach(button => {
           const id = button.dataset.id;
@@ -2322,7 +2481,9 @@
         detailWork.innerHTML = formatGlossaryTerms(active.work);
         detailFit.innerHTML = formatGlossaryTerms(active.fit);
         
-        talkMemo.innerHTML = formatGlossaryTerms(active.memo);
+        if (talkMemo) {
+          talkMemo.innerHTML = formatGlossaryTerms(active.memo);
+        }
 
 
 
@@ -2375,110 +2536,60 @@
         {
           question: "Q1. パズルや謎解き、またはソフトウェアでバグを見つけた時、どう感じますか？",
           answers: [
-            { text: "どうやってそのバグが起きたのか、仕組みを徹底的に追求したくなる", score: { redteam: 3, whitehat: 2 } },
-            { text: "バグを利用して有利に進めるより、すぐに修正して綺麗に直したい", score: { blueteam: 3, intro: 2 } },
-            { text: "とりあえず他の人にも教えて、みんなで競い合って楽しみたい", score: { ctf: 3, careers: 1 } },
-            { text: "そのバグが会社全体の製品価値にどう影響するかビジネスの視点で考える", score: { industry: 3, careers: 2 } },
-            { text: "自分には関係ないと思って、そのまま放置する", score: { passiveRisk: 3, overconfidenceRisk: 1 } }
+            { text: "原因を調べて、正しい相手に安全に報告したい", score: { whitehat: 3 } },
+            { text: "その弱点を使えば、どこまで入れるのか試したくなる", score: { blackhat: 3 } },
+            { text: "面倒なので、自分には関係ないと思って放置する", score: { victimRisk: 3 } }
           ]
         },
         {
           question: "Q2. パソコンやスマートフォンのOSアップデートの通知が来たら？",
           answers: [
-            { text: "新しい脆弱性の修正リスト（CVE）をチェックして、何が直ったか調べる", score: { whitehat: 3, ctf: 2 } },
-            { text: "すぐにアップデートを実行して、セキュリティ設定が安全であることを確認する", score: { blueteam: 3, intro: 2 } },
-            { text: "「今回のアップデートでどんなハッキング手法が防がれたのか」を探る", score: { redteam: 3, blackhat: 1 } },
-            { text: "会社の全端末にどう適用させるか、効率的な方法やコストを考える", score: { industry: 3, careers: 2 } },
-            { text: "面倒なので無視する。今まで被害がないから今回も大丈夫だと思う", score: { updateRisk: 4, overconfidenceRisk: 2 } }
+            { text: "早めに更新して、何が修正されたのかも軽く確認する", score: { whitehat: 3 } },
+            { text: "修正された弱点を見て、攻撃側の考え方を想像する", score: { blackhat: 3 } },
+            { text: "今まで被害がないので、今回も無視して大丈夫だと思う", score: { victimRisk: 4 } }
           ]
         },
         {
-          question: "Q3. 自分の得意な作業スタイルはどれですか？",
+          question: "Q3. 怪しいメールやリンクを見た時、まずどうしますか？",
           answers: [
-            { text: "泥臭くても、粘り強く手を動かして未知の領域を調べること", score: { whitehat: 2, ctf: 3 } },
-            { text: "ログや数字を細かくチェックし、ささいな変化や異常を見逃さないこと", score: { blueteam: 3, redteam: 1 } },
-            { text: "他の人が考えつかないような「裏ルート」やアイデアを閃くこと", score: { redteam: 3, blackhat: 2 } },
-            { text: "他人の話をじっくり聞き、課題を整理して分かりやすくアドバイスすること", score: { industry: 3, careers: 3 } },
-            { text: "早く済ませたいので、パスワードや設定はいつも同じでよいと思う", score: { passwordRisk: 4, passiveRisk: 1 } }
+            { text: "送信元やURLを確認し、必要なら周りに注意を共有する", score: { whitehat: 3 } },
+            { text: "人をだます文章の作り方や心理の動きを分析したくなる", score: { blackhat: 3 } },
+            { text: "急いでいる時は、とりあえず押してから考える", score: { victimRisk: 4 } }
           ]
         },
         {
           question: "Q4. ハッカーという言葉を聞いて、一番ワクワクする役割は？",
           answers: [
-            { text: "脆弱性を探し出し、防壁の弱点を暴く「侵入シミュレーター」", score: { redteam: 3, whitehat: 2 } },
-            { text: "あらゆる攻撃を予知し、背後からシステムを守り抜く「防衛の守護神」", score: { blueteam: 3, industry: 1 } },
-            { text: "超難解な暗号やプログラムを解析してフラッグを奪い取る「競技ハッカー」", score: { ctf: 3, whitehat: 1 } },
-            { text: "チームを統率し、組織全体のセキュリティ戦略を決定する「CISO・軍師」", score: { careers: 3, industry: 2 } },
-            { text: "難しそうなので、セキュリティは専門家だけに任せればよいと思う", score: { passiveRisk: 4, overconfidenceRisk: 1 } }
+            { text: "弱点を見つけて、社会や会社を守るホワイトハット", score: { whitehat: 3 } },
+            { text: "ルールの外側から、抜け道や裏ルートを探すブラックハット", score: { blackhat: 3 } },
+            { text: "難しそうなので、セキュリティは専門家だけに任せたい", score: { victimRisk: 3 } }
           ]
         }
       ];
 
       const quizResults = {
-        redteam: {
-          title: "🎯 レッドチーム・侵入テストスペシャリスト",
-          desc: "あなたはクリエイティブな突破口を見つける才能があります！",
-          detail: "攻撃者の視点に立ち、システムの隙間をすり抜ける戦術家タイプです。ペネトレーションテスト（侵入テスト）や、ソーシャルエンジニアリングを駆使して、組織の防衛力の限界を試す役割が適しています。"
-        },
-        blueteam: {
-          title: "🛡️ ブルーチーム・防衛＆フォレンジック監視員",
-          desc: "あなたは抜群の観察力と堅実さを持った防衛の要です！",
-          detail: "押し寄せる攻撃ログを監視し、いち早く侵入の兆候（インシデント）を検知して遮断するガーディアンタイプです。SOC（セキュリティ監視センター）でのログ分析や、インシデントハンドラーとして活躍できます。"
-        },
         whitehat: {
-          title: "🔬 ホワイトハットハッカー / 脆弱性リサーチャー",
-          desc: "あなたは深い技術探究心と正義感を秘めた技術の専門家です！",
-          detail: "システムのソースコードや構造を詳細に分析し、未知の脆弱性を発見して修正へと導くドクタータイプです。バグバウンティ（脆弱性報奨金制度）で活躍したり、セキュリティ研究開発（R&D）の分野がぴったりです。"
+          title: "🛡️ ホワイトハット向き",
+          desc: "あなたは弱点を見つけて、正しい方法で守る側に活かせるタイプです。",
+          detail: "原因を調べる力、報告する姿勢、相手を守ろうとする考え方があります。脆弱性診断、SOC、CSIRT、バグバウンティなど、合法的に社会を守る仕事と相性がよいです。"
         },
-        ctf: {
-          title: "🏁 CTFプレイヤー / バイナリ解析エキスパート",
-          desc: "あなたは謎解きと競争が何より大好きなトップアスリートです！",
-          detail: "プログラムのバイナリを解析したり、高度な暗号を解読するハッキング競技（CTF）のファイタータイプです。難しい課題に何時間も没頭する集中力があり、リバースエンジニアリングや競技会での実績で名を馳せることができます。"
+        blackhat: {
+          title: "⚠️ ブラックハット気質",
+          desc: "あなたは攻撃者の視点を想像する力が強いタイプです。",
+          detail: "抜け道を探す発想は強みですが、許可なく試す行為は違法です。その好奇心は、CTF、Red Team、脆弱性診断など、ルールのある安全な場所で使うのが一番かっこいい道です。"
         },
-        industry: {
-          title: "💼 セキュリティコンサルタント / エヴァンジェリスト",
-          desc: "あなたは技術とビジネスの架け橋となるスマートなアドバイザーです！",
-          detail: "セキュリティの専門知識を持ちながら、クライアントの経営課題に寄り添い、最適な対策プランを提案する軍師タイプです。セキュリティ製品の選定や、組織のポリシー策定、講演活動など幅広く活躍できます。"
-        },
-        careers: {
-          title: "👑 CISO（最高情報セキュリティ責任者）/ セキュリティアーキテクト",
-          desc: "あなたは全体像を俯瞰し、戦略を練る統率力のあるリーダーです！",
-          detail: "単一の技術にとどまらず、企業やサービス全体のセキュリティ設計を構想する建築家タイプです。組織全体の安全基準を定め、経営陣と対話してセキュリティを推進するリーダーに最も適しています。"
-        },
-        updateRisk: {
-          title: "⚠️ アップデート後回しタイプ",
-          desc: "あなたは『今まで大丈夫だったから』で一番狙われやすいタイプです。",
-          detail: "更新を無視すると、すでに知られている弱点がそのまま残ります。攻撃者は新しい技よりも、古い弱点を放置している人をよく狙います。まずはOS、ブラウザ、スマホアプリの更新通知を見たら早めに対応しましょう。"
-        },
-        passwordRisk: {
-          title: "🔓 パスワード使い回しタイプ",
-          desc: "あなたは1つのサービス漏洩から、他のアカウントまで連鎖的に危なくなるタイプです。",
-          detail: "同じパスワードを何度も使うと、どこか1つで漏れた時にメール、SNS、買い物サイトまで一気に入られる可能性があります。長くて別々のパスワード、パスワード管理ツール、二段階認証が現実的な対策です。"
-        },
-        overconfidenceRisk: {
-          title: "😅 まだ被害ゼロだから大丈夫タイプ",
-          desc: "あなたは『自分だけは大丈夫』という思い込みで危険に近づきやすいタイプです。",
-          detail: "被害がないように見えても、気づいていないだけの場合があります。攻撃は有名人や大企業だけでなく、普通の個人にも届きます。小さな違和感に気づく習慣と、基本設定の見直しが守りの第一歩です。"
-        },
-        passiveRisk: {
-          title: "🚨 セキュリティ他人任せタイプ",
-          desc: "あなたは攻撃者から見ると、とても入りやすい入口になりやすいタイプです。",
-          detail: "『専門家が守ってくれる』だけでは足りません。怪しいリンクを押さない、更新する、パスワードを分ける、二段階認証を使う。この4つだけでも被害にあう確率はかなり下げられます。"
+        victimRisk: {
+          title: "🚨 一番ハッキングされやすいタイプ",
+          desc: "あなたは『自分は大丈夫』と思いやすく、基本対策を後回しにしがちなタイプです。",
+          detail: "怪しいリンクを押さない、OSやアプリを更新する、パスワードを使い回さない、二段階認証を使う。この4つを守るだけで、被害にあう可能性をかなり下げられます。"
         }
       };
 
       let currentQuestionIndex = 0;
       const initialQuizScores = {
-        redteam: 0,
-        blueteam: 0,
         whitehat: 0,
-        ctf: 0,
-        industry: 0,
-        careers: 0,
-        updateRisk: 0,
-        passwordRisk: 0,
-        overconfidenceRisk: 0,
-        passiveRisk: 0
+        blackhat: 0,
+        victimRisk: 0
       };
       let scores = { ...initialQuizScores };
 
@@ -2546,7 +2657,6 @@
         document.body.style.overflow = '';
       }
 
-      startQuizBtn.addEventListener('click', startQuiz);
       quizCloseBtn.addEventListener('click', closeQuiz);
       restartQuizBtn.addEventListener('click', startQuiz);
       quizModal.addEventListener('click', (e) => {
