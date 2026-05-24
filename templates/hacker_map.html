@@ -27,7 +27,8 @@
 
       html {
         scroll-behavior: smooth;
-        scroll-snap-type: y proximity;
+        /* scroll-snap removed: it caused long content (companies, certifications)
+           to be "pulled back" mid-scroll. Smooth scroll is still on for anchor nav. */
       }
 
       body {
@@ -78,7 +79,6 @@
         position: relative;
         display: grid;
         align-content: center;
-        scroll-snap-align: start;
         overflow: clip;
       }
 
@@ -92,6 +92,126 @@
         filter: blur(24px);
         opacity: 0.78;
         pointer-events: none;
+      }
+
+      /* ===== Right-side section navigation ===== */
+      .side-nav {
+        position: fixed;
+        top: 50%;
+        right: 18px;
+        transform: translateY(-50%);
+        z-index: 50;
+        display: grid;
+        gap: 14px;
+        padding: 12px 8px;
+        border-radius: 999px;
+        background: rgba(11, 15, 26, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+      }
+
+      .side-nav-dot {
+        position: relative;
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        transition: background 180ms ease, transform 180ms ease, border-color 180ms ease;
+      }
+
+      .side-nav-dot:hover {
+        background: color-mix(in srgb, var(--active) 60%, white 20%);
+        transform: scale(1.2);
+      }
+
+      .side-nav-dot.is-active {
+        background: var(--active);
+        border-color: color-mix(in srgb, var(--active) 80%, white 20%);
+        box-shadow: 0 0 12px color-mix(in srgb, var(--active) 60%, transparent);
+        transform: scale(1.25);
+      }
+
+      .side-nav-label {
+        position: absolute;
+        top: 50%;
+        right: calc(100% + 12px);
+        transform: translateY(-50%) translateX(6px);
+        white-space: nowrap;
+        padding: 4px 10px;
+        border-radius: 6px;
+        background: rgba(11, 15, 26, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 160ms ease, transform 160ms ease;
+      }
+
+      .side-nav-dot:hover .side-nav-label,
+      .side-nav-dot:focus-visible .side-nav-label {
+        opacity: 1;
+        transform: translateY(-50%) translateX(0);
+      }
+
+      /* ===== Intro scroll hint ===== */
+      .scroll-hint {
+        position: absolute;
+        left: 50%;
+        bottom: 28px;
+        transform: translateX(-50%);
+        z-index: 2;
+        display: grid;
+        justify-items: center;
+        gap: 6px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(11, 15, 26, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: var(--text);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        backdrop-filter: blur(8px);
+        animation: scrollHintFloat 1.8s ease-in-out infinite;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      }
+
+      .scroll-hint:hover,
+      .scroll-hint:focus-visible {
+        outline: none;
+        border-color: color-mix(in srgb, var(--active) 70%, white 20%);
+        color: color-mix(in srgb, var(--active) 60%, white 40%);
+      }
+
+      .scroll-hint-arrow {
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      @keyframes scrollHintFloat {
+        0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.85; }
+        50%      { transform: translateX(-50%) translateY(6px); opacity: 1; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .scroll-hint { animation: none; }
+      }
+
+      @media (max-width: 760px) {
+        .side-nav {
+          right: 10px;
+          gap: 10px;
+          padding: 10px 6px;
+        }
+        .side-nav-dot { width: 10px; height: 10px; }
+        .scroll-hint { bottom: 18px; padding: 8px 12px; font-size: 10px; }
       }
 
       .chapter-copy {
@@ -370,11 +490,12 @@
         min-height: 90px;
         padding: 12px;
         transform: translate(-50%, -50%);
-        border: 1px solid rgba(255, 255, 255, 0.16);
+        /* Stronger border + lighter highlight to lift node off the dark backdrop. */
+        border: 1px solid rgba(148, 197, 255, 0.38);
         border-radius: 12px;
         background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02)),
-          rgba(11, 15, 26, 0.85);
+          linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
+          rgba(22, 32, 54, 0.96);
         color: var(--text);
         text-align: left;
         cursor: pointer;
@@ -382,7 +503,7 @@
         opacity: 0;
         animation: nodeFadeIn 600ms ease-out forwards;
         transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
       }
 
       @keyframes nodeFadeIn {
@@ -988,39 +1109,169 @@
 
       .company-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
       }
 
       .company-card {
         position: relative;
-        min-height: 210px;
-        padding: 18px;
+        min-height: 320px;
+        padding: 24px 24px 22px;
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        border-radius: 20px;
         background:
+          /* faint matrix grid */
+          repeating-linear-gradient(0deg, transparent 0 27px, color-mix(in srgb, var(--company-color) 10%, transparent) 27px 28px),
+          repeating-linear-gradient(90deg, transparent 0 27px, color-mix(in srgb, var(--company-color) 10%, transparent) 27px 28px),
           linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
-          rgba(3, 7, 18, 0.5);
+          rgba(3, 7, 18, 0.6);
         overflow: hidden;
-        transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+        transition: transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease, background 260ms ease;
       }
 
+      /* outer brand-color glow */
       .company-card::before {
         content: "";
         position: absolute;
-        inset: -60% -30% auto auto;
-        width: 180px;
-        height: 180px;
+        inset: -50% -20% auto auto;
+        width: 240px;
+        height: 240px;
         border-radius: 50%;
-        background: radial-gradient(circle, color-mix(in srgb, var(--company-color) 24%, transparent), transparent 68%);
+        background: radial-gradient(circle, color-mix(in srgb, var(--company-color) 32%, transparent), transparent 68%);
+        pointer-events: none;
+      }
+
+      /* shimmer sweep on hover */
+      .company-card::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+        transform: skewX(-18deg);
+        transition: left 700ms ease;
         pointer-events: none;
       }
 
       .company-card:hover {
-        transform: translateY(-5px);
-        border-color: color-mix(in srgb, var(--company-color) 58%, transparent);
-        background: rgba(15, 23, 42, 0.72);
-        box-shadow: 0 20px 42px rgba(0, 0, 0, 0.34), 0 0 24px color-mix(in srgb, var(--company-color) 20%, transparent);
+        transform: translateY(-6px);
+        border-color: color-mix(in srgb, var(--company-color) 70%, transparent);
+        background-color: rgba(15, 23, 42, 0.78);
+        box-shadow: 0 28px 56px rgba(0, 0, 0, 0.4), 0 0 36px color-mix(in srgb, var(--company-color) 28%, transparent);
+      }
+
+      .company-card:hover::after {
+        left: 160%;
+      }
+
+      /* pulsing "active" indicator dot */
+      .company-pulse {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--company-color);
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--company-color) 60%, transparent);
+        animation: companyPulse 2s ease-out infinite;
+        z-index: 2;
+      }
+
+      @keyframes companyPulse {
+        0%   { box-shadow: 0 0 0 0   color-mix(in srgb, var(--company-color) 70%, transparent); }
+        70%  { box-shadow: 0 0 0 14px color-mix(in srgb, var(--company-color) 0%, transparent); }
+        100% { box-shadow: 0 0 0 0   color-mix(in srgb, var(--company-color) 0%, transparent); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .company-pulse { animation: none; }
+      }
+
+      /* tagline column (right of logo) */
+      .company-tagline {
+        display: grid;
+        gap: 6px;
+        justify-items: end;
+      }
+
+      .company-rank {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        color: color-mix(in srgb, var(--company-color) 60%, #cbd5e1);
+        opacity: 0.85;
+      }
+
+      /* stats row */
+      .company-stats {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 14px 0 12px;
+        padding: 12px 14px;
+        border: 1px solid color-mix(in srgb, var(--company-color) 22%, rgba(255, 255, 255, 0.08));
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
+          color-mix(in srgb, var(--company-color) 6%, rgba(2, 6, 23, 0.4));
+      }
+
+      .stat {
+        display: grid;
+        grid-template-columns: auto auto;
+        align-items: baseline;
+        column-gap: 2px;
+        row-gap: 2px;
+      }
+
+      .stat-num {
+        grid-row: 1;
+        font-size: 22px;
+        font-weight: 950;
+        letter-spacing: -0.02em;
+        color: #fff;
+        font-variant-numeric: tabular-nums;
+        text-shadow: 0 0 10px color-mix(in srgb, var(--company-color) 50%, transparent);
+      }
+
+      .stat-unit {
+        grid-row: 1;
+        margin-left: 2px;
+        font-size: 13px;
+        font-weight: 800;
+        color: color-mix(in srgb, var(--company-color) 70%, white 30%);
+      }
+
+      .stat-label {
+        grid-row: 2;
+        grid-column: 1 / -1;
+        margin-top: 2px;
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.3;
+      }
+
+      /* chip tags */
+      .company-chips {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      .chip {
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--company-color) 36%, transparent);
+        background: color-mix(in srgb, var(--company-color) 12%, transparent);
+        color: color-mix(in srgb, var(--company-color) 30%, #f1f5f9);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
       }
 
       .company-topline {
@@ -1034,75 +1285,66 @@
 
       .company-logo {
         position: relative;
-        width: 64px;
-        height: 64px;
+        width: 88px;
+        height: 88px;
         flex: 0 0 auto;
         display: grid;
         place-items: center;
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 16px;
+        border: 1px solid color-mix(in srgb, var(--company-color) 30%, rgba(255, 255, 255, 0.14));
+        border-radius: 20px;
         background:
-          linear-gradient(145deg, rgba(255, 255, 255, 0.2), transparent),
-          color-mix(in srgb, var(--company-color) 22%, #0f172a);
-        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+          linear-gradient(145deg, rgba(255, 255, 255, 0.16), transparent 60%),
+          color-mix(in srgb, var(--company-color) 14%, #0a0f1c);
+        box-shadow: 0 20px 36px rgba(0, 0, 0, 0.36),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.06);
         overflow: hidden;
         text-decoration: none;
         cursor: pointer;
-        transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+        transition: transform 240ms ease, box-shadow 240ms ease, border-color 240ms ease;
+      }
+
+      .company-logo svg {
+        width: 64px;
+        height: 64px;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
       }
 
       .company-logo:hover,
       .company-logo:focus-visible {
         outline: none;
-        transform: translateY(-2px) scale(1.04);
-        border-color: rgba(255, 255, 255, 0.34);
-        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.34), 0 0 18px color-mix(in srgb, var(--company-color) 34%, transparent);
+        transform: translateY(-3px) scale(1.06) rotate(-2deg);
+        border-color: color-mix(in srgb, var(--company-color) 80%, white 20%);
+        box-shadow: 0 22px 40px rgba(0, 0, 0, 0.4),
+          0 0 26px color-mix(in srgb, var(--company-color) 55%, transparent);
       }
 
+      /* animated gradient ring around the logo */
       .company-logo::after {
         position: absolute;
-        inset: 1px;
-        border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        inset: -2px;
+        border-radius: 22px;
+        padding: 2px;
+        background: conic-gradient(from 0deg,
+          color-mix(in srgb, var(--company-color) 80%, transparent),
+          transparent 30%,
+          color-mix(in srgb, var(--company-color) 60%, transparent) 60%,
+          transparent 90%);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+                mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+                mask-composite: exclude;
+        opacity: 0.55;
+        animation: ringSpin 6s linear infinite;
         content: "";
         pointer-events: none;
       }
 
-      .logo-text {
-        position: relative;
-        z-index: 1;
-        color: #ffffff;
-        font-size: 15px;
-        font-weight: 950;
-        letter-spacing: 0.03em;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.34);
+      @keyframes ringSpin {
+        to { transform: rotate(360deg); }
       }
 
-      .logo-trend {
-        --company-color: #e11d48;
-      }
-
-      .logo-lac {
-        --company-color: #2563eb;
-      }
-
-      .logo-gmo {
-        --company-color: #0ea5e9;
-      }
-
-      .logo-ms {
-        --company-color: #22c55e;
-        background:
-          linear-gradient(90deg, #f25022 0 49%, transparent 49% 51%, #7fba00 51%),
-          linear-gradient(#00a4ef 0 49%, transparent 49% 51%, #ffb900 51%);
-      }
-
-      .logo-cs {
-        --company-color: #dc2626;
-      }
-
-      .logo-pan {
-        --company-color: #f97316;
+      @media (prefers-reduced-motion: reduce) {
+        .company-logo::after { animation: none; }
       }
 
       .company-tag {
@@ -1207,73 +1449,155 @@
         letter-spacing: 0.08em;
       }
 
-      .cert-roadmap {
+      /* ===== Cert timeline (4 levels) ===== */
+      .cert-timeline {
+        position: relative;
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-        margin-bottom: 18px;
+        gap: 18px;
+        margin: 40px 0 28px;
+        padding-top: 50px;
+      }
+
+      /* connecting line behind nodes */
+      .cert-track {
+        position: absolute;
+        top: 90px; /* aligns with node center */
+        left: 12.5%;
+        right: 12.5%;
+        height: 3px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+
+      .cert-track-fill {
+        position: absolute;
+        inset: 0 100% 0 0; /* starts at 0% width */
+        background: linear-gradient(90deg, #38bdf8 0%, #10b981 33%, #f59e0b 66%, #a855f7 100%);
+        background-size: 400% 100%;
+        background-position: 0% 0%;
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+        transition: right 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .cert-timeline.is-revealed .cert-track-fill {
+        right: 0%;
       }
 
       .cert-step {
         position: relative;
-        min-height: 260px;
-        padding: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
+        display: grid;
+        gap: 6px;
+        padding: 0 6px;
+        text-align: center;
+        transition: transform 240ms ease;
+      }
+
+      .cert-step:hover { transform: translateY(-4px); }
+
+      .cert-node {
+        position: relative;
+        justify-self: center;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 16px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
         background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
-          rgba(3, 7, 18, 0.5);
-        overflow: hidden;
+          radial-gradient(circle, color-mix(in srgb, var(--cert-color) 22%, #0a0f1c) 30%, #0a0f1c 100%);
+        color: var(--cert-color);
+        box-shadow:
+          0 14px 30px rgba(0, 0, 0, 0.5),
+          0 0 30px color-mix(in srgb, var(--cert-color) 30%, transparent),
+          inset 0 0 0 1px color-mix(in srgb, var(--cert-color) 35%, rgba(255,255,255,0.1));
+        z-index: 2;
+        transition: transform 260ms ease, box-shadow 260ms ease;
       }
 
-      .cert-step::before {
-        content: attr(data-step);
+      .cert-step:hover .cert-node {
+        transform: scale(1.08);
+        box-shadow:
+          0 16px 36px rgba(0, 0, 0, 0.55),
+          0 0 42px color-mix(in srgb, var(--cert-color) 55%, transparent),
+          inset 0 0 0 1px color-mix(in srgb, var(--cert-color) 70%, rgba(255,255,255,0.2));
+      }
+
+      .cert-node-ring {
         position: absolute;
-        right: 14px;
-        top: 10px;
-        color: color-mix(in srgb, var(--cert-color) 40%, transparent);
-        font-size: 48px;
-        font-weight: 950;
-        line-height: 1;
+        inset: -6px;
+        width: calc(100% + 12px);
+        height: calc(100% + 12px);
       }
 
-      .cert-step:nth-child(1) { --cert-color: #38bdf8; }
-      .cert-step:nth-child(2) { --cert-color: #10b981; }
-      .cert-step:nth-child(3) { --cert-color: #f59e0b; }
-      .cert-step:nth-child(4) { --cert-color: #a855f7; }
+      .cert-node-rotate {
+        transform-origin: center;
+        animation: certRingSpin 12s linear infinite;
+      }
+
+      .cert-step:hover .cert-node-rotate {
+        animation-duration: 4s;
+      }
+
+      @keyframes certRingSpin {
+        to { transform: rotate(360deg); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .cert-node-rotate { animation: none; }
+      }
+
+      .cert-icon {
+        font-size: 32px;
+        line-height: 1;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+      }
+
+      .cert-num {
+        position: absolute;
+        bottom: -10px;
+        right: -4px;
+        min-width: 28px;
+        height: 22px;
+        padding: 0 7px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--cert-color);
+        color: #0a0f1c;
+        font-size: 11px;
+        font-weight: 950;
+        letter-spacing: 0.04em;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
 
       .cert-level {
-        position: relative;
-        display: inline-flex;
-        margin-bottom: 12px;
-        padding: 6px 10px;
-        border: 1px solid color-mix(in srgb, var(--cert-color) 38%, transparent);
+        display: inline-block;
+        justify-self: center;
+        margin-bottom: 4px;
+        padding: 4px 12px;
+        border: 1px solid color-mix(in srgb, var(--cert-color) 50%, transparent);
         border-radius: 999px;
-        background: color-mix(in srgb, var(--cert-color) 10%, transparent);
-        color: #f8fafc;
+        background: color-mix(in srgb, var(--cert-color) 14%, transparent);
+        color: color-mix(in srgb, var(--cert-color) 30%, #f8fafc);
         font-size: 11px;
         font-weight: 850;
+        letter-spacing: 0.04em;
       }
 
-      .cert-step h3 {
-        position: relative;
-        margin: 0 0 10px;
-        font-size: 20px;
-        line-height: 1.35;
-      }
-
-      .cert-step p {
-        position: relative;
-        margin: 0 0 14px;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.7;
+      .cert-title {
+        margin: 2px 0 8px;
+        font-size: 18px;
+        font-weight: 900;
+        line-height: 1.3;
+        color: #fff;
+        text-shadow: 0 0 18px color-mix(in srgb, var(--cert-color) 30%, transparent);
       }
 
       .cert-list {
-        position: relative;
         display: grid;
-        gap: 8px;
+        gap: 6px;
         margin: 0;
         padding: 0;
         list-style: none;
@@ -1281,48 +1605,21 @@
 
       .cert-list li {
         position: relative;
-        padding-left: 15px;
-        color: #dbeafe;
-        font-size: 12.5px;
-        line-height: 1.55;
+        padding: 6px 10px;
+        border: 1px solid color-mix(in srgb, var(--cert-color) 22%, rgba(255, 255, 255, 0.06));
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--cert-color) 6%, rgba(2, 6, 23, 0.4));
+        color: #e2e8f0;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.4;
+        transition: border-color 200ms ease, background 200ms ease, transform 200ms ease;
       }
 
-      .cert-list li::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 6px;
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--cert-color);
-        box-shadow: 0 0 10px color-mix(in srgb, var(--cert-color) 55%, transparent);
-      }
-
-      .cert-paths {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .cert-path-card {
-        padding: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 14px;
-        background: rgba(2, 6, 23, 0.4);
-      }
-
-      .cert-path-card strong {
-        display: block;
-        margin-bottom: 8px;
-        color: #ffffff;
-        font-size: 15px;
-      }
-
-      .cert-path-card span {
-        color: var(--muted);
-        font-size: 12.5px;
-        line-height: 1.7;
+      .cert-step:hover .cert-list li {
+        border-color: color-mix(in srgb, var(--cert-color) 50%, transparent);
+        background: color-mix(in srgb, var(--cert-color) 14%, rgba(2, 6, 23, 0.6));
+        transform: translateX(0);
       }
 
       .cert-link-row {
@@ -1417,10 +1714,11 @@
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
-        .cert-roadmap,
-        .cert-paths {
+        .cert-timeline {
           grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 36px;
         }
+        .cert-track { display: none; }
       }
 
       @media (max-width: 760px) {
@@ -1514,8 +1812,32 @@
           padding: 28px 20px;
         }
 
+        .company-grid {
+          grid-template-columns: 1fr;
+        }
+
         .company-card {
-          min-height: 190px;
+          min-height: auto;
+          padding: 20px 18px;
+        }
+
+        .company-logo {
+          width: 72px;
+          height: 72px;
+        }
+
+        .company-logo svg {
+          width: 52px;
+          height: 52px;
+        }
+
+        .stat-num { font-size: 18px; }
+      }
+
+      /* tablet — keep 2 columns but allow horizontal scrolling if too narrow */
+      @media (max-width: 980px) and (min-width: 761px) {
+        .company-stats {
+          grid-template-columns: 1fr 1fr;
         }
 
         .news-image {
@@ -1543,9 +1865,9 @@
 
       @media (max-width: 560px) {
         .company-grid,
-        .cert-roadmap,
-        .cert-paths {
+        .cert-timeline {
           grid-template-columns: 1fr;
+          gap: 24px;
         }
       }
     </style>
@@ -1554,14 +1876,37 @@
     <!-- Background Canvas for Matrix Rain -->
     <canvas id="matrixCanvas"></canvas>
 
+    <!-- Right-side section navigation -->
+    <nav class="side-nav" aria-label="セクションナビゲーション">
+      <a href="#section-intro" class="side-nav-dot is-active" data-target="section-intro" aria-label="開場">
+        <span class="side-nav-label">開場</span>
+      </a>
+      <a href="#section-map" class="side-nav-dot" data-target="section-map" aria-label="業界地図">
+        <span class="side-nav-label">業界地図</span>
+      </a>
+      <a href="#section-quiz" class="side-nav-dot" data-target="section-quiz" aria-label="適性診断">
+        <span class="side-nav-label">適性診断</span>
+      </a>
+      <a href="#section-companies" class="side-nav-dot" data-target="section-companies" aria-label="企業マップ">
+        <span class="side-nav-label">企業マップ</span>
+      </a>
+      <a href="#section-certifications" class="side-nav-dot" data-target="section-certifications" aria-label="資格ルート">
+        <span class="side-nav-label">資格ルート</span>
+      </a>
+    </nav>
+
     <div class="shell" id="shell">
-      <section class="story-panel intro-story" aria-label="ハッカーの業界地図画像">
+      <section class="story-panel intro-story" id="section-intro" aria-label="ハッカーの業界地図画像">
         <div class="hero-image-slot">
           <img src="/static/images/業界地図.png" alt="ハッカーの業界地図" />
         </div>
+        <a class="scroll-hint" href="#section-map" aria-label="次のセクションへスクロール">
+          <span class="scroll-hint-text">SCROLL</span>
+          <span class="scroll-hint-arrow" aria-hidden="true">↓</span>
+        </a>
       </section>
 
-      <section class="story-panel map-story" aria-label="インタラクティブな業界地図">
+      <section class="story-panel map-story" id="section-map" aria-label="インタラクティブな業界地図">
         <main class="workspace">
           <section class="map-card" aria-label="セキュリティ業界の入門地図">
             <div class="map-stage" id="mapStage">
@@ -1609,7 +1954,7 @@
         </main>
       </section>
 
-      <section class="story-panel quiz-story" aria-labelledby="quiz-story-title">
+      <section class="story-panel quiz-story" id="section-quiz" aria-labelledby="quiz-story-title">
         <div class="chapter-copy">
           <p class="chapter-kicker">PERSONAL CHECK</p>
           <h2 class="chapter-title" id="quiz-story-title">自分の入口を見つける</h2>
@@ -1623,7 +1968,7 @@
       </section>
 
       <!-- Infographic: Hacker vs White Hacker -->
-      <section class="infographic-section" aria-label="ハッカー vs ホワイトハッカー 情報図">
+      <section class="infographic-section" id="section-infographic" aria-label="ハッカー vs ホワイトハッカー 情報図">
         <h2>🔥 攻撃 vs 防御 ― サイバーセキュリティの全体像</h2>
         <div class="infographic-frame" id="infographicFrame" onclick="openInfographic()">
           <img src="/static/images/hacker_vs_whitehacker.jpg" alt="ハッカー vs ホワイトハッカー ― 攻撃側（レッドチーム）と防御側（ブルーチーム）の対比、攻防の主なフェーズ、主な攻撃手法と防御手法の一覧" loading="lazy" />
@@ -1639,7 +1984,7 @@
       </div>
 
       <!-- Security Company Map -->
-      <section class="companies story-panel" aria-labelledby="companies-title">
+      <section class="companies story-panel" id="section-companies" aria-labelledby="companies-title">
         <div class="companies-header">
           <div>
             <p class="companies-eyebrow">SECURITY COMPANY MAP</p>
@@ -1652,76 +1997,143 @@
         </div>
 
         <div class="company-grid">
-          <article class="company-card japan">
+          <!-- ===== Trend Micro ===== -->
+          <article class="company-card japan" style="--company-color:#e11d48">
+            <div class="company-pulse" aria-hidden="true"></div>
             <div class="company-topline">
               <a class="company-logo logo-trend" href="https://www.trendmicro.com/" target="_blank" rel="noopener noreferrer" aria-label="Trend Micro 公式サイトを開く">
-                <span class="logo-text">TM</span>
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="tmGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#ff3b5c"/>
+                      <stop offset="1" stop-color="#a30326"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M32 6 L54 16 V34 C54 47 44 55 32 58 C20 55 10 47 10 34 V16 Z" fill="url(#tmGrad)" stroke="#fff" stroke-opacity=".55" stroke-width="1.5"/>
+                  <text x="32" y="40" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="22" font-weight="900" fill="#fff">T</text>
+                </svg>
               </a>
-              <span class="company-tag">日本</span>
+              <div class="company-tagline">
+                <span class="company-tag">日本</span>
+                <span class="company-rank">EST. 1988</span>
+              </div>
             </div>
             <h3 class="company-name">Trend Micro</h3>
-            <p class="company-copy">日本発の大手セキュリティ企業。個人・企業向けにウイルス対策やクラウド防御を提供します。</p>
-          </article>
-
-          <article class="company-card japan">
-            <div class="company-topline">
-              <a class="company-logo logo-lac" href="https://www.lac.co.jp/" target="_blank" rel="noopener noreferrer" aria-label="LAC 公式サイトを開く">
-                <span class="logo-text">LAC</span>
-              </a>
-              <span class="company-tag">日本</span>
+            <p class="company-copy">「ウイルスバスター」で家庭から大企業まで守る、日本発の世界的セキュリティ大手。</p>
+            <div class="company-stats">
+              <div class="stat"><span class="stat-num" data-count="500">0</span><span class="stat-unit">M+</span><span class="stat-label">守られている端末</span></div>
+              <div class="stat"><span class="stat-num" data-count="7000">0</span><span class="stat-unit">+</span><span class="stat-label">グローバル従業員</span></div>
             </div>
-            <h3 class="company-name">LAC</h3>
-            <p class="company-copy">監視、診断、事故対応に強い日本の専門企業。SOCやCSIRT支援でも知られています。</p>
-          </article>
-
-          <article class="company-card japan">
-            <div class="company-topline">
-              <a class="company-logo logo-gmo" href="https://gmo-cybersecurity.com/" target="_blank" rel="noopener noreferrer" aria-label="GMO Cybersecurity by Ierae 公式サイトを開く">
-                <span class="logo-text">GMO</span>
-              </a>
-              <span class="company-tag">日本</span>
+            <div class="company-chips">
+              <span class="chip">アンチウイルス</span>
+              <span class="chip">クラウド防御</span>
+              <span class="chip">XDR</span>
             </div>
-            <h3 class="company-name">GMO Cybersecurity by Ierae</h3>
-            <p class="company-copy">ホワイトハッカーによる脆弱性診断で有名。攻撃者視点のテストを企業防御に活かします。</p>
           </article>
 
-          <article class="company-card global">
+          <!-- ===== NTT Security ===== -->
+          <article class="company-card japan" style="--company-color:#2563eb">
+            <div class="company-pulse" aria-hidden="true"></div>
+            <div class="company-topline">
+              <a class="company-logo logo-ntt" href="https://www.security.ntt/" target="_blank" rel="noopener noreferrer" aria-label="NTT Security 公式サイトを開く">
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="nttGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#4b8dff"/>
+                      <stop offset="1" stop-color="#0b3a99"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="32" cy="32" r="26" fill="url(#nttGrad)" stroke="#fff" stroke-opacity=".5" stroke-width="1.5"/>
+                  <text x="32" y="40" text-anchor="middle" font-family="-apple-system, sans-serif" font-size="15" font-weight="900" fill="#fff" letter-spacing="1">NTT</text>
+                </svg>
+              </a>
+              <div class="company-tagline">
+                <span class="company-tag">日本</span>
+                <span class="company-rank">EST. 1992</span>
+              </div>
+            </div>
+            <h3 class="company-name">NTT Security</h3>
+            <p class="company-copy">NTTグループの世界規模 MSS。日本最大の通信会社が持つ脅威情報で 24/7 監視を提供。</p>
+            <div class="company-stats">
+              <div class="stat"><span class="stat-num" data-count="40">0</span><span class="stat-unit">+</span><span class="stat-label">対応国／地域</span></div>
+              <div class="stat"><span class="stat-num" data-count="1500">0</span><span class="stat-unit">+</span><span class="stat-label">セキュリティ専門家</span></div>
+            </div>
+            <div class="company-chips">
+              <span class="chip">SOC / MSS</span>
+              <span class="chip">脅威インテリ</span>
+              <span class="chip">コンサル</span>
+            </div>
+          </article>
+
+          <!-- ===== Microsoft Security ===== -->
+          <article class="company-card global" style="--company-color:#22c55e">
+            <div class="company-pulse" aria-hidden="true"></div>
             <div class="company-topline">
               <a class="company-logo logo-ms" href="https://www.microsoft.com/security" target="_blank" rel="noopener noreferrer" aria-label="Microsoft Security 公式サイトを開く">
-                <span class="logo-text">MS</span>
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <rect x="8"  y="8"  width="22" height="22" fill="#f25022"/>
+                  <rect x="34" y="8"  width="22" height="22" fill="#7fba00"/>
+                  <rect x="8"  y="34" width="22" height="22" fill="#00a4ef"/>
+                  <rect x="34" y="34" width="22" height="22" fill="#ffb900"/>
+                </svg>
               </a>
-              <span class="company-tag">世界</span>
+              <div class="company-tagline">
+                <span class="company-tag">世界</span>
+                <span class="company-rank">EST. 1975</span>
+              </div>
             </div>
             <h3 class="company-name">Microsoft Security</h3>
-            <p class="company-copy">OS、クラウド、IDを横断して守る世界的企業。企業のゼロトラスト導入でも存在感があります。</p>
+            <p class="company-copy">Windows / Azure / 365 を一体で守る世界最大級のセキュリティ事業。Defender と Entra が柱。</p>
+            <div class="company-stats">
+              <div class="stat"><span class="stat-num" data-count="78">0</span><span class="stat-unit">T+</span><span class="stat-label">毎日解析するシグナル</span></div>
+              <div class="stat"><span class="stat-num" data-count="20">0</span><span class="stat-unit">B$</span><span class="stat-label">年間セキュリティ売上</span></div>
+            </div>
+            <div class="company-chips">
+              <span class="chip">Defender</span>
+              <span class="chip">Sentinel SIEM</span>
+              <span class="chip">ゼロトラスト</span>
+            </div>
           </article>
 
-          <article class="company-card global">
+          <!-- ===== CrowdStrike ===== -->
+          <article class="company-card global" style="--company-color:#dc2626">
+            <div class="company-pulse" aria-hidden="true"></div>
             <div class="company-topline">
               <a class="company-logo logo-cs" href="https://www.crowdstrike.com/" target="_blank" rel="noopener noreferrer" aria-label="CrowdStrike 公式サイトを開く">
-                <span class="logo-text">CS</span>
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="csGrad" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#ff2a2a"/>
+                      <stop offset="1" stop-color="#7a0000"/>
+                    </linearGradient>
+                  </defs>
+                  <circle cx="32" cy="32" r="26" fill="#0a0a0a" stroke="url(#csGrad)" stroke-width="2"/>
+                  <path d="M22 22 L42 32 L22 42 L26 32 Z" fill="url(#csGrad)"/>
+                  <circle cx="32" cy="32" r="3" fill="#fff"/>
+                </svg>
               </a>
-              <span class="company-tag">世界</span>
+              <div class="company-tagline">
+                <span class="company-tag">世界</span>
+                <span class="company-rank">EST. 2011</span>
+              </div>
             </div>
             <h3 class="company-name">CrowdStrike</h3>
-            <p class="company-copy">端末防御と脅威調査で有名。攻撃の兆候を素早く見つけ、被害を広げないことに強みがあります。</p>
-          </article>
-
-          <article class="company-card global">
-            <div class="company-topline">
-              <a class="company-logo logo-pan" href="https://www.paloaltonetworks.com/" target="_blank" rel="noopener noreferrer" aria-label="Palo Alto Networks 公式サイトを開く">
-                <span class="logo-text">PAN</span>
-              </a>
-              <span class="company-tag">世界</span>
+            <p class="company-copy">EDR / XDR の世界リーダー。Falcon プラットフォームで脅威を秒単位で検知・対応。</p>
+            <div class="company-stats">
+              <div class="stat"><span class="stat-num" data-count="29000">0</span><span class="stat-unit">+</span><span class="stat-label">グローバル顧客</span></div>
+              <div class="stat"><span class="stat-num" data-count="1">0</span><span class="stat-unit">分</span><span class="stat-label">平均検知時間</span></div>
             </div>
-            <h3 class="company-name">Palo Alto Networks</h3>
-            <p class="company-copy">ネットワーク、クラウド、SOCを広く守る大手企業。企業向け防御プラットフォームで知られます。</p>
+            <div class="company-chips">
+              <span class="chip">Falcon EDR</span>
+              <span class="chip">脅威ハンティング</span>
+              <span class="chip">IR</span>
+            </div>
           </article>
         </div>
       </section>
 
       <!-- Certification Roadmap -->
-      <section class="certifications story-panel" aria-labelledby="cert-title">
+      <section class="certifications story-panel" id="section-certifications" aria-labelledby="cert-title">
         <div class="cert-header">
           <div>
             <p class="cert-eyebrow">CERTIFICATION ROADMAP</p>
@@ -1733,71 +2145,85 @@
           <div class="cert-pill">JAPAN PATH</div>
         </div>
 
-        <div class="cert-roadmap">
-          <article class="cert-step" data-step="01">
+        <!-- ===== Animated 4-level timeline ===== -->
+        <div class="cert-timeline">
+          <div class="cert-track" aria-hidden="true">
+            <div class="cert-track-fill" id="certTrackFill"></div>
+          </div>
+
+          <article class="cert-step" data-step="01" style="--cert-color:#38bdf8">
+            <div class="cert-node">
+              <svg class="cert-node-ring" viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 6" class="cert-node-rotate"/>
+              </svg>
+              <span class="cert-icon" aria-hidden="true">📘</span>
+              <span class="cert-num">01</span>
+            </div>
             <span class="cert-level">入門</span>
-            <h3>まずITと安全の言葉に慣れる</h3>
-            <p>未経験や文系から入る人は、最初にIT全体と情報セキュリティの基本を押さえます。</p>
+            <h3 class="cert-title">言葉に慣れる</h3>
             <ul class="cert-list">
-              <li>ITパスポート試験</li>
-              <li>情報セキュリティマネジメント試験</li>
-              <li>個人情報、パスワード、更新、リスクの基本</li>
+              <li>IT パスポート</li>
+              <li>情セキマネ</li>
             </ul>
           </article>
 
-          <article class="cert-step" data-step="02">
+          <article class="cert-step" data-step="02" style="--cert-color:#10b981">
+            <div class="cert-node">
+              <svg class="cert-node-ring" viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 6" class="cert-node-rotate"/>
+              </svg>
+              <span class="cert-icon" aria-hidden="true">🔧</span>
+              <span class="cert-num">02</span>
+            </div>
             <span class="cert-level">基礎技術</span>
-            <h3>エンジニアとしての土台を作る</h3>
-            <p>セキュリティだけでなく、ネットワーク、OS、DB、開発の基礎があると強くなります。</p>
+            <h3 class="cert-title">土台を作る</h3>
             <ul class="cert-list">
-              <li>基本情報技術者試験</li>
-              <li>応用情報技術者試験</li>
-              <li>Linux、クラウド、ログを見る練習</li>
+              <li>基本情報技術者</li>
+              <li>応用情報技術者</li>
             </ul>
           </article>
 
-          <article class="cert-step" data-step="03">
+          <article class="cert-step" data-step="03" style="--cert-color:#f59e0b">
+            <div class="cert-node">
+              <svg class="cert-node-ring" viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 6" class="cert-node-rotate"/>
+              </svg>
+              <span class="cert-icon" aria-hidden="true">🛡️</span>
+              <span class="cert-num">03</span>
+            </div>
             <span class="cert-level">専門</span>
-            <h3>日本で強い専門資格を狙う</h3>
-            <p>セキュリティ職を本気で目指すなら、国家試験として認知度が高い資格が目標になります。</p>
+            <h3 class="cert-title">国家試験</h3>
             <ul class="cert-list">
-              <li>情報処理安全確保支援士試験</li>
-              <li>合格後、登録すると「登録セキスペ」へ</li>
-              <li>SOC、診断、CSIRT、コンサルの説明材料になる</li>
+              <li>情報処理安全確保支援士</li>
+              <li>登録セキスペ</li>
             </ul>
           </article>
 
-          <article class="cert-step" data-step="04">
+          <article class="cert-step" data-step="04" style="--cert-color:#a855f7">
+            <div class="cert-node">
+              <svg class="cert-node-ring" viewBox="0 0 80 80" aria-hidden="true">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 6" class="cert-node-rotate"/>
+              </svg>
+              <span class="cert-icon" aria-hidden="true">🌐</span>
+              <span class="cert-num">04</span>
+            </div>
             <span class="cert-level">実務・国際</span>
-            <h3>仕事で使う視点を広げる</h3>
-            <p>外資系、グローバル企業、コンサルでは国際資格も評価されることがあります。</p>
+            <h3 class="cert-title">国際資格</h3>
             <ul class="cert-list">
               <li>CompTIA Security+</li>
-              <li>CISSP（実務経験者向け）</li>
-              <li>資格 + 実務経験 + 発表できる成果物</li>
+              <li>CISSP</li>
             </ul>
           </article>
-        </div>
-
-        <div class="cert-paths" aria-label="職種別の学習ルート">
-          <div class="cert-path-card">
-            <strong>SOC・ブルーチーム</strong>
-            <span>情報セキュリティマネジメント → 基本情報 → Security+。ログ、監視、インシデント対応の言葉に慣れる。</span>
-          </div>
-          <div class="cert-path-card">
-            <strong>診断・ホワイトハット</strong>
-            <span>基本情報 → 応用情報 → 情報処理安全確保支援士。CTFや検証環境で、合法的に学んだ記録を作る。</span>
-          </div>
-          <div class="cert-path-card">
-            <strong>コンサル・管理</strong>
-            <span>応用情報 → 情報処理安全確保支援士 → CISSP。技術だけでなく、リスク説明と社内調整の力を伸ばす。</span>
-          </div>
         </div>
 
         <div class="cert-link-row" aria-label="資格の公式情報">
-          <a class="cert-link" href="https://www.ipa.go.jp/shiken/about/index.html" target="_blank" rel="noopener noreferrer">IPA 国家試験一覧</a>
-          <a class="cert-link" href="https://www.comptia.org/ja-jp/certifications/security/" target="_blank" rel="noopener noreferrer">CompTIA Security+</a>
-          <a class="cert-link" href="https://www.isc2.org/certifications/cissp/cissp-experience-requirements" target="_blank" rel="noopener noreferrer">ISC2 CISSP</a>
+          <a class="cert-link" href="https://www.ipa.go.jp/shiken/about/index.html" target="_blank" rel="noopener noreferrer">→ IPA 国家試験</a>
+          <a class="cert-link" href="https://www.comptia.org/ja-jp/certifications/security/" target="_blank" rel="noopener noreferrer">→ CompTIA Security+</a>
+          <a class="cert-link" href="https://www.isc2.org/certifications/cissp/cissp-experience-requirements" target="_blank" rel="noopener noreferrer">→ ISC2 CISSP</a>
         </div>
       </section>
     </div>
@@ -2734,6 +3160,81 @@
           closeAiModal();
         }
       });
+
+      // ===== Animated stat counters (count from 0 when scrolled into view) =====
+      (function initStatCounters() {
+        const stats = document.querySelectorAll('.stat-num[data-count]');
+        if (!stats.length) return;
+        const formatNum = (n) => n >= 1000 ? n.toLocaleString('en-US') : String(n);
+        const animate = (el, target, duration = 1400) => {
+          const start = performance.now();
+          const tick = (now) => {
+            const t = Math.min(1, (now - start) / duration);
+            const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+            el.textContent = formatNum(Math.round(target * eased));
+            if (t < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        };
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting || e.target.dataset.counted === '1') continue;
+            e.target.dataset.counted = '1';
+            const target = parseInt(e.target.dataset.count, 10) || 0;
+            animate(e.target, target);
+          }
+        }, { threshold: 0.6 });
+        stats.forEach(s => io.observe(s));
+      })();
+
+      // ===== Cert-timeline progress line fills on scroll-in =====
+      (function initCertTimeline() {
+        const timeline = document.querySelector('.cert-timeline');
+        if (!timeline) return;
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) {
+              timeline.classList.add('is-revealed');
+              io.disconnect();
+              break;
+            }
+          }
+        }, { threshold: 0.35 });
+        io.observe(timeline);
+      })();
+
+      // ===== Side-nav active highlighting via IntersectionObserver =====
+      (function initSideNav() {
+        const dots = document.querySelectorAll('.side-nav-dot');
+        if (!dots.length) return;
+        const dotByTarget = new Map();
+        dots.forEach(d => dotByTarget.set(d.dataset.target, d));
+
+        const targets = Array.from(dotByTarget.keys())
+          .map(id => document.getElementById(id))
+          .filter(Boolean);
+        if (!targets.length) return;
+
+        // Track which sections are currently in viewport; pick the one whose
+        // top is closest to (but not past) the middle of the viewport.
+        const visible = new Map();
+        const io = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (e.isIntersecting) visible.set(e.target.id, e.intersectionRatio);
+            else visible.delete(e.target.id);
+          }
+          if (visible.size === 0) return;
+          // pick the section with the largest intersection ratio
+          let bestId = null, bestRatio = -1;
+          for (const [id, ratio] of visible) {
+            if (ratio > bestRatio) { bestRatio = ratio; bestId = id; }
+          }
+          if (!bestId) return;
+          dots.forEach(d => d.classList.toggle('is-active', d.dataset.target === bestId));
+        }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+
+        targets.forEach(t => io.observe(t));
+      })();
     </script>
   </body>
 </html>
