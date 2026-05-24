@@ -373,7 +373,7 @@ async def hacker_map() -> HTMLResponse:
 
 @app.get("/index", include_in_schema=False)
 async def old_index() -> RedirectResponse:
-    return RedirectResponse(url="/")
+    return RedirectResponse(url="/", status_code=301)
 
 
 if __name__ == "__main__":
