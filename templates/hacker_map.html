@@ -3009,9 +3009,60 @@
 
 
 
+      let sideNavKeyboardIndex = null;
+      let sideNavKeyboardLockUntil = 0;
+
+      function getCurrentSideNavIndex(navDots) {
+        if (sideNavKeyboardIndex !== null && performance.now() < sideNavKeyboardLockUntil) {
+          return sideNavKeyboardIndex;
+        }
+
+        const activeDot = navDots.find(dot => dot.classList.contains('is-active'));
+        if (activeDot) return navDots.indexOf(activeDot);
+
+        const viewportMiddle = window.innerHeight / 2;
+        let closestIndex = 0;
+        let closestDistance = Infinity;
+
+        navDots.forEach((dot, index) => {
+          const target = document.getElementById(dot.dataset.target);
+          if (!target) return;
+          const rect = target.getBoundingClientRect();
+          const distance = Math.abs(rect.top + rect.height / 2 - viewportMiddle);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestIndex = index;
+          }
+        });
+
+        return closestIndex;
+      }
+
+      function goSideNav(direction) {
+        const navDots = Array.from(document.querySelectorAll('.side-nav-dot'));
+        if (!navDots.length) return;
+
+        const currentIndex = getCurrentSideNavIndex(navDots);
+        const nextIndex = Math.max(0, Math.min(navDots.length - 1, currentIndex + direction));
+        const target = document.getElementById(navDots[nextIndex].dataset.target);
+        sideNavKeyboardIndex = nextIndex;
+        sideNavKeyboardLockUntil = performance.now() + 900;
+        navDots.forEach((dot, index) => dot.classList.toggle('is-active', index === nextIndex));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
       window.addEventListener('keydown', event => {
         const tag = document.activeElement?.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        if (document.querySelector('.modal-overlay.active, .infographic-fullscreen.active')) return;
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          goSideNav(1);
+        }
+        if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          goSideNav(-1);
+        }
         if (event.key === 'ArrowRight' || event.key === ' ') {
           event.preventDefault();
           goNext();
@@ -3309,7 +3360,9 @@
           for (const [id, ratio] of visible) {
             if (ratio > bestRatio) { bestRatio = ratio; bestId = id; }
           }
-          if (!bestId) return;
+          if (!bestId || performance.now() < sideNavKeyboardLockUntil) return;
+          const bestIndex = Array.from(dots).findIndex(d => d.dataset.target === bestId);
+          if (bestIndex >= 0) sideNavKeyboardIndex = bestIndex;
           dots.forEach(d => d.classList.toggle('is-active', d.dataset.target === bestId));
         }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
 
