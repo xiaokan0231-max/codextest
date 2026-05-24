@@ -2658,6 +2658,7 @@
 
       /* ============ 2.1 Glossary Hover Tooltip & Dynamic Formatting ============ */
       let activeTooltip = null;
+      let activeTooltipTerm = null;
 
       function hideTooltip() {
         if (activeTooltip) {
@@ -2665,14 +2666,25 @@
           activeTooltip.remove();
           activeTooltip = null;
         }
+        activeTooltipTerm = null;
       }
 
-      function showTooltip(e) {
-        const termEl = e.target.closest('.glossary-term');
-        if (!termEl) return;
+      function getGlossaryTermFromEvent(e) {
+        const eventTarget = e.target?.closest?.('.glossary-term');
+        if (eventTarget) return eventTarget;
+
+        if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+          return document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.glossary-term') || null;
+        }
+
+        return null;
+      }
+
+      function showTooltipForTerm(termEl) {
         const termKey = termEl.dataset.term;
         const item = glossaryDict[termKey];
         if (!item) return;
+        activeTooltipTerm = termEl;
 
         if (!activeTooltip) {
           activeTooltip = document.createElement('div');
@@ -2714,6 +2726,21 @@
         activeTooltip.style.top = `${top}px`;
       }
 
+      function showTooltip(e) {
+        const termEl = getGlossaryTermFromEvent(e);
+        if (!termEl) return;
+        showTooltipForTerm(termEl);
+      }
+
+      function handleGlossaryPointerMove(e) {
+        const termEl = getGlossaryTermFromEvent(e);
+        if (termEl) {
+          if (termEl !== activeTooltipTerm) showTooltipForTerm(termEl);
+          return;
+        }
+        if (activeTooltipTerm) hideTooltip();
+      }
+
       function bindGlossaryTerms(root = document) {
         root.querySelectorAll('.glossary-term').forEach(term => {
           if (term.dataset.tooltipBound === '1') return;
@@ -2730,6 +2757,8 @@
 
       document.addEventListener('pointerover', showTooltip);
       document.addEventListener('mouseover', showTooltip);
+      document.addEventListener('pointermove', handleGlossaryPointerMove, { passive: true });
+      document.addEventListener('mousemove', handleGlossaryPointerMove, { passive: true });
       document.addEventListener('focusin', showTooltip);
       document.addEventListener('pointerout', (e) => {
         const termEl = e.target.closest('.glossary-term');
