@@ -3359,12 +3359,26 @@
 
       // ===== Animated stat counters (count from 0 when scrolled into view) =====
       (function initStatCounters() {
-        const stats = document.querySelectorAll('.stat-num[data-count]');
+        const stats = Array.from(document.querySelectorAll('.stat-num[data-count]'));
+        const companiesSection = document.getElementById('section-companies');
         if (!stats.length) return;
         const formatNum = (n) => n >= 1000 ? n.toLocaleString('en-US') : String(n);
+        const activeAnimations = new WeakMap();
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         const animate = (el, target, duration = 1400) => {
+          const runId = Symbol('stat-counter-run');
+          activeAnimations.set(el, runId);
+          el.textContent = '0';
+
+          if (prefersReducedMotion) {
+            el.textContent = formatNum(target);
+            return;
+          }
+
           const start = performance.now();
           const tick = (now) => {
+            if (activeAnimations.get(el) !== runId) return;
             const t = Math.min(1, (now - start) / duration);
             const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
             el.textContent = formatNum(Math.round(target * eased));
@@ -3372,10 +3386,62 @@
           };
           requestAnimationFrame(tick);
         };
+
+        const playStats = () => {
+          stats.forEach((stat, index) => {
+            const target = parseInt(stat.dataset.count, 10) || 0;
+            window.setTimeout(() => animate(stat, target), index * 70);
+          });
+        };
+
+        const resetStats = () => {
+          stats.forEach(stat => {
+            activeAnimations.set(stat, null);
+            stat.textContent = '0';
+          });
+        };
+
+        let replayTimer = null;
+        const replayStats = (delay = 0) => {
+          if (replayTimer) window.clearTimeout(replayTimer);
+          resetStats();
+          replayTimer = window.setTimeout(() => {
+            replayTimer = null;
+            playStats();
+          }, delay);
+        };
+
+        if (companiesSection) {
+          let isCompaniesVisible = false;
+          document.querySelectorAll('.side-nav-dot[data-target="section-companies"], a[href="#section-companies"]').forEach(link => {
+            link.addEventListener('click', () => replayStats(260));
+          });
+
+          const io = new IntersectionObserver((entries) => {
+            for (const entry of entries) {
+              if (entry.target !== companiesSection) continue;
+              if (entry.isIntersecting && !isCompaniesVisible) {
+                isCompaniesVisible = true;
+                replayStats();
+              } else if (!entry.isIntersecting && isCompaniesVisible) {
+                isCompaniesVisible = false;
+                resetStats();
+              }
+            }
+          }, { threshold: 0.35 });
+
+          resetStats();
+          io.observe(companiesSection);
+          return;
+        }
+
         const io = new IntersectionObserver((entries) => {
           for (const e of entries) {
-            if (!e.isIntersecting || e.target.dataset.counted === '1') continue;
-            e.target.dataset.counted = '1';
+            if (!e.isIntersecting) {
+              activeAnimations.set(e.target, null);
+              e.target.textContent = '0';
+              continue;
+            }
             const target = parseInt(e.target.dataset.count, 10) || 0;
             animate(e.target, target);
           }
