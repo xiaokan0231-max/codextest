@@ -2643,12 +2643,12 @@
             const origin = item.meaning.includes(" / ") ? item.meaning.split(" / ")[0] : item.meaning;
             result = result.replace(
               new RegExp(placeholder, 'g'),
-              `<span class="glossary-term katakana-term" data-term="${term}" data-origin="${origin}">${term}</span>`
+              `<span class="glossary-term katakana-term" data-term="${term}" data-origin="${origin}" tabindex="0">${term}</span>`
             );
           } else {
             result = result.replace(
               new RegExp(placeholder, 'g'),
-              `<span class="glossary-term" data-term="${term}">${term}</span>`
+              `<span class="glossary-term" data-term="${term}" tabindex="0">${term}</span>`
             );
           }
         });
@@ -2714,7 +2714,32 @@
         activeTooltip.style.top = `${top}px`;
       }
 
+      function bindGlossaryTerms(root = document) {
+        root.querySelectorAll('.glossary-term').forEach(term => {
+          if (term.dataset.tooltipBound === '1') return;
+          term.dataset.tooltipBound = '1';
+          term.addEventListener('pointerenter', showTooltip);
+          term.addEventListener('mouseenter', showTooltip);
+          term.addEventListener('focus', showTooltip);
+          term.addEventListener('click', showTooltip);
+          term.addEventListener('pointerleave', hideTooltip);
+          term.addEventListener('mouseleave', hideTooltip);
+          term.addEventListener('blur', hideTooltip);
+        });
+      }
+
+      document.addEventListener('pointerover', showTooltip);
       document.addEventListener('mouseover', showTooltip);
+      document.addEventListener('focusin', showTooltip);
+      document.addEventListener('pointerout', (e) => {
+        const termEl = e.target.closest('.glossary-term');
+        if (termEl) {
+          const relatedTarget = e.relatedTarget;
+          if (!relatedTarget || !relatedTarget.closest('.glossary-term')) {
+            hideTooltip();
+          }
+        }
+      });
       document.addEventListener('mouseout', (e) => {
         const termEl = e.target.closest('.glossary-term');
         if (termEl) {
@@ -2724,8 +2749,13 @@
           }
         }
       });
+      document.addEventListener('focusout', (e) => {
+        if (e.target.closest('.glossary-term')) hideTooltip();
+      });
       document.addEventListener('scroll', hideTooltip, { passive: true });
-      document.addEventListener('click', hideTooltip);
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.glossary-term')) hideTooltip();
+      });
 
       function formatElementText(el) {
         if (!el) return;
@@ -2884,6 +2914,7 @@
       const detailWork = document.getElementById('detailWork');
       const detailFit = document.getElementById('detailFit');
       const detailIcon = document.getElementById('detailIcon');
+      const detailCard = document.querySelector('.detail-card');
       const talkMemo = document.getElementById('talkMemo');
       const activeModeLabel = document.getElementById('activeModeLabel');
 
@@ -2986,9 +3017,11 @@
         if (detailCompanies) detailCompanies.innerHTML = formatGlossaryTerms(active.companies || '');
         detailWork.innerHTML = formatGlossaryTerms(active.work);
         detailFit.innerHTML = formatGlossaryTerms(active.fit);
+        bindGlossaryTerms(detailCard);
 
         if (talkMemo) {
           talkMemo.innerHTML = formatGlossaryTerms(active.memo || '');
+          bindGlossaryTerms(talkMemo);
         }
 
 
@@ -3173,6 +3206,7 @@
           btn.addEventListener('click', () => selectAnswer(ans.score));
           quizAnswers.appendChild(btn);
         });
+        bindGlossaryTerms(quizQuestionContainer);
       }
 
       function selectAnswer(scoreMap) {
@@ -3204,6 +3238,7 @@
         quizResultTitle.innerHTML = formatGlossaryTerms(result.title);
         quizResultDesc.innerHTML = formatGlossaryTerms(result.desc);
         quizResultDetail.innerHTML = formatGlossaryTerms(result.detail);
+        bindGlossaryTerms(quizResultContainer);
         
         quizQuestionContainer.style.display = 'none';
         quizResultContainer.style.display = 'block';
@@ -3282,6 +3317,7 @@
 
       // Scan all text nodes in the body for glossary terms on page load
       formatElementText(document.body);
+      bindGlossaryTerms(document.body);
 
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
