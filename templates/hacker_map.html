@@ -466,96 +466,154 @@
       }
 
       .edge {
-        stroke: rgba(255, 255, 255, 0.12);
+        stroke: rgba(255, 255, 255, 0.1);
         stroke-width: 1.2;
         stroke-dasharray: 2 4;
-        transition: stroke 200ms ease, stroke-width 200ms ease, opacity 200ms ease;
+        transition: stroke 200ms ease, stroke-width 200ms ease, opacity 200ms ease, filter 200ms ease;
       }
 
       .edge.active {
         stroke: var(--active);
-        stroke-width: 2.2;
-        stroke-dasharray: 6 3;
-        animation: edgeFlow 1.2s linear infinite;
-        opacity: 0.9;
+        stroke-width: 2.4;
+        stroke-dasharray: 5 3;
+        animation: edgeFlow 0.9s linear infinite;
+        opacity: 0.95;
+        filter: drop-shadow(0 0 4px color-mix(in srgb, var(--active) 70%, transparent));
       }
 
       @keyframes edgeFlow {
         to { stroke-dashoffset: -18; }
       }
 
+      /* ===== Node button (upgraded) ===== */
       .map-node-button {
+        --node-color: #69a7ff;
         position: absolute;
-        width: 160px;
-        min-height: 90px;
-        padding: 12px;
+        width: 168px;
+        min-height: 92px;
+        padding: 10px 12px 10px 56px;
         transform: translate(-50%, -50%);
-        /* Stronger border + lighter highlight to lift node off the dark backdrop. */
-        border: 1px solid rgba(148, 197, 255, 0.38);
-        border-radius: 12px;
+        border: 1px solid color-mix(in srgb, var(--node-color) 45%, rgba(148, 197, 255, 0.3));
+        border-radius: 14px;
         background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)),
-          rgba(22, 32, 54, 0.96);
+          linear-gradient(180deg, color-mix(in srgb, var(--node-color) 14%, rgba(255, 255, 255, 0.06)), rgba(255, 255, 255, 0.02)),
+          rgba(15, 23, 42, 0.92);
         color: var(--text);
         text-align: left;
         cursor: pointer;
         backdrop-filter: blur(8px);
         opacity: 0;
         animation: nodeFadeIn 600ms ease-out forwards;
-        transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+        transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+        box-shadow:
+          0 10px 26px rgba(0, 0, 0, 0.45),
+          0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+          0 0 16px color-mix(in srgb, var(--node-color) 18%, transparent);
       }
 
       @keyframes nodeFadeIn {
         from { opacity: 0; filter: blur(5px); transform: translate(-50%, -40%); }
-        to { opacity: 1; filter: blur(0); transform: translate(-50%, -50%); }
+        to   { opacity: 1; filter: blur(0);  transform: translate(-50%, -50%); }
       }
 
       .map-node-button:hover,
       .map-node-button:focus-visible {
         outline: none;
-        transform: translate(-50%, -50%) scale(1.04);
-        border-color: color-mix(in srgb, var(--active) 75%, white 25%);
-        box-shadow: 0 0 15px color-mix(in srgb, var(--active) 35%, transparent);
+        transform: translate(-50%, -50%) scale(1.06);
+        border-color: color-mix(in srgb, var(--node-color) 85%, white 15%);
+        box-shadow:
+          0 14px 32px rgba(0, 0, 0, 0.5),
+          0 0 24px color-mix(in srgb, var(--node-color) 55%, transparent);
       }
 
       .map-node-button.active {
-        border-color: var(--active);
+        border-color: var(--node-color);
         background:
-          linear-gradient(180deg, color-mix(in srgb, var(--active) 15%, transparent), transparent),
-          rgba(11, 15, 26, 0.95);
+          linear-gradient(180deg, color-mix(in srgb, var(--node-color) 26%, transparent), transparent),
+          rgba(11, 15, 26, 0.96);
         box-shadow:
-          0 0 20px color-mix(in srgb, var(--active) 40%, transparent),
-          inset 0 0 10px color-mix(in srgb, var(--active) 20%, transparent);
+          0 0 26px color-mix(in srgb, var(--node-color) 65%, transparent),
+          0 0 60px color-mix(in srgb, var(--node-color) 30%, transparent),
+          inset 0 0 14px color-mix(in srgb, var(--node-color) 22%, transparent);
+        z-index: 3;
       }
 
       .map-node-button.related {
-        border-color: color-mix(in srgb, var(--active) 40%, transparent);
-        box-shadow: 0 0 8px color-mix(in srgb, var(--active) 15%, transparent);
+        border-color: color-mix(in srgb, var(--node-color) 60%, transparent);
+        box-shadow: 0 0 14px color-mix(in srgb, var(--node-color) 30%, transparent);
       }
+
+      /* big icon disc on the left of the node */
+      .node-icon {
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, color-mix(in srgb, var(--node-color) 35%, #0a0f1c) 30%, #0a0f1c 100%);
+        color: #fff;
+        font-size: 20px;
+        line-height: 1;
+        box-shadow:
+          inset 0 0 0 1px color-mix(in srgb, var(--node-color) 50%, rgba(255,255,255,0.18)),
+          0 0 14px color-mix(in srgb, var(--node-color) 40%, transparent);
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+      }
+
+      .node-body { display: block; }
 
       .node-kicker {
         display: block;
-        margin-bottom: 4px;
-        color: color-mix(in srgb, var(--active) 75%, white 25%);
+        margin-bottom: 3px;
+        color: color-mix(in srgb, var(--node-color) 70%, white 30%);
         font-size: 10px;
         font-weight: 800;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.06em;
       }
 
       .node-title {
         display: block;
         font-size: 13px;
-        font-weight: 750;
+        font-weight: 800;
         line-height: 1.25;
       }
 
       .node-risk {
         display: block;
-        margin-top: 6px;
+        margin-top: 4px;
         color: var(--muted);
         font-size: 11px;
         line-height: 1.35;
+      }
+
+      /* pulsing brand-color ring on active node */
+      .node-pulse {
+        position: absolute;
+        inset: -4px;
+        border-radius: 16px;
+        pointer-events: none;
+        opacity: 0;
+        border: 2px solid var(--node-color);
+      }
+
+      .map-node-button.active .node-pulse {
+        opacity: 1;
+        animation: nodePulseRing 1.8s ease-out infinite;
+      }
+
+      @keyframes nodePulseRing {
+        0%   { transform: scale(1);    opacity: 0.85; }
+        100% { transform: scale(1.25); opacity: 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .map-node-button.active .node-pulse { animation: none; }
+        .edge.active { animation: none; }
       }
 
       .news-trigger {
@@ -646,79 +704,140 @@
         display: grid;
         grid-template-rows: auto 1fr auto;
         overflow: hidden;
+        position: relative;
+      }
+
+      /* subtle accent corner using the active color */
+      .detail-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--active), transparent 80%);
+        opacity: 0.7;
+        pointer-events: none;
       }
 
       .detail-header {
-        padding: 22px;
+        padding: 20px 22px 18px;
         border-bottom: 1px solid var(--line);
       }
 
+      .detail-header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      .detail-icon {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background:
+          radial-gradient(circle, color-mix(in srgb, var(--active) 30%, #0a0f1c) 30%, #0a0f1c 100%);
+        font-size: 22px;
+        line-height: 1;
+        box-shadow:
+          inset 0 0 0 1px color-mix(in srgb, var(--active) 50%, rgba(255,255,255,0.18)),
+          0 0 18px color-mix(in srgb, var(--active) 45%, transparent);
+      }
+
       .step {
-        margin: 0 0 8px;
+        margin: 0;
         color: var(--gold);
         font-size: 11px;
         font-weight: 850;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
       }
 
       .detail-title {
-        margin: 0;
-        font-size: 26px;
+        margin: 0 0 8px;
+        font-size: 24px;
         line-height: 1.2;
         font-weight: 850;
       }
 
-      .detail-body {
-        padding: 22px;
-        overflow-y: auto;
-      }
-
       .summary {
-        margin: 0 0 18px;
-        color: #f1f5f9;
-        font-size: 15px;
-        line-height: 1.7;
-        font-weight: 500;
-      }
-
-      .info-grid {
-        display: grid;
-        gap: 12px;
-      }
-
-      .info-box {
-        padding: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
-        background: rgba(15, 23, 42, 0.45);
-      }
-
-      .info-box h3 {
-        margin: 0 0 6px;
-        color: #ffffff;
-        font-size: 13px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .info-box h3::before {
-        content: "";
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        background-color: var(--active);
-        border-radius: 50%;
-        box-shadow: 0 0 6px var(--active);
-      }
-
-      .info-box p {
         margin: 0;
-        color: var(--muted);
+        color: #cbd5e1;
         font-size: 13.5px;
-        line-height: 1.6;
+        line-height: 1.65;
       }
+
+      .detail-body {
+        padding: 18px 22px;
+        overflow: hidden;
+        align-content: start;
+        display: grid;
+      }
+
+      .info-chips {
+        display: grid;
+        gap: 10px;
+      }
+
+      .chip-box {
+        display: grid;
+        grid-template-columns: 88px 1fr;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 14px;
+        border: 1px solid color-mix(in srgb, var(--active) 22%, rgba(255, 255, 255, 0.08));
+        border-radius: 10px;
+        background: linear-gradient(90deg,
+          color-mix(in srgb, var(--active) 12%, transparent),
+          rgba(15, 23, 42, 0.45));
+        transition: border-color 200ms ease, background 200ms ease;
+      }
+
+      .chip-box:hover {
+        border-color: color-mix(in srgb, var(--active) 50%, transparent);
+        background: linear-gradient(90deg,
+          color-mix(in srgb, var(--active) 20%, transparent),
+          rgba(15, 23, 42, 0.55));
+      }
+
+      .chip-label {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        padding-left: 14px;
+        color: color-mix(in srgb, var(--active) 30%, #fff);
+        font-size: 11px;
+        font-weight: 850;
+        letter-spacing: 0.06em;
+        white-space: nowrap;
+      }
+
+      .chip-label::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--active);
+        box-shadow: 0 0 10px var(--active);
+      }
+
+      .chip-text {
+        margin: 0;
+        color: #e2e8f0;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      /* Legacy classes kept for backwards-compat with old markup elsewhere */
+      .info-grid { display: grid; gap: 10px; }
+      .info-box  { padding: 10px 12px; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; background: rgba(15,23,42,.45); }
+      .info-box h3 { margin: 0 0 4px; color: #fff; font-size: 12px; font-weight: 700; }
+      .info-box p  { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.55; }
 
       .controls {
         padding: 16px;
@@ -1068,29 +1187,29 @@
         grid-template-columns: 1fr auto;
         gap: 18px;
         align-items: end;
-        margin-bottom: 22px;
+        margin-bottom: 14px;
       }
 
       .companies-eyebrow {
-        margin: 0 0 8px;
+        margin: 0 0 4px;
         color: var(--gold);
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 850;
         letter-spacing: 0.12em;
       }
 
       .companies h2 {
         margin: 0;
-        font-size: clamp(26px, 4vw, 42px);
+        font-size: clamp(22px, 3vw, 32px);
         line-height: 1.15;
         font-weight: 900;
       }
 
       .companies-lead {
-        margin: 10px 0 0;
+        margin: 6px 0 0;
         max-width: 720px;
         color: var(--muted);
-        font-size: 14px;
+        font-size: 12.5px;
         line-height: 1.8;
       }
 
@@ -1110,13 +1229,13 @@
       .company-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 22px;
+        gap: 14px;
       }
 
       .company-card {
         position: relative;
-        min-height: 320px;
-        padding: 24px 24px 22px;
+        min-height: 248px;
+        padding: 16px 18px 14px;
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px;
         background:
@@ -1210,9 +1329,9 @@
         position: relative;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 14px;
-        margin: 14px 0 12px;
-        padding: 12px 14px;
+        gap: 12px;
+        margin: 8px 0 8px;
+        padding: 8px 12px;
         border: 1px solid color-mix(in srgb, var(--company-color) 22%, rgba(255, 255, 255, 0.08));
         border-radius: 12px;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
@@ -1229,7 +1348,7 @@
 
       .stat-num {
         grid-row: 1;
-        font-size: 22px;
+        font-size: 18px;
         font-weight: 950;
         letter-spacing: -0.02em;
         color: #fff;
@@ -1280,13 +1399,13 @@
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        margin-bottom: 22px;
+        margin-bottom: 12px;
       }
 
       .company-logo {
         position: relative;
-        width: 88px;
-        height: 88px;
+        width: 64px;
+        height: 64px;
         flex: 0 0 auto;
         display: grid;
         place-items: center;
@@ -1304,8 +1423,8 @@
       }
 
       .company-logo svg {
-        width: 64px;
-        height: 64px;
+        width: 46px;
+        height: 46px;
         filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
       }
 
@@ -1361,8 +1480,8 @@
       .company-name {
         position: relative;
         display: block;
-        margin: 0 0 10px;
-        font-size: 21px;
+        margin: 0 0 6px;
+        font-size: 18px;
         color: #ffffff;
         font-weight: 900;
         line-height: 1.25;
@@ -1370,10 +1489,10 @@
 
       .company-copy {
         position: relative;
-        margin: 0;
+        margin: 0 0 4px;
         color: var(--muted);
-        font-size: 13.5px;
-        line-height: 1.75;
+        font-size: 12.5px;
+        line-height: 1.6;
       }
 
       .company-card.japan {
@@ -1410,7 +1529,7 @@
         grid-template-columns: 1fr auto;
         gap: 18px;
         align-items: end;
-        margin-bottom: 22px;
+        margin-bottom: 8px;
       }
 
       .cert-eyebrow {
@@ -1923,32 +2042,31 @@
 
           <aside class="detail-card" aria-live="polite" aria-label="選択中の説明">
             <div class="detail-header">
-              <p class="step" id="stepLabel">1 / 8</p>
+              <div class="detail-header-top">
+                <span class="detail-icon" id="detailIcon" aria-hidden="true">🌐</span>
+                <p class="step" id="stepLabel">1 / 8</p>
+              </div>
               <h2 class="detail-title" id="detailTitle">ロード中...</h2>
+              <p class="summary" id="detailSummary"></p>
             </div>
             <div class="detail-body" id="detailBody">
-              <p class="summary" id="detailSummary"></p>
-              <div class="info-grid">
-                <section class="info-box">
-                  <h3>どのような概念？</h3>
-                  <p id="detailKind"></p>
+              <div class="info-chips">
+                <section class="chip-box">
+                  <span class="chip-label">役割</span>
+                  <p class="chip-text" id="detailKind"></p>
                 </section>
-                <section class="info-box">
-                  <h3>具体例</h3>
-                  <p id="detailCompanies"></p>
+                <section class="chip-box">
+                  <span class="chip-label">仕事</span>
+                  <p class="chip-text" id="detailWork"></p>
                 </section>
-                <section class="info-box">
-                  <h3>主な仕事・活動</h3>
-                  <p id="detailWork"></p>
-                </section>
-                <section class="info-box">
-                  <h3>適正・向いている人</h3>
-                  <p id="detailFit"></p>
+                <section class="chip-box">
+                  <span class="chip-label">向いている人</span>
+                  <p class="chip-text" id="detailFit"></p>
                 </section>
               </div>
             </div>
             <div class="controls">
-              <p class="hint">キーボード（← / → / スペースキー）またはノードをクリックして切り替えることができます。</p>
+              <p class="hint">← / → / Space または ノードをクリック</p>
             </div>
           </aside>
         </main>
@@ -2654,134 +2772,89 @@
       /* ============ 3. Nodes Data ============ */
       const nodes = [
         {
-          id: 'intro',
-          title: 'サイバーセキュリティ入門',
-          kicker: '01. INTRO',
-          risk: '安全の第一歩',
-          x: 50,
-          y: 15,
-          color: '#10b981',
-          summary: 'サイバーセキュリティは、データ、プライバシー、社会インフラを脅威から守る現代の盾です。',
-          kind: 'インターネット上の安全を確保し、悪意ある攻撃からシステムを防衛する活動全般。',
-          companies: 'すべてのIT企業、政府機関、および専門組織。',
-          work: 'セキュリティ監査、リスク評価、ガイドライン策定。',
-          fit: '新しい技術に興味があり、ルールや社会を守ることに価値を感じる人。',
-          memo: 'まずはここから！セキュリティがなぜ現代社会で重要なのかを理解しましょう。',
+          id: 'intro', title: 'サイバーセキュリティ入門', kicker: '01. INTRO',
+          risk: '安全の第一歩', icon: '🌐',
+          x: 50, y: 15, color: '#10b981',
+          summary: 'データ・プライバシー・社会インフラを脅威から守る現代の盾。',
+          role: '全体像と基本ルールを学ぶ入口',
+          work: 'リスク評価・監査・ガイドライン策定',
+          fit: '社会を守ることに価値を感じる人',
           related: ['whitehat', 'blackhat']
         },
         {
-          id: 'whitehat',
-          title: 'ホワイトハットハッカー',
-          kicker: '02. WHITE HAT',
-          risk: '正義の技術者',
-          x: 28,
-          y: 38,
-          color: '#38bdf8',
-          summary: '高い技術力を持ち、システム保護や脆弱性の発見にその力を使う正義のハッカーです。',
-          kind: '脆弱性（システムの穴）を攻撃者より先に見つけ、企業に報告・修復します。',
-          companies: 'バグバウンティ・プラットフォーム、セキュリティ監査法人。',
-          work: 'バグハンティング、脆弱性調査、セキュリティ研究開発。',
-          fit: '知的好奇心が旺盛で、パズルや謎解きのように弱点を探すのが得意な人。',
-          memo: 'バグバウンティ（脆弱性報奨金制度）で生計を立てる独立系ハッカーも世界中に存在します。',
+          id: 'whitehat', title: 'ホワイトハットハッカー', kicker: '02. WHITE HAT',
+          risk: '正義の技術者', icon: '🦸',
+          x: 28, y: 38, color: '#38bdf8',
+          summary: '高い技術で脆弱性を見つけ、システムを守る正義側のハッカー。',
+          role: '攻撃者より先に穴を見つける',
+          work: 'バグハンティング・脆弱性研究',
+          fit: 'パズル好きで知的好奇心が強い人',
           related: ['intro', 'redteam', 'blueteam', 'ctf']
         },
         {
-          id: 'blackhat',
-          title: 'ブラックハットハッカー',
-          kicker: '03. BLACK HAT',
-          risk: 'サイバー犯罪者',
-          x: 72,
-          y: 38,
-          color: '#f43f5e',
-          summary: '個人情報の窃取、金銭脅迫、破壊活動など、悪意を持って攻撃を行うハッカーです。',
-          kind: 'ランサムウェア（身代金要求ウイルス）や情報漏洩を仕掛け、社会を脅かします。',
-          companies: '国家支援型ハッカー集団（APT）、サイバー地下犯罪組織。',
-          work: '標的型攻撃、マルウェア開発、フィッシング詐欺の実行。',
-          fit: '防衛側が立ち向かうべき「敵」としての攻撃手法と心理。',
-          memo: '彼らの手口（TTPs）を分析・追跡することが、防衛力を高める一番の近道です。',
+          id: 'blackhat', title: 'ブラックハットハッカー', kicker: '03. BLACK HAT',
+          risk: 'サイバー犯罪者', icon: '💀',
+          x: 72, y: 38, color: '#f43f5e',
+          summary: '悪意を持って情報窃取・金銭脅迫・破壊活動を行う攻撃者。',
+          role: '社会を脅かす敵としての存在',
+          work: '標的型攻撃・ランサムウェア・詐欺',
+          fit: '彼らの手口を理解することが防衛の鍵',
           related: ['intro', 'ctf']
         },
         {
-          id: 'redteam',
-          title: 'レッドチーム（擬似攻撃側）',
-          kicker: '04. RED TEAM',
-          risk: '安全性の検証役',
-          x: 12,
-          y: 62,
-          color: '#ff5c7a',
-          summary: '実際のサイバー攻撃者を模して、組織の防衛体制が機能するかをテストするチームです。',
-          kind: '許可を得て標的に「ペネトレーションテスト（侵入テスト）」を行います。',
-          companies: 'グローバルセキュリティファーム、大企業の社内内部監査チーム。',
-          work: 'ソーシャルエンジニアリング（なりすまし等）、物理・デジタル侵入。',
-          fit: 'クリエイティブな発想でマニュアル外の道を模索できる人。',
-          memo: '単なるツールスキャンではなく、人の心の隙や物理セキュリティを含めた実戦訓練を行います。',
+          id: 'redteam', title: 'レッドチーム', kicker: '04. RED TEAM',
+          risk: '安全性の検証役', icon: '⚔️',
+          x: 12, y: 62, color: '#ff5c7a',
+          summary: '攻撃者を模して組織の防衛体制をテストするチーム。',
+          role: '許可を得て侵入テストを実施',
+          work: 'ペネトレーション・ソーシャル工学',
+          fit: 'マニュアル外の発想ができる人',
           related: ['whitehat', 'blueteam', 'careers']
         },
         {
-          id: 'blueteam',
-          title: 'ブルーチーム（防衛・運用側）',
-          kicker: '05. BLUE TEAM',
-          risk: '絶え間ない防衛',
-          x: 37,
-          y: 62,
-          color: '#3b82f6',
-          summary: 'サイバー攻撃をリアルタイムで検知・防御し、インシデント（事故）発生時に素早く対処します。',
-          kind: 'SOC（セキュリティ監視センター）やCSIRT（事案対処チーム）でシステムを防御。',
-          companies: '大企業のセキュリティ部門、MSSP（セキュリティ運用受託会社）。',
-          work: 'ログ監視、マルウェア解析（フォレンジック）、被害封じ込め。',
-          fit: '慎重で観察力があり、異常な変化やログの細部に気づくことができる人。',
-          memo: 'レッドチームの攻撃を検知・遮断し、被害を最小限に抑えるのが彼らの使命です。',
+          id: 'blueteam', title: 'ブルーチーム', kicker: '05. BLUE TEAM',
+          risk: '絶え間ない防衛', icon: '🛡️',
+          x: 37, y: 62, color: '#3b82f6',
+          summary: '攻撃をリアルタイムで検知・防御し、事故に素早く対応。',
+          role: 'SOC / CSIRT で防御運用',
+          work: 'ログ監視・解析・封じ込め',
+          fit: '観察力があり細部に気づける人',
           related: ['whitehat', 'redteam', 'industry', 'careers']
         },
         {
-          id: 'ctf',
-          title: 'CTF & コミュニティ',
-          kicker: '06. CTF & SOCIAL',
-          risk: '技術競技場',
-          x: 63,
-          y: 62,
-          color: '#a855f7',
-          summary: 'CTF（Capture The Flag）というハッキング競技で、世界のハッカーと腕を競い合います。',
-          kind: '暗号解読、プログラム解析、Webハッキング等の課題を解き、隠された旗（Flag）を探します。',
-          companies: 'DEF CON、SECCONなどの各種大会主催団体、ハッカーコミュニティ。',
-          work: 'リバースエンジニアリング、バイナリ解析、競技用ツールの作成。',
-          fit: '負けず嫌いで、徹夜でコーディングやパズルを解くのが大好きな人。',
-          memo: '世界トップクラスのCTFチームは、企業から直接スカウトされることも多々あります。',
+          id: 'ctf', title: 'CTF & コミュニティ', kicker: '06. CTF & SOCIAL',
+          risk: '技術競技場', icon: '🏁',
+          x: 63, y: 62, color: '#a855f7',
+          summary: 'ハッキング競技で世界のハッカーと腕を競い合う場。',
+          role: '実戦力を競技で鍛える',
+          work: 'リバエン・暗号解読・Web攻撃演習',
+          fit: '徹夜でパズルを解くのが好きな人',
           related: ['whitehat', 'blackhat', 'careers']
         },
         {
-          id: 'industry',
-          title: 'セキュリティ企業',
-          kicker: '07. INDUSTRY',
-          risk: 'ビジネスと防衛',
-          x: 88,
-          y: 62,
-          color: '#f59e0b',
-          summary: '他の企業のシステム開発や安全管理をサポートする、専門のセキュリティベンダーです。',
-          kind: 'セキュリティ製品の販売、コンサルティング、インシデント対応の派遣を行います。',
-          companies: 'トレンドマイクロ、ラック（LAC）、ラックのSOC、GMOサイバーセキュリティ。',
-          work: 'セキュリティ製品開発、セキュリティ対策コンサルティング。',
-          fit: '顧客のビジネスを深く理解し、専門知識を優しく説明できるコミュニケーション力のある人。',
-          memo: '日本では、専門会社が複数の企業の防御を一手に引き受ける「MSSP」市場が大きく成長しています。',
+          id: 'industry', title: 'セキュリティ企業', kicker: '07. INDUSTRY',
+          risk: 'ビジネスと防衛', icon: '🏢',
+          x: 88, y: 62, color: '#f59e0b',
+          summary: '他企業のセキュリティ運用を支える専門ベンダー。',
+          role: '製品開発・コンサル・運用代行',
+          work: 'プロダクト開発・MSS 提供',
+          fit: '専門知識を伝えるのが好きな人',
           related: ['blueteam', 'careers']
         },
         {
-          id: 'careers',
-          title: 'キャリアパス',
-          kicker: '08. CAREERS',
-          risk: '自分だけの道',
-          x: 50,
-          y: 85,
-          color: '#ffd700',
-          summary: 'セキュリティ人材は世界中で圧倒的に不足しており、多くの多様なキャリアが存在します。',
-          kind: '技術極振りスペシャリストから、組織マネジメントを行うCISO（情報セキュリティ最高責任者）まで。',
-          companies: '官公庁、金融機関、メガベンチャー、グローバル企業。',
-          work: 'セキュリティアーキテクト、CISO、セキュリティエヴァンジェリスト。',
-          fit: '変化を恐れず、常に新しい知識を主体的に学び続ける学習意欲がある人。',
-          memo: 'ハッカーのスキルは、デジタル社会を生き抜くための最強の武器になります。',
+          id: 'careers', title: 'キャリアパス', kicker: '08. CAREERS',
+          risk: '自分だけの道', icon: '🎯',
+          x: 50, y: 85, color: '#ffd700',
+          summary: '世界的に人材不足。多様なキャリアの選択肢が広がる。',
+          role: '技術職から CISO まで幅広く',
+          work: 'アーキテクト・CISO・エヴァンジェリスト',
+          fit: '主体的に学び続けられる人',
           related: ['redteam', 'blueteam', 'ctf', 'industry']
         }
       ];
+
+      // Backwards-compat: old code may still reference `kind`, `companies`, `memo`.
+      nodes.forEach(n => { n.kind = n.role; n.companies = ''; n.memo = ''; });
 
       const edges = [
         ['intro', 'whitehat'],
@@ -2807,9 +2880,10 @@
       const detailTitle = document.getElementById('detailTitle');
       const detailSummary = document.getElementById('detailSummary');
       const detailKind = document.getElementById('detailKind');
-      const detailCompanies = document.getElementById('detailCompanies');
+      const detailCompanies = document.getElementById('detailCompanies'); // optional
       const detailWork = document.getElementById('detailWork');
       const detailFit = document.getElementById('detailFit');
+      const detailIcon = document.getElementById('detailIcon');
       const talkMemo = document.getElementById('talkMemo');
       const activeModeLabel = document.getElementById('activeModeLabel');
 
@@ -2845,11 +2919,16 @@
           button.style.left = `${node.x}%`;
           button.style.top = `${node.y}%`;
           button.style.animationDelay = `${index * 80}ms`;
+          button.style.setProperty('--node-color', node.color);
           button.dataset.id = node.id;
           button.innerHTML = `
-            <span class="node-kicker">${node.kicker}</span>
-            <span class="node-title">${node.title}</span>
-            <span class="node-risk">${node.risk}</span>
+            <span class="node-icon" aria-hidden="true">${node.icon || ''}</span>
+            <span class="node-body">
+              <span class="node-kicker">${node.kicker}</span>
+              <span class="node-title">${node.title}</span>
+              <span class="node-risk">${node.risk}</span>
+            </span>
+            <span class="node-pulse" aria-hidden="true"></span>
           `;
           button.addEventListener('click', () => setActive(index, true));
           stage.appendChild(button);
@@ -2899,16 +2978,17 @@
 
         stepLabel.textContent = `${activeIndex + 1} / ${nodes.length}`;
         detailTitle.innerHTML = formatGlossaryTerms(active.title);
-        
+        if (detailIcon && active.icon) detailIcon.textContent = active.icon;
+
         // Dynamically apply term glossary formatting
         detailSummary.innerHTML = formatGlossaryTerms(active.summary);
-        detailKind.innerHTML = formatGlossaryTerms(active.kind);
-        detailCompanies.innerHTML = formatGlossaryTerms(active.companies);
+        detailKind.innerHTML = formatGlossaryTerms(active.kind || active.role || '');
+        if (detailCompanies) detailCompanies.innerHTML = formatGlossaryTerms(active.companies || '');
         detailWork.innerHTML = formatGlossaryTerms(active.work);
         detailFit.innerHTML = formatGlossaryTerms(active.fit);
-        
+
         if (talkMemo) {
-          talkMemo.innerHTML = formatGlossaryTerms(active.memo);
+          talkMemo.innerHTML = formatGlossaryTerms(active.memo || '');
         }
 
 
