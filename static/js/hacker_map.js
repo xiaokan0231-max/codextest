@@ -266,13 +266,29 @@
       /* ============ 2.1 Glossary Hover Tooltip & Dynamic Formatting ============ */
       let activeTooltip = null;
       let activeTooltipTerm = null;
+      // Track last known pointer position so we can re-show the tooltip when the
+      // DOM under a stationary cursor changes (e.g. user clicks a node while
+      // hovering a term — the new term needs to take over without requiring a
+      // mouse wiggle).
+      let lastPointer = { x: -1, y: -1, hasPosition: false };
+
+      // Detached references (term removed from DOM, tooltip detached) are a
+      // common source of "stuck" state. Resetting them here keeps state honest.
+      function pruneStaleState() {
+        if (activeTooltipTerm && !activeTooltipTerm.isConnected) {
+          activeTooltipTerm = null;
+        }
+        if (activeTooltip && !activeTooltip.isConnected) {
+          activeTooltip = null;
+        }
+      }
 
       function hideTooltip() {
         if (activeTooltip) {
           activeTooltip.classList.remove('active');
           activeTooltip.remove();
-          activeTooltip = null;
         }
+        activeTooltip = null;
         activeTooltipTerm = null;
       }
 
@@ -288,9 +304,11 @@
       }
 
       function showTooltipForTerm(termEl) {
+        if (!termEl || !termEl.isConnected) return;
         const termKey = termEl.dataset.term;
         const item = glossaryDict[termKey];
         if (!item) return;
+        pruneStaleState();
         activeTooltipTerm = termEl;
 
         if (!activeTooltip) {
@@ -340,6 +358,12 @@
       }
 
       function handleGlossaryPointerMove(e) {
+        if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+          lastPointer.x = e.clientX;
+          lastPointer.y = e.clientY;
+          lastPointer.hasPosition = true;
+        }
+        pruneStaleState();
         const termEl = getGlossaryTermFromEvent(e);
         if (termEl) {
           if (termEl !== activeTooltipTerm) showTooltipForTerm(termEl);
@@ -348,49 +372,79 @@
         if (activeTooltipTerm) hideTooltip();
       }
 
+      // Called after a DOM update (e.g. setActive) to honour the user's
+      // stationary cursor: if it now sits over a glossary term, show its
+      // tooltip without waiting for the next pointermove.
+      function refreshTooltipUnderCursor() {
+        if (!lastPointer.hasPosition) return;
+        const el = document.elementFromPoint(lastPointer.x, lastPointer.y);
+        const termEl = el?.closest?.('.glossary-term');
+        if (termEl) {
+          showTooltipForTerm(termEl);
+        } else if (activeTooltipTerm) {
+          hideTooltip();
+        }
+      }
+
       function bindGlossaryTerms(root = document) {
+        // Per-term listeners exist only for inputs the document-level
+        // delegates miss: keyboard focus (a11y) and click (for touch / explicit
+        // intent). All hover, leave, and blur cases are handled by the
+        // document-level delegated listeners further below, which understand
+        // relatedTarget and avoid the leave→enter flicker that per-term
+        // pointerleave/mouseleave used to cause when moving between adjacent
+        // terms.
         root.querySelectorAll('.glossary-term').forEach(term => {
           if (term.dataset.tooltipBound === '1') return;
           term.dataset.tooltipBound = '1';
-          term.addEventListener('pointerenter', showTooltip);
-          term.addEventListener('mouseenter', showTooltip);
           term.addEventListener('focus', showTooltip);
           term.addEventListener('click', showTooltip);
-          term.addEventListener('pointerleave', hideTooltip);
-          term.addEventListener('mouseleave', hideTooltip);
-          term.addEventListener('blur', hideTooltip);
         });
       }
+
+      // Capture-phase position tracker — fires before any other handler so
+      // lastPointer is always up to date when other handlers run. Only mouse
+      // movement events are tracked; synthetic .click() and keyboard-driven
+      // clicks come through with clientX/Y = 0, which would falsely move
+      // lastPointer to the top-left corner.
+      function trackPointerPosition(e) {
+        if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+        if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
+          // Reject the (0, 0) sentinel that synthetic / keyboard events ship
+          // unless the previous position was also near origin (genuine corner
+          // hover is rare; the false-positive cost is much higher).
+          if (e.clientX === 0 && e.clientY === 0 && lastPointer.hasPosition) return;
+          lastPointer.x = e.clientX;
+          lastPointer.y = e.clientY;
+          lastPointer.hasPosition = true;
+        }
+      }
+      document.addEventListener('pointermove', trackPointerPosition, { capture: true, passive: true });
+      document.addEventListener('mousemove', trackPointerPosition, { capture: true, passive: true });
 
       document.addEventListener('pointerover', showTooltip);
       document.addEventListener('mouseover', showTooltip);
       document.addEventListener('pointermove', handleGlossaryPointerMove, { passive: true });
       document.addEventListener('mousemove', handleGlossaryPointerMove, { passive: true });
       document.addEventListener('focusin', showTooltip);
-      document.addEventListener('pointerout', (e) => {
-        const termEl = e.target.closest('.glossary-term');
-        if (termEl) {
-          const relatedTarget = e.relatedTarget;
-          if (!relatedTarget || !relatedTarget.closest('.glossary-term')) {
-            hideTooltip();
-          }
+      // Out / leave handling: use relatedTarget to avoid hiding when the
+      // pointer is just moving between two adjacent glossary terms.
+      function handleLeave(e) {
+        const termEl = e.target.closest?.('.glossary-term');
+        if (!termEl) return;
+        const relatedTarget = e.relatedTarget;
+        if (!relatedTarget || !relatedTarget.closest?.('.glossary-term')) {
+          hideTooltip();
         }
-      });
-      document.addEventListener('mouseout', (e) => {
-        const termEl = e.target.closest('.glossary-term');
-        if (termEl) {
-          const relatedTarget = e.relatedTarget;
-          if (!relatedTarget || !relatedTarget.closest('.glossary-term')) {
-            hideTooltip();
-          }
-        }
-      });
+      }
+      document.addEventListener('pointerout', handleLeave);
+      document.addEventListener('mouseout', handleLeave);
       document.addEventListener('focusout', (e) => {
-        if (e.target.closest('.glossary-term')) hideTooltip();
+        if (e.target.closest?.('.glossary-term')) hideTooltip();
       });
       document.addEventListener('scroll', hideTooltip, { passive: true });
       document.addEventListener('click', (e) => {
-        if (!e.target.closest('.glossary-term')) hideTooltip();
+        if (!e.target.closest?.('.glossary-term')) hideTooltip();
       });
 
       function formatElementText(el) {
@@ -659,6 +713,14 @@
           talkMemo.innerHTML = formatGlossaryTerms(active.memo || '');
           bindGlossaryTerms(talkMemo);
         }
+
+        // The user often clicks a node while hovering a term — without this
+        // the new content under the stationary cursor would show no tooltip
+        // until the user moves the mouse, which feels broken. We defer to the
+        // next task so the document-level click handler (which calls
+        // hideTooltip when the click target isn't a term) has finished
+        // bubbling and won't immediately tear down the tooltip we just opened.
+        setTimeout(refreshTooltipUnderCursor, 0);
 
 
 
