@@ -1,0 +1,42 @@
+Image prompts used by the five-scene jidoushi/tadoushi quest.
+Only the transitive/intransitive pair for each retained story scene is included.
+
+001
+image: stage-01-option-a.png
+prompt: A two-panel comic. A learner opens a closed wooden door by hand and warm morning light spills in. Cinematic educational game style, 16:10, no text, no watermark.
+
+002
+image: stage-01-option-b.png
+prompt: A two-panel comic. A learner stands away from a wooden door as it opens on its own with eerie light. Ghostly comedy, cinematic lighting, 16:10, no text, no watermark.
+
+003
+image: stage-03-option-a.png
+prompt: A two-panel comic. A learner accidentally knocks a ceramic cup from a kitchen table. Clear human action, cinematic style, 16:10, no text, no watermark.
+
+004
+image: stage-03-option-b.png
+prompt: A two-panel comic. A cup jumps off a kitchen table by itself while the learner stands far away. Surreal comedy, 16:10, no text, no watermark.
+
+005
+image: stage-04-option-a.png
+prompt: A two-panel comic. A room light suddenly goes out with nobody near the switch. Quiet mysterious comedy, 16:10, no text, no watermark.
+
+006
+image: stage-04-option-b.png
+prompt: A two-panel comic. The learner presses a switch and turns off the room light. Comic-noir educational style, 16:10, no text, no watermark.
+
+007
+image: stage-08-option-a.png
+prompt: A two-panel comic. A host deliberately begins a meeting while attendees pay attention. Cinematic educational style, 16:10, no text, no watermark.
+
+008
+image: stage-08-option-b.png
+prompt: A two-panel comic. A meeting mysteriously starts on its own while the host is ignored. Uncanny office comedy, 16:10, no text, no watermark.
+
+009
+image: stage-10-option-a.png
+prompt: A two-panel comic. At home, the learner flips a switch and turns on a warm room light. Cinematic finale, 16:10, no text, no watermark.
+
+010
+image: stage-10-option-b.png
+prompt: A two-panel comic. At home, the room light turns on by itself while the switch remains untouched. Ghostly finale comedy, 16:10, no text, no watermark.

@@ -1,6 +1,10 @@
 __pycache__/
 *.py[cod]
+.DS_Store
 
 # 用户上传的文件不纳入版本控制（保留目录结构用的 .gitkeep 除外）
 uploads/**/*
 !uploads/**/.gitkeep
+
+# Claude Code 临时 worktree 状态（按需保留 launch.json 等本地配置）
+.claude/worktrees/

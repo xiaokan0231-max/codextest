@@ -1,0 +1,1524 @@
+{
+  "deck": {
+    "id": "ghost_day_v2",
+    "displayName": "あなたの選択から生まれた物語",
+    "displaySubtitle": "あなたが選んだ通りに、今日の物語を書きました。",
+    "slots": ["morning_home", "commute", "office", "return", "evening_home"],
+    "stageIds": [
+      "open_door", "drop_cup", "alarm_rings", "boil_water", "brew_tea", "warm_soup",
+      "door_closes", "drop_ticket", "train_stops", "people_gather", "train_doors_open", "station_announce",
+      "start_meeting", "continue_meeting", "end_meeting", "work_increases", "raise_hand", "plan_changes",
+      "temp_drops", "signal_changes", "drop_umbrella", "find_lost", "branch_snaps", "sunset_fades",
+      "lights_off", "lights_on", "water_flows", "vase_falls", "decide_plan", "hide_gift"
+    ],
+    "story": {
+      "arcDescription": "段落順: (1)朝の自宅 → (2)通勤 → (3)会社 → (4)帰路の夕方 → (5)夜の自宅。各段落は時間と場所が前段から自然に進むこと。",
+      "languageLevel": "JLPT N4-N3",
+      "paragraphCount": 5,
+      "maxSentencesPerParagraph": 4,
+      "throughLine": "主人公の一日を、朝起きてから夜寝るまでの5つの場面に分けて描く一本の物語。朝の自宅で目覚め、通勤で家を離れ、会社で仕事をし、夕方の帰路をたどり、夜に再び自宅へ戻る。各場面は同じ一日の中で時間順に連続し、前の段落の状況や感情が次の段落に持ち越される。"
+    }
+  },
+  "stages": {
+
+    "open_door": {
+      "slot": "morning_home",
+      "pair": "開く / 開ける",
+      "scene": {
+        "title": "脱出部屋のドア",
+        "subtitle": "朝7時、目の前のドアは閉まっている。さて、ここで現場に何が起きる？",
+        "question": "门是怎么开的？",
+        "hint": "看看现场——是你动手了，还是它自己变化？"
+      },
+      "mission": "把门打开。",
+      "correctId": "a",
+      "correctNote": "他動詞「開ける」は、人がドアに働きかけて開く状態にする表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "ドアを開ける",
+          "kana": "どあをあける",
+          "meaning": "把门打开。",
+          "agentless": false,
+          "narrative": {
+            "label": "我伸手把它开了",
+            "hint": "你走过去，亲手把门推开。",
+            "joke": "手を伸ばして、ちゃんと攻略を進めています。"
+          },
+          "story": {
+            "anchorJa": "朝、私は自分でドアを開けた。",
+            "requiredRegex": "ドアを[^。！？]{0,40}開け",
+            "event": "主人公が自分の手で閉じたドアを開ける。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "ドアが開く",
+          "kana": "どあがあく",
+          "meaning": "门自己打开了。",
+          "agentless": true,
+          "narrative": {
+            "label": "门自己开了",
+            "hint": "你站在三米外，门突然就开了。",
+            "joke": "你没有开门，你只是站在那里，看着门自己打开了。气氛突然有点灵异。"
+          },
+          "story": {
+            "anchorJa": "その時、触っていないのにドアが開いた。",
+            "requiredRegex": "ドアが[^。！？]{0,40}開",
+            "event": "誰も触っていないのにドアが勝手に開く。"
+          }
+        }
+      ]
+    },
+
+    "drop_cup": {
+      "slot": "morning_home",
+      "pair": "落ちる / 落とす",
+      "scene": {
+        "title": "厨房杯子事件",
+        "subtitle": "朝の台所、テーブルの端に置いてあったコップ。地上一声脆响。",
+        "question": "杯子是怎么掉下去的？",
+        "hint": "杯子可不会自己跳下桌。"
+      },
+      "mission": "把杯子弄掉了。",
+      "correctId": "a",
+      "correctNote": "他動詞「落とす」は、人や原因が物を落ちる状態にする表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "コップを落とした",
+          "kana": "こっぷをおとした",
+          "meaning": "把杯子弄掉了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我手一滑弄掉的",
+            "hint": "你诚实地承认是自己。",
+            "joke": "正直でえらい。"
+          },
+          "story": {
+            "anchorJa": "驚いた私は、コップを落とした。",
+            "requiredRegex": "コップを[^。！？]{0,40}落と",
+            "event": "主人公が驚いてコップを落とす。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "コップが落ちた",
+          "kana": "こっぷがおちた",
+          "meaning": "杯子自己掉下去了。",
+          "agentless": true,
+          "narrative": {
+            "label": "杯子自己掉的",
+            "hint": "你两手插兜，眼看它跳下去。",
+            "joke": "听起来像杯子自己想体验重力。"
+          },
+          "story": {
+            "anchorJa": "目の前で、コップが落ちた。",
+            "requiredRegex": "コップが[^。！？]{0,40}落ち",
+            "event": "誰も触っていないコップが勝手に落ちる。"
+          }
+        }
+      ]
+    },
+
+    "alarm_rings": {
+      "slot": "morning_home",
+      "pair": "鳴る / 鳴らす",
+      "scene": {
+        "title": "目覚まし時計",
+        "subtitle": "朝7時、ベッドの中で意識が戻る。枕元の時計から音が聞こえてくる。",
+        "question": "闹钟是怎么响起来的？",
+        "hint": "时间到了它就会响。"
+      },
+      "mission": "闹钟响了。",
+      "correctId": "a",
+      "correctNote": "自動詞「鳴る」は、音が自然と発生することを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "目覚まし時計が鳴った",
+          "kana": "めざましどけいがなった",
+          "meaning": "闹钟响了。",
+          "agentless": true,
+          "narrative": {
+            "label": "闹钟自己响了",
+            "hint": "时间到了它自动叫。",
+            "joke": "客観報告です。誰も鳴らしていません。"
+          },
+          "story": {
+            "anchorJa": "朝、枕元で目覚まし時計が鳴った。",
+            "requiredRegex": "目覚まし[^。！？]{0,40}鳴",
+            "event": "枕元の目覚まし時計が予定の時間に自然と鳴る。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "目覚まし時計を鳴らした",
+          "kana": "めざましどけいをならした",
+          "meaning": "我让闹钟响起。",
+          "agentless": false,
+          "narrative": {
+            "label": "我自己摁响了它",
+            "hint": "意思变成你主动操作让它响。",
+            "joke": "你睡前没设好，结果还得自己鸣笛唤醒自己。"
+          },
+          "story": {
+            "anchorJa": "私は手を伸ばして、目覚まし時計を鳴らした。",
+            "requiredRegex": "目覚まし[^。！？]{0,40}鳴ら",
+            "event": "主人公が自分で目覚まし時計のボタンを操作して鳴らす。"
+          }
+        }
+      ]
+    },
+
+    "boil_water": {
+      "slot": "morning_home",
+      "pair": "沸く / 沸かす",
+      "scene": {
+        "title": "朝のお湯",
+        "subtitle": "起きてから、台所でお茶のためにやかんを火にかけた。",
+        "question": "お湯是怎么烧开的？",
+        "hint": "你站在炉前烧水的话，是谁的行为？"
+      },
+      "mission": "把水烧开。",
+      "correctId": "a",
+      "correctNote": "他動詞「沸かす」は、人が水を加熱して沸騰させる行為です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "お湯を沸かした",
+          "kana": "おゆをわかした",
+          "meaning": "把热水烧开了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我把它烧开了",
+            "hint": "你点火、看着、关火，全是你做的。",
+            "joke": "お茶のために行動できました。"
+          },
+          "story": {
+            "anchorJa": "朝、私はお茶のためにお湯を沸かした。",
+            "requiredRegex": "お湯を[^。！？]{0,40}沸か",
+            "event": "主人公が朝、お茶を入れるためにお湯を沸かす。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "お湯が沸いた",
+          "kana": "おゆがわいた",
+          "meaning": "热水开了。",
+          "agentless": true,
+          "narrative": {
+            "label": "热水自己开了",
+            "hint": "你只是看着它的状态变化。",
+            "joke": "犯人はたぶん火。あなたは目撃者です。"
+          },
+          "story": {
+            "anchorJa": "気がつくと、台所のお湯が沸いていた。",
+            "requiredRegex": "お湯が[^。！？]{0,40}沸",
+            "event": "やかんのお湯がいつの間にか沸騰した状態になっている。"
+          }
+        }
+      ]
+    },
+
+    "brew_tea": {
+      "slot": "morning_home",
+      "pair": "入る / 入れる",
+      "scene": {
+        "title": "朝のお茶",
+        "subtitle": "沸騰したお湯を見て、テーブルのカップを引き寄せた。",
+        "question": "茶叶是怎么进到杯子里的？",
+        "hint": "茶叶不会自己跳进杯子。"
+      },
+      "mission": "把茶倒进杯子。",
+      "correctId": "a",
+      "correctNote": "他動詞「入れる」は、人が物を中へ移動させる表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "お茶を入れた",
+          "kana": "おちゃをいれた",
+          "meaning": "把茶倒进杯子。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手泡的",
+            "hint": "你拿茶包、倒水、搅拌。",
+            "joke": "朝の儀式、完璧です。"
+          },
+          "story": {
+            "anchorJa": "私はカップにお茶を入れた。",
+            "requiredRegex": "お茶を[^。！？]{0,40}入れ",
+            "event": "主人公がティーバッグや茶葉をカップに入れてお茶を準備する。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "お茶が入った",
+          "kana": "おちゃがはいった",
+          "meaning": "茶进到杯子里了。",
+          "agentless": true,
+          "narrative": {
+            "label": "茶自己进去了",
+            "hint": "茶包像是自己跳进了杯子。",
+            "joke": "今日のお茶は自我を持っているようです。"
+          },
+          "story": {
+            "anchorJa": "気がつくと、カップにお茶が入っていた。",
+            "requiredRegex": "お茶が[^。！？]{0,40}入",
+            "event": "誰も触れていないのに、カップに茶が満たされている。"
+          }
+        }
+      ]
+    },
+
+    "warm_soup": {
+      "slot": "morning_home",
+      "pair": "温まる / 温める",
+      "scene": {
+        "title": "朝の温め直し",
+        "subtitle": "冷蔵庫から昨晩のスープを取り出し、電子レンジに入れた。",
+        "question": "汤是怎么变温热的？",
+        "hint": "你按了几个按钮。"
+      },
+      "mission": "把汤温热。",
+      "correctId": "a",
+      "correctNote": "他動詞「温める」は、人が物を加熱して温かい状態にする表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "スープを温めた",
+          "kana": "すーぷをあたためた",
+          "meaning": "把汤温热。",
+          "agentless": false,
+          "narrative": {
+            "label": "我用微波炉温的",
+            "hint": "你按下加热键，等待两分钟。",
+            "joke": "朝食、無事に確保。"
+          },
+          "story": {
+            "anchorJa": "私は電子レンジでスープを温めた。",
+            "requiredRegex": "スープを[^。！？]{0,40}温め",
+            "event": "主人公が電子レンジでスープを加熱して温める。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "スープが温まった",
+          "kana": "すーぷがあたたまった",
+          "meaning": "汤变温热了。",
+          "agentless": true,
+          "narrative": {
+            "label": "汤自己变热了",
+            "hint": "你没动手，它就热好了。",
+            "joke": "誰も触れていないのに、温度だけ勝手に変わった。"
+          },
+          "story": {
+            "anchorJa": "気がつくと、テーブルのスープが温まっていた。",
+            "requiredRegex": "スープが[^。！？]{0,40}温",
+            "event": "電子レンジの操作なしに、スープがいつの間にか温まっている。"
+          }
+        }
+      ]
+    },
+
+    "door_closes": {
+      "slot": "commute",
+      "pair": "閉まる / 閉める",
+      "scene": {
+        "title": "玄関のドア",
+        "subtitle": "鍵を持って外に出る。背中側でドアの音がした。",
+        "question": "门是怎么关上的？",
+        "hint": "出门时是你回头关的，还是它自己合上的？"
+      },
+      "mission": "把门关上。",
+      "correctId": "a",
+      "correctNote": "他動詞「閉める」は、人がドアに働きかけて閉まる状態にする表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "ドアを閉めた",
+          "kana": "どあをしめた",
+          "meaning": "我把门关上了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手关上的",
+            "hint": "出门前你回身把它拉上。",
+            "joke": "鍵もしっかり。安心して出かけられます。"
+          },
+          "story": {
+            "anchorJa": "家を出る前に、私は玄関のドアを閉めた。",
+            "requiredRegex": "ドアを[^。！？]{0,40}閉め",
+            "event": "主人公が外出時に玄関のドアを自分で閉める。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "ドアが閉まった",
+          "kana": "どあがしまった",
+          "meaning": "门自己关上了。",
+          "agentless": true,
+          "narrative": {
+            "label": "门自己合上的",
+            "hint": "你刚迈出去，门就砰一声合了。",
+            "joke": "犯人はたぶん風、または家自身の意思。"
+          },
+          "story": {
+            "anchorJa": "外に出た瞬間、ドアが閉まった。",
+            "requiredRegex": "ドアが[^。！？]{0,40}閉ま",
+            "event": "誰も触れていないのに玄関のドアが勝手に閉まる。"
+          }
+        }
+      ]
+    },
+
+    "drop_ticket": {
+      "slot": "commute",
+      "pair": "落ちる / 落とす",
+      "scene": {
+        "title": "改札の前",
+        "subtitle": "ポケットから切符を出そうとした時、足元で何かの音がした。",
+        "question": "切符是怎么掉到地上的？",
+        "hint": "切符不会自己飞出口袋——除非有奇怪的事情。"
+      },
+      "mission": "把车票弄掉了。",
+      "correctId": "a",
+      "correctNote": "他動詞「落とす」は、人や原因が物を落ちる状態にする表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "切符を落とした",
+          "kana": "きっぷをおとした",
+          "meaning": "把车票弄掉了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我手一滑掉了",
+            "hint": "你诚实地承认。",
+            "joke": "誠実な乗客でいてください。"
+          },
+          "story": {
+            "anchorJa": "改札の前で、私は切符を落とした。",
+            "requiredRegex": "切符を[^。！？]{0,40}落と",
+            "event": "改札に近づいた主人公が切符を取り出そうとして手から落とす。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "切符が落ちた",
+          "kana": "きっぷがおちた",
+          "meaning": "车票自己掉了。",
+          "agentless": true,
+          "narrative": {
+            "label": "车票自己飞出去了",
+            "hint": "你没动手，它从口袋自动出来。",
+            "joke": "切符まで通勤を拒否しています。"
+          },
+          "story": {
+            "anchorJa": "改札の前で、ポケットから切符が落ちた。",
+            "requiredRegex": "切符が[^。！？]{0,40}落ち",
+            "event": "誰も触っていないのにポケットから切符が勝手に落ちる。"
+          }
+        }
+      ]
+    },
+
+    "train_stops": {
+      "slot": "commute",
+      "pair": "止まる / 止める",
+      "scene": {
+        "title": "ホームの電車",
+        "subtitle": "ホームに立っていると、電車が近づいてきた。ブレーキ音が聞こえる。",
+        "question": "电车是怎么停下来的？",
+        "hint": "你只是个乘客。"
+      },
+      "mission": "电车停了。",
+      "correctId": "a",
+      "correctNote": "自動詞「止まる」は、動いていたものが停止する状態変化を表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "電車が止まった",
+          "kana": "でんしゃがとまった",
+          "meaning": "电车停了。",
+          "agentless": true,
+          "narrative": {
+            "label": "电车正常进站",
+            "hint": "运行计划到点了。",
+            "joke": "駅に着いた感じです。普通に乗客でいてください。"
+          },
+          "story": {
+            "anchorJa": "電車がホームでゆっくりと止まった。",
+            "requiredRegex": "電車が[^。！？]{0,40}止ま",
+            "event": "電車が予定通り駅のホームで停止する。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "電車を止めた",
+          "kana": "でんしゃをとめた",
+          "meaning": "我把电车停下了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手让它停的",
+            "hint": "你像是交通指挥的最终 boss。",
+            "joke": "あなた、運転士でしたっけ？"
+          },
+          "story": {
+            "anchorJa": "私は片手を上げて、電車を止めた。",
+            "requiredRegex": "電車を[^。！？]{0,40}止め",
+            "event": "主人公が一人で電車を停止させる超能力じみた行為。"
+          }
+        }
+      ]
+    },
+
+    "people_gather": {
+      "slot": "commute",
+      "pair": "集まる / 集める",
+      "scene": {
+        "title": "駅前の人波",
+        "subtitle": "改札を出ると、ロータリーには予想以上の人が集まっていた。",
+        "question": "人是怎么聚到一起的？",
+        "hint": "他们各自来上班，没人组织。"
+      },
+      "mission": "人聚集起来了。",
+      "correctId": "a",
+      "correctNote": "自動詞「集まる」は、人や物が一箇所に寄ってくる自然な状態変化を表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "人が集まった",
+          "kana": "ひとがあつまった",
+          "meaning": "人聚集起来了。",
+          "agentless": true,
+          "narrative": {
+            "label": "人潮自己汇过来的",
+            "hint": "上班高峰，大家自然到位。",
+            "joke": "通勤時間の力です。"
+          },
+          "story": {
+            "anchorJa": "駅前に、いつの間にか大勢の人が集まっていた。",
+            "requiredRegex": "人が[^。！？]{0,40}集ま",
+            "event": "通勤ラッシュで駅前に自然と人が集まる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "人を集めた",
+          "kana": "ひとをあつめた",
+          "meaning": "我把人聚集起来。",
+          "agentless": false,
+          "narrative": {
+            "label": "我把大家叫到一起",
+            "hint": "你成了驾驾驭通勤潮的主持人。",
+            "joke": "司会者みたいですね。"
+          },
+          "story": {
+            "anchorJa": "私は声をかけて、駅前に人を集めた。",
+            "requiredRegex": "人を[^。！？]{0,40}集め",
+            "event": "主人公が呼びかけて駅前に人を集める。"
+          }
+        }
+      ]
+    },
+
+    "train_doors_open": {
+      "slot": "commute",
+      "pair": "開く / 開ける",
+      "scene": {
+        "title": "電車のドア",
+        "subtitle": "電車が止まり、車両のドアの前に立った。",
+        "question": "电车的门是怎么打开的？",
+        "hint": "电车门是自动控制的。"
+      },
+      "mission": "电车的门打开了。",
+      "correctId": "a",
+      "correctNote": "自動詞「開く」は、自動制御や状態変化でドアが開くことを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "電車のドアが開いた",
+          "kana": "でんしゃのどあがあいた",
+          "meaning": "电车的门打开了。",
+          "agentless": true,
+          "narrative": {
+            "label": "门自动开了",
+            "hint": "电车系统按下了开门按钮。",
+            "joke": "システムは正常です。"
+          },
+          "story": {
+            "anchorJa": "電車のドアが、シューッと音を立てて開いた。",
+            "requiredRegex": "ドアが[^。！？]{0,40}開",
+            "event": "停車中の電車の自動ドアが開く。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "電車のドアを開けた",
+          "kana": "でんしゃのどあをあけた",
+          "meaning": "我把电车门打开了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手扒开的",
+            "hint": "电车门变成需要手动操作。",
+            "joke": "車掌さんがあなたを見ています。"
+          },
+          "story": {
+            "anchorJa": "私は両手で、電車のドアを開けた。",
+            "requiredRegex": "ドアを[^。！？]{0,40}開け",
+            "event": "主人公が自分の手で電車のドアをこじ開ける。"
+          }
+        }
+      ]
+    },
+
+    "station_announce": {
+      "slot": "commute",
+      "pair": "鳴る / 鳴らす",
+      "scene": {
+        "title": "駅のアナウンス",
+        "subtitle": "ホームのスピーカーから、出発を知らせる音が流れた。",
+        "question": "广播是怎么响起来的？",
+        "hint": "车站系统按时间播放。"
+      },
+      "mission": "广播响了。",
+      "correctId": "a",
+      "correctNote": "自動詞「鳴る」は、音が自然と発生することを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "アナウンスが鳴った",
+          "kana": "あなうんすがなった",
+          "meaning": "广播响了。",
+          "agentless": true,
+          "narrative": {
+            "label": "广播自动响了",
+            "hint": "时间到了系统就播报。",
+            "joke": "駅のシステムは元気です。"
+          },
+          "story": {
+            "anchorJa": "ホームでアナウンスが鳴った。",
+            "requiredRegex": "アナウンスが[^。！？]{0,40}鳴",
+            "event": "電車到着のアナウンスが自動的に流れる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "アナウンスを鳴らした",
+          "kana": "あなうんすをならした",
+          "meaning": "我让广播响起。",
+          "agentless": false,
+          "narrative": {
+            "label": "我自己放出来的",
+            "hint": "你接管了车站广播室。",
+            "joke": "駅員、不在ですか？"
+          },
+          "story": {
+            "anchorJa": "私はマイクを持ち、ホームでアナウンスを鳴らした。",
+            "requiredRegex": "アナウンスを[^。！？]{0,40}鳴ら",
+            "event": "主人公が自らホームのアナウンスを流す異常な行為。"
+          }
+        }
+      ]
+    },
+
+    "start_meeting": {
+      "slot": "office",
+      "pair": "始まる / 始める",
+      "scene": {
+        "title": "会議のスイッチ",
+        "subtitle": "会議室。作為主持人，あなたは机の前に立つ。",
+        "question": "会议是怎么开始的？",
+        "hint": "有人需要按下开始键。"
+      },
+      "mission": "开始会议。",
+      "correctId": "a",
+      "correctNote": "他動詞「始める」は、人が物事を開始させる表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "会議を始めた",
+          "kana": "かいぎをはじめた",
+          "meaning": "开始会议。",
+          "agentless": false,
+          "narrative": {
+            "label": "我宣布开始",
+            "hint": "主持人就位，敲桌一声。",
+            "joke": "主持人上线。"
+          },
+          "story": {
+            "anchorJa": "私は深呼吸をして、会議を始めた。",
+            "requiredRegex": "会議を[^。！？]{0,40}始め",
+            "event": "主人公が気丈に会議を始める。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "会議が始まった",
+          "kana": "かいぎがはじまった",
+          "meaning": "会议开始了。",
+          "agentless": true,
+          "narrative": {
+            "label": "会议自动开始了",
+            "hint": "你愣着，会议自己启动。",
+            "joke": "あなたが背景板になりました。"
+          },
+          "story": {
+            "anchorJa": "誰も進行していないのに、会議が始まった。",
+            "requiredRegex": "会議が[^。！？]{0,40}始ま",
+            "event": "誰も進行していないのに会議が勝手に始まる。"
+          }
+        }
+      ]
+    },
+
+    "continue_meeting": {
+      "slot": "office",
+      "pair": "続く / 続ける",
+      "scene": {
+        "title": "終わらない会議",
+        "subtitle": "予定の時間を過ぎても、議論はまだ続いている。",
+        "question": "会议是怎么继续下去的？",
+        "hint": "没人喊停，它就拖着。"
+      },
+      "mission": "会议持续着。",
+      "correctId": "a",
+      "correctNote": "自動詞「続く」は、状態が自然に持続することを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "会議が続いた",
+          "kana": "かいぎがつづいた",
+          "meaning": "会议持续着。",
+          "agentless": true,
+          "narrative": {
+            "label": "会议自己拖下去了",
+            "hint": "没人控场，它就这么继续。",
+            "joke": "誰も止めない。誰も終わらせない。"
+          },
+          "story": {
+            "anchorJa": "予定時間を過ぎても、会議が続いた。",
+            "requiredRegex": "会議が[^。！？]{0,40}続",
+            "event": "予定の時間を越えても会議が自然に続いてしまう。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "会議を続けた",
+          "kana": "かいぎをつづけた",
+          "meaning": "我让会议继续下去。",
+          "agentless": false,
+          "narrative": {
+            "label": "我硬要继续开",
+            "hint": "你成了拖延的元凶。",
+            "joke": "皆の目が冷たい。"
+          },
+          "story": {
+            "anchorJa": "予定時間を過ぎても、私は会議を続けた。",
+            "requiredRegex": "会議を[^。！？]{0,40}続け",
+            "event": "主人公が議論を意図的に延長させる。"
+          }
+        }
+      ]
+    },
+
+    "end_meeting": {
+      "slot": "office",
+      "pair": "終わる / 終える",
+      "scene": {
+        "title": "会議の終了",
+        "subtitle": "議題がすべて消化された頃、時計がちょうど予定時刻を指していた。",
+        "question": "会议是怎么结束的？",
+        "hint": "时间到了，会议自然落幕。"
+      },
+      "mission": "会议结束了。",
+      "correctId": "a",
+      "correctNote": "自動詞「終わる」は、物事が自然に終了する状態変化を表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "会議が終わった",
+          "kana": "かいぎがおわった",
+          "meaning": "会议结束了。",
+          "agentless": true,
+          "narrative": {
+            "label": "会议自然结束了",
+            "hint": "议题完了，时间到了。",
+            "joke": "やっとです。"
+          },
+          "story": {
+            "anchorJa": "予定通り、会議が終わった。",
+            "requiredRegex": "会議が[^。！？]{0,40}終わ",
+            "event": "議題が消化され、会議が予定通り終了する。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "会議を終えた",
+          "kana": "かいぎをおえた",
+          "meaning": "我把会议结束了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我宣布会议结束",
+            "hint": "你强制叫停了讨论。",
+            "joke": "主持人モード継続。"
+          },
+          "story": {
+            "anchorJa": "私は宣言して、会議を終えた。",
+            "requiredRegex": "会議を[^。！？]{0,40}終え",
+            "event": "主人公が宣言して会議を意図的に終了させる。"
+          }
+        }
+      ]
+    },
+
+    "work_increases": {
+      "slot": "office",
+      "pair": "増える / 増やす",
+      "scene": {
+        "title": "増える仕事",
+        "subtitle": "終わったタスクの後ろから、新しい依頼が次々と現れる。",
+        "question": "工作量是怎么变多的？",
+        "hint": "你没主动接，但事就堆来了。"
+      },
+      "mission": "工作变多了。",
+      "correctId": "a",
+      "correctNote": "自動詞「増える」は、数量が自然に増加する状態変化を表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "仕事が増えた",
+          "kana": "しごとがふえた",
+          "meaning": "工作变多了。",
+          "agentless": true,
+          "narrative": {
+            "label": "工作自己堆上来",
+            "hint": "你被动收件，邮件不停。",
+            "joke": "受信箱が悲鳴を上げています。"
+          },
+          "story": {
+            "anchorJa": "気がつくと、私の机の上の仕事が増えていた。",
+            "requiredRegex": "仕事が[^。！？]{0,40}増え",
+            "event": "主人公が手をつけていないのに仕事の量が自然と増える。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "仕事を増やした",
+          "kana": "しごとをふやした",
+          "meaning": "我自己加了更多工作。",
+          "agentless": false,
+          "narrative": {
+            "label": "我主动揽更多活",
+            "hint": "你说'我可以再做一点'。",
+            "joke": "上司は喜んでいます。"
+          },
+          "story": {
+            "anchorJa": "私は手を挙げて、自分の仕事を増やした。",
+            "requiredRegex": "仕事を[^。！？]{0,40}増や",
+            "event": "主人公が自ら申し出て担当業務を増やす。"
+          }
+        }
+      ]
+    },
+
+    "raise_hand": {
+      "slot": "office",
+      "pair": "上がる / 上げる",
+      "scene": {
+        "title": "発言の意思",
+        "subtitle": "会議の途中、私は質問があった。",
+        "question": "手是怎么举起来的？",
+        "hint": "你想要发言。"
+      },
+      "mission": "举手发言。",
+      "correctId": "a",
+      "correctNote": "他動詞「上げる」は、人が物や体の一部を上方へ動かす表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "手を上げた",
+          "kana": "てをあげた",
+          "meaning": "我把手举起来。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手举起",
+            "hint": "你主动想表达意见。",
+            "joke": "勇気ある一手です。"
+          },
+          "story": {
+            "anchorJa": "私は意見を伝えようとして、手を上げた。",
+            "requiredRegex": "手を[^。！？]{0,40}上げ",
+            "event": "主人公が会議中に質問のため手を挙げる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "手が上がった",
+          "kana": "てがあがった",
+          "meaning": "手自己抬起来了。",
+          "agentless": true,
+          "narrative": {
+            "label": "手自己抬起来了",
+            "hint": "你没意识到，手已经举着。",
+            "joke": "あなたの手にも意志があるようです。"
+          },
+          "story": {
+            "anchorJa": "私の意思とは関係なく、手が上がった。",
+            "requiredRegex": "手が[^。！？]{0,40}上が",
+            "event": "主人公の意志と関係なく、手だけが勝手に挙がる。"
+          }
+        }
+      ]
+    },
+
+    "plan_changes": {
+      "slot": "office",
+      "pair": "変わる / 変える",
+      "scene": {
+        "title": "予定変更",
+        "subtitle": "部長が会議室に入ってきて、新しい指示を出した。",
+        "question": "今天的安排是怎么变的？",
+        "hint": "是部长强行改的。"
+      },
+      "mission": "改变今天的安排。",
+      "correctId": "a",
+      "correctNote": "他動詞「変える」は、人が物事の状態を変化させる表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "予定を変えた",
+          "kana": "よていをかえた",
+          "meaning": "改变了安排。",
+          "agentless": false,
+          "narrative": {
+            "label": "部长把它改了",
+            "hint": "他敲了一下桌子，全员调整。",
+            "joke": "部長の一声で全員方向転換。"
+          },
+          "story": {
+            "anchorJa": "部長は突然、今日の予定を変えた。",
+            "requiredRegex": "予定を[^。！？]{0,40}変え",
+            "event": "部長が会議の途中で今日の予定を強制的に変更する。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "予定が変わった",
+          "kana": "よていがかわった",
+          "meaning": "安排自动变了。",
+          "agentless": true,
+          "narrative": {
+            "label": "安排自动变了",
+            "hint": "没人发指令，日历自己改了。",
+            "joke": "カレンダーシステムに自我が宿りました。"
+          },
+          "story": {
+            "anchorJa": "誰も指示していないのに、今日の予定が変わっていた。",
+            "requiredRegex": "予定が[^。！？]{0,40}変わ",
+            "event": "指示もないのに今日のスケジュールが勝手に変更されている。"
+          }
+        }
+      ]
+    },
+
+    "temp_drops": {
+      "slot": "return",
+      "pair": "下がる / 下げる",
+      "scene": {
+        "title": "夕方の冷気",
+        "subtitle": "会社を出ると、街の空気は朝より明らかに冷たくなっていた。",
+        "question": "气温是怎么变低的？",
+        "hint": "傍晚到了。"
+      },
+      "mission": "气温下降了。",
+      "correctId": "a",
+      "correctNote": "自動詞「下がる」は、温度や数値が自然に低下する状態変化を表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "気温が下がった",
+          "kana": "きおんがさがった",
+          "meaning": "气温下降了。",
+          "agentless": true,
+          "narrative": {
+            "label": "温度自己降了",
+            "hint": "夕方常态。",
+            "joke": "季節は仕事しています。"
+          },
+          "story": {
+            "anchorJa": "夕方になると、気温が下がった。",
+            "requiredRegex": "気温が[^。！？]{0,40}下が",
+            "event": "夕方の街で、気温が自然と下がる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "気温を下げた",
+          "kana": "きおんをさげた",
+          "meaning": "我让气温变低了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手降温的",
+            "hint": "你拥有了气候控制权。",
+            "joke": "あなた、神様ですか。"
+          },
+          "story": {
+            "anchorJa": "私は手のひらをかざして、気温を下げた。",
+            "requiredRegex": "気温を[^。！？]{0,40}下げ",
+            "event": "主人公が超能力で街の気温を下げる。"
+          }
+        }
+      ]
+    },
+
+    "signal_changes": {
+      "slot": "return",
+      "pair": "変わる / 変える",
+      "scene": {
+        "title": "信号待ち",
+        "subtitle": "横断歩道の前で立ち止まった。空には夕焼け。",
+        "question": "信号是怎么变的？",
+        "hint": "信号灯按时切换。"
+      },
+      "mission": "信号灯变了。",
+      "correctId": "a",
+      "correctNote": "自動詞「変わる」は、状態が自然に変化することを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "信号が変わった",
+          "kana": "しんごうがかわった",
+          "meaning": "信号灯变了。",
+          "agentless": true,
+          "narrative": {
+            "label": "灯自动变了",
+            "hint": "时间到了系统就切。",
+            "joke": "都市のシステム、正常作動中。"
+          },
+          "story": {
+            "anchorJa": "横断歩道の前で、信号が変わった。",
+            "requiredRegex": "信号が[^。！？]{0,40}変わ",
+            "event": "横断歩道の信号が自然と青に変わる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "信号を変えた",
+          "kana": "しんごうをかえた",
+          "meaning": "我把信号灯换了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手改的信号",
+            "hint": "你接管了城市信号系统。",
+            "joke": "信号制御室から連絡が来そうです。"
+          },
+          "story": {
+            "anchorJa": "私は手をかざして、横断歩道の信号を変えた。",
+            "requiredRegex": "信号を[^。！？]{0,40}変え",
+            "event": "主人公が超能力で信号を強制的に切り替える。"
+          }
+        }
+      ]
+    },
+
+    "drop_umbrella": {
+      "slot": "return",
+      "pair": "落ちる / 落とす",
+      "scene": {
+        "title": "駅の階段",
+        "subtitle": "駅の階段を下りていると、急に風が吹いた。",
+        "question": "雨伞是怎么掉的？",
+        "hint": "你手没握紧。"
+      },
+      "mission": "把雨伞弄掉了。",
+      "correctId": "a",
+      "correctNote": "他動詞「落とす」は、人や原因が物を落ちる状態にする表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "傘を落とした",
+          "kana": "かさをおとした",
+          "meaning": "把雨伞弄掉了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我手一滑掉了",
+            "hint": "你诚实地承认。",
+            "joke": "雨に備えていたのに、自分で離してしまいました。"
+          },
+          "story": {
+            "anchorJa": "階段の途中で、私は傘を落とした。",
+            "requiredRegex": "傘を[^。！？]{0,40}落と",
+            "event": "主人公が階段を下りる途中で手から傘を落とす。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "傘が落ちた",
+          "kana": "かさがおちた",
+          "meaning": "雨伞自己掉下去了。",
+          "agentless": true,
+          "narrative": {
+            "label": "雨伞自己飞走了",
+            "hint": "你没动手，它就脱手了。",
+            "joke": "傘も今日は協力しないらしい。"
+          },
+          "story": {
+            "anchorJa": "階段の途中で、私の手から傘が落ちた。",
+            "requiredRegex": "傘が[^。！？]{0,40}落ち",
+            "event": "誰も力を入れていないのに傘が手から勝手に落ちる。"
+          }
+        }
+      ]
+    },
+
+    "find_lost": {
+      "slot": "return",
+      "pair": "見つかる / 見つける",
+      "scene": {
+        "title": "落とし物センター",
+        "subtitle": "失くした財布のことを思い出し、駅の窓口に立ち寄った。",
+        "question": "钱包是怎么找到的？",
+        "hint": "是工作人员从盒子里取出来的。"
+      },
+      "mission": "钱包被找到了。",
+      "correctId": "a",
+      "correctNote": "自動詞「見つかる」は、物が見つけられた状態になることを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "財布が見つかった",
+          "kana": "さいふがみつかった",
+          "meaning": "钱包被找到了。",
+          "agentless": true,
+          "narrative": {
+            "label": "钱包终于现身",
+            "hint": "客观陈述：失物找到了。",
+            "joke": "今日のラッキー。"
+          },
+          "story": {
+            "anchorJa": "駅の落とし物センターで、私の財布が見つかった。",
+            "requiredRegex": "財布が[^。！？]{0,40}見つか",
+            "event": "落とし物センターで、なくしていた財布が見つかる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "財布を見つけた",
+          "kana": "さいふをみつけた",
+          "meaning": "我自己找到了钱包。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲眼发现的",
+            "hint": "你自己翻箱倒柜找出来的。",
+            "joke": "ヒーロー登場。"
+          },
+          "story": {
+            "anchorJa": "私は落とし物センターの中で、自分の財布を見つけた。",
+            "requiredRegex": "財布を[^。！？]{0,40}見つけ",
+            "event": "主人公が落とし物の中から自分の財布を自力で見つけ出す。"
+          }
+        }
+      ]
+    },
+
+    "branch_snaps": {
+      "slot": "return",
+      "pair": "折れる / 折る",
+      "scene": {
+        "title": "公園の道",
+        "subtitle": "公園を通り抜けていると、頭の上で強い風の音がした。",
+        "question": "树枝是怎么折断的？",
+        "hint": "是风折断的。"
+      },
+      "mission": "树枝折了。",
+      "correctId": "a",
+      "correctNote": "自動詞「折れる」は、物が折れた状態になることを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "枝が折れた",
+          "kana": "えだがおれた",
+          "meaning": "树枝折了。",
+          "agentless": true,
+          "narrative": {
+            "label": "树枝被风吹断了",
+            "hint": "你只是路过。",
+            "joke": "風が仕事しました。"
+          },
+          "story": {
+            "anchorJa": "強い風が吹き、頭の上で枝が折れた。",
+            "requiredRegex": "枝が[^。！？]{0,40}折",
+            "event": "強風で公園の木の枝が自然と折れる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "枝を折った",
+          "kana": "えだをおった",
+          "meaning": "我把树枝折断了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手折断的",
+            "hint": "你伸手把枝折下来。",
+            "joke": "公園の係員が遠くから見ています。"
+          },
+          "story": {
+            "anchorJa": "私は手を伸ばして、頭上の枝を折った。",
+            "requiredRegex": "枝を[^。！？]{0,40}折",
+            "event": "主人公が公園の木の枝を自分の手で折る。"
+          }
+        }
+      ]
+    },
+
+    "sunset_fades": {
+      "slot": "return",
+      "pair": "消える / 消す",
+      "scene": {
+        "title": "夕日が沈む",
+        "subtitle": "家路を急ぐ間に、空の色がオレンジから紫に変わった。",
+        "question": "夕阳是怎么消失的？",
+        "hint": "夕阳是因为时间到了。"
+      },
+      "mission": "夕阳消失了。",
+      "correctId": "a",
+      "correctNote": "自動詞「消える」は、光や火などが消える状態変化を表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "夕日が消えた",
+          "kana": "ゆうひがきえた",
+          "meaning": "夕阳消失了。",
+          "agentless": true,
+          "narrative": {
+            "label": "夕阳自然落下",
+            "hint": "时间到了它就下去。",
+            "joke": "地球の自転は今日も正常です。"
+          },
+          "story": {
+            "anchorJa": "ふと見上げると、夕日が消えていた。",
+            "requiredRegex": "夕日が[^。！？]{0,40}消",
+            "event": "帰り道で、夕日が自然と地平線に消える。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "夕日を消した",
+          "kana": "ゆうひをけした",
+          "meaning": "我把夕阳关掉了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手关闭夕阳",
+            "hint": "你拥有了天体控制权。",
+            "joke": "あなた、神様の代理ですか。"
+          },
+          "story": {
+            "anchorJa": "私はスイッチを押すように、夕日を消した。",
+            "requiredRegex": "夕日を[^。！？]{0,40}消し",
+            "event": "主人公が超能力で夕日を強制的に消す。"
+          }
+        }
+      ]
+    },
+
+    "lights_off": {
+      "slot": "evening_home",
+      "pair": "消える / 消す",
+      "scene": {
+        "title": "突然暗くなった部屋",
+        "subtitle": "夜、居間でくつろいでいる時、急に部屋が暗くなった。开关没人碰过。",
+        "question": "灯是怎么灭的？",
+        "hint": "刚才有人碰过开关吗？"
+      },
+      "mission": "灯自己灭了。",
+      "correctId": "a",
+      "correctNote": "自動詞「消える」は、光や火などが消える状態変化を表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "電気が消えた",
+          "kana": "でんきがきえた",
+          "meaning": "灯灭了。",
+          "agentless": true,
+          "narrative": {
+            "label": "灯自己灭了",
+            "hint": "停电也好坏了也好，反正不是你。",
+            "joke": "停电也好，坏掉也好，至少这次不是你按的。"
+          },
+          "story": {
+            "anchorJa": "夜、居間で電気が消えた。",
+            "requiredRegex": "電気が[^。！？]{0,40}消え",
+            "event": "夜の自宅で電気が突然消え、部屋が暗くなる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "電気を消した",
+          "kana": "でんきをけした",
+          "meaning": "把灯关了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我按开关关掉的",
+            "hint": "你认领了开关的责任。",
+            "joke": "这句话等于主动认领开关。"
+          },
+          "story": {
+            "anchorJa": "夜、私は隠れるために電気を消した。",
+            "requiredRegex": "電気を[^。！？]{0,40}消し",
+            "event": "主人公が自分で電気を消し、暗闇に身を潜める。"
+          }
+        }
+      ]
+    },
+
+    "lights_on": {
+      "slot": "evening_home",
+      "pair": "つく / つける",
+      "scene": {
+        "title": "最後のスイッチ",
+        "subtitle": "终于回到家。屋里漆黑。今天的最后一个动作——按下灯的开关。",
+        "question": "灯是怎么亮的？",
+        "hint": "最后一关，灯需要谁来管？"
+      },
+      "mission": "把灯打开。",
+      "correctId": "a",
+      "correctNote": "他動詞「つける」は、人が明かりや機械を作動させる表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "電気をつけた",
+          "kana": "でんきをつけた",
+          "meaning": "把灯打开。",
+          "agentless": false,
+          "narrative": {
+            "label": "我按开关把它打开",
+            "hint": "啪一声。一天终于结束。",
+            "joke": "明るくなりました。"
+          },
+          "story": {
+            "anchorJa": "帰宅した私は、電気をつけた。",
+            "requiredRegex": "電気を[^。！？]{0,40}つけ",
+            "event": "帰宅後、主人公が自分で電気をつけ、一日を締めくくる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "電気がついた",
+          "kana": "でんきがついた",
+          "meaning": "灯亮了。",
+          "agentless": true,
+          "narrative": {
+            "label": "灯自己亮了",
+            "hint": "开关没人碰，灯却亮起。",
+            "joke": "灯自己亮了。你只是见证奇妙的电气现象。"
+          },
+          "story": {
+            "anchorJa": "帰宅すると、誰も触れていないのに電気がついた。",
+            "requiredRegex": "電気が[^。！？]{0,40}つ",
+            "event": "帰宅すると、誰も触っていないのに電気が勝手につく。"
+          }
+        }
+      ]
+    },
+
+    "water_flows": {
+      "slot": "evening_home",
+      "pair": "流れる / 流す",
+      "scene": {
+        "title": "夜のお風呂",
+        "subtitle": "一日の疲れを取るために、浴槽にお湯を入れることにした。",
+        "question": "水是怎么流出来的？",
+        "hint": "你按了开关。"
+      },
+      "mission": "把水放出来。",
+      "correctId": "a",
+      "correctNote": "他動詞「流す」は、人が水などを流れる状態にする表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "お湯を流した",
+          "kana": "おゆをながした",
+          "meaning": "我让热水流出来。",
+          "agentless": false,
+          "narrative": {
+            "label": "我开了水龙头",
+            "hint": "你按下按钮，水开始流。",
+            "joke": "湯船準備、完璧です。"
+          },
+          "story": {
+            "anchorJa": "私は浴槽のスイッチを押して、お湯を流した。",
+            "requiredRegex": "お湯を[^。！？]{0,40}流",
+            "event": "主人公が浴室のスイッチを押して浴槽にお湯を流す。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "お湯が流れた",
+          "kana": "おゆがながれた",
+          "meaning": "热水自己流出来了。",
+          "agentless": true,
+          "narrative": {
+            "label": "水自己流了",
+            "hint": "你没碰开关，水却开始流。",
+            "joke": "今晩のお風呂も自我を持っているようです。"
+          },
+          "story": {
+            "anchorJa": "気がつくと、浴室でお湯が流れていた。",
+            "requiredRegex": "お湯が[^。！？]{0,40}流",
+            "event": "誰も操作していないのに浴室のお湯が勝手に流れ出す。"
+          }
+        }
+      ]
+    },
+
+    "vase_falls": {
+      "slot": "evening_home",
+      "pair": "倒れる / 倒す",
+      "scene": {
+        "title": "棚の上の花瓶",
+        "subtitle": "夜、リビングを通ると、棚の上の花瓶のあたりから音がした。",
+        "question": "花瓶是怎么倒下的？",
+        "hint": "可能是风，也可能是猫。"
+      },
+      "mission": "花瓶倒了。",
+      "correctId": "a",
+      "correctNote": "自動詞「倒れる」は、立っていた物が倒れた状態になることを表します。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "花瓶が倒れた",
+          "kana": "かびんがたおれた",
+          "meaning": "花瓶倒了。",
+          "agentless": true,
+          "narrative": {
+            "label": "花瓶自己倒了",
+            "hint": "你不在场，它就倒了。",
+            "joke": "犯人は風か、猫か、見えない誰か。"
+          },
+          "story": {
+            "anchorJa": "棚の上で、花瓶が倒れた。",
+            "requiredRegex": "花瓶が[^。！？]{0,40}倒",
+            "event": "誰も触れていないのに棚の上の花瓶が勝手に倒れる。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "花瓶を倒した",
+          "kana": "かびんをたおした",
+          "meaning": "我把花瓶弄倒了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我撞倒了花瓶",
+            "hint": "你诚实地承认。",
+            "joke": "弁償の準備をしておきましょう。"
+          },
+          "story": {
+            "anchorJa": "棚の前を通った時、私は花瓶を倒した。",
+            "requiredRegex": "花瓶を[^。！？]{0,40}倒",
+            "event": "主人公が棚の前を通り過ぎる際に肘で花瓶を倒す。"
+          }
+        }
+      ]
+    },
+
+    "decide_plan": {
+      "slot": "evening_home",
+      "pair": "決まる / 決める",
+      "scene": {
+        "title": "明日の予定",
+        "subtitle": "寝る前、机の上のカレンダーを見ながら明日のことを考えた。",
+        "question": "明天的安排是怎么决定的？",
+        "hint": "你坐下来想了想。"
+      },
+      "mission": "决定明天的安排。",
+      "correctId": "a",
+      "correctNote": "他動詞「決める」は、人が物事の方針を確定させる表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "明日の予定を決めた",
+          "kana": "あしたのよていをきめた",
+          "meaning": "决定了明天的安排。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲自决定的",
+            "hint": "你权衡了一下，做了选择。",
+            "joke": "計画的な大人です。"
+          },
+          "story": {
+            "anchorJa": "寝る前に、私は明日の予定を決めた。",
+            "requiredRegex": "予定を[^。！？]{0,40}決め",
+            "event": "主人公が就寝前にカレンダーを見て明日の予定を決める。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "明日の予定が決まった",
+          "kana": "あしたのよていがきまった",
+          "meaning": "明天的安排定下来了。",
+          "agentless": true,
+          "narrative": {
+            "label": "安排自动定下来了",
+            "hint": "没人决定，日历自己写好了。",
+            "joke": "あなたの代理が動いてくれたようです。"
+          },
+          "story": {
+            "anchorJa": "気がつくと、明日の予定が決まっていた。",
+            "requiredRegex": "予定が[^。！？]{0,40}決ま",
+            "event": "誰も意思決定していないのに、明日の予定がカレンダーに書き込まれている。"
+          }
+        }
+      ]
+    },
+
+    "hide_gift": {
+      "slot": "evening_home",
+      "pair": "隠れる / 隠す",
+      "scene": {
+        "title": "明日のプレゼント",
+        "subtitle": "明日は家族の誕生日。机の上に箱が置いてある。",
+        "question": "礼物是怎么藏起来的？",
+        "hint": "你不希望被发现。"
+      },
+      "mission": "把礼物藏起来。",
+      "correctId": "a",
+      "correctNote": "他動詞「隠す」は、人が物を見えない場所へ移す表現です。",
+      "options": [
+        {
+          "id": "a",
+          "sentence": "プレゼントを隠した",
+          "kana": "ぷれぜんとをかくした",
+          "meaning": "我把礼物藏起来了。",
+          "agentless": false,
+          "narrative": {
+            "label": "我亲手藏的",
+            "hint": "你找到了一个隐蔽的角落。",
+            "joke": "サプライズ準備完了。"
+          },
+          "story": {
+            "anchorJa": "私は引き出しの奥に、プレゼントを隠した。",
+            "requiredRegex": "プレゼントを[^。！？]{0,40}隠",
+            "event": "主人公が明日のサプライズのためにプレゼントを引き出しに隠す。"
+          }
+        },
+        {
+          "id": "b",
+          "sentence": "プレゼントが隠れた",
+          "kana": "ぷれぜんとがかくれた",
+          "meaning": "礼物自己藏起来了。",
+          "agentless": true,
+          "narrative": {
+            "label": "礼物自己藏好了",
+            "hint": "你刚一转身，箱子就不见了。",
+            "joke": "プレゼントにも意志があるみたいです。"
+          },
+          "story": {
+            "anchorJa": "目を離した瞬間、プレゼントが隠れた。",
+            "requiredRegex": "プレゼントが[^。！？]{0,40}隠",
+            "event": "誰も触れていないのに机の上のプレゼントが勝手に見えなくなる。"
+          }
+        }
+      ]
+    }
+  }
+}

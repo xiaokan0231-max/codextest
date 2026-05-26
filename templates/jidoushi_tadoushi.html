@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>自他動詞クエスト</title>
+    <link rel="stylesheet" href="/static/css/jidoushi_tadoushi.css" />
+    <script src="/static/js/jidoushi_tadoushi.js" defer></script>
+  </head>
+  <body>
+    <main class="quest-shell">
+      <header class="hero" aria-labelledby="page-title">
+        <a class="home-link" href="/" aria-label="ローカルページ入口へ戻る">←</a>
+        <div class="hero-copy">
+          <p class="eyebrow">自他動詞クエスト</p>
+          <h1 id="page-title"><span class="title-chunk">言い間違い</span><span class="title-chunk">事故現場</span></h1>
+          <p class="lead">
+            自動詞と他動詞を、短い場面で選びながら覚える文法ゲームです。
+            五つ選んだあと、結果とあなたの物語をまとめて読みます。
+          </p>
+        </div>
+        <button class="restart-button" id="restartButton" type="button" aria-label="最初からやり直す">↺</button>
+      </header>
+
+      <section class="hud" aria-label="進行状況">
+        <div class="hud-block">
+          <span class="hud-label">STAGE</span>
+          <strong id="stageCount">1 / 5</strong>
+        </div>
+        <div class="hud-block">
+          <span class="hud-label">SCORE</span>
+          <strong id="scoreCount">0</strong>
+        </div>
+        <div class="hud-block">
+          <span class="hud-label">LIFE</span>
+          <div class="life-track" id="lifeTrack" aria-label="残りライフ"></div>
+        </div>
+        <div class="hud-progress" aria-hidden="true">
+          <span id="progressBar"></span>
+        </div>
+      </section>
+
+      <section class="quest-board" id="questBoard" aria-live="polite">
+        <section class="scene-panel" aria-labelledby="sceneTitle">
+          <figure class="scene-media" id="sceneMedia">
+            <img id="sceneImage" alt="" />
+            <figcaption class="image-fallback" id="imageFallback" hidden>
+              <span>IMAGE SLOT</span>
+              <strong id="fallbackTitle">Scene</strong>
+              <small id="fallbackPath">/static/images/image2/scene.png</small>
+            </figcaption>
+          </figure>
+          <div class="scene-copy">
+            <p class="stage-label" id="stageLabel">STAGE 01</p>
+            <h2 id="sceneTitle">Loading</h2>
+            <p id="sceneSubtitle"></p>
+          </div>
+        </section>
+
+        <section class="choice-panel" aria-labelledby="missionTitle">
+          <div class="mission">
+            <p class="mission-label">現場 SCENE</p>
+            <h2 id="missionTitle">読み込み中</h2>
+            <p id="missionHint"></p>
+            <p class="kb-hint" aria-hidden="true">键盘 1 · 2 选择 / R 重玩</p>
+          </div>
+
+          <div class="pair-strip" id="pairStrip">
+            <span>PAIR</span>
+            <strong id="pairText">開く / 開ける</strong>
+          </div>
+
+          <div class="options" id="optionsList" aria-label="選択肢"></div>
+        </section>
+      </section>
+
+      <section class="saga-board" id="sagaBoard" hidden aria-labelledby="sagaTitle">
+        <header class="saga-header">
+          <p class="saga-eyebrow">CLEAR · あなたのサーガ</p>
+          <h2 id="sagaTitle">あなたの選択から生まれた物語</h2>
+          <p id="sagaSubtitle">你选择的五句话，将成为这个短篇里实际发生的事件。</p>
+        </header>
+        <section class="story-loading" id="storyLoading" role="status">
+          <span class="story-spinner" aria-hidden="true"></span>
+          <div>
+            <strong>物語を書いています...</strong>
+            <p>正在根据你的选择生成短篇日语故事。</p>
+          </div>
+        </section>
+        <section class="story-error" id="storyError" hidden role="alert">
+          <strong>物語を生成できませんでした。</strong>
+          <p>故事生成失败。请确认 Ollama 正在运行，并重新尝试。</p>
+          <button class="retry-button" id="storyRetry" type="button">物語をもう一度生成 / 重新生成故事</button>
+        </section>
+        <article class="generated-story" id="generatedStory" hidden aria-live="polite">
+          <header class="story-heading">
+            <h3 id="storyTitleJa"></h3>
+            <p id="storyTitleZh" hidden></p>
+          </header>
+          <div class="story-paragraphs" id="storyParagraphs"></div>
+          <div class="translation-actions">
+            <button class="retry-button" id="storyTranslate" type="button">中文翻译を生成 / 翻译成中文</button>
+            <p class="translation-loading" id="translationLoading" hidden>中国語に翻訳しています... / 正在生成中文翻译...</p>
+          </div>
+          <section class="story-error translation-error" id="translationError" hidden role="alert">
+            <strong>中国語訳を生成できませんでした。</strong>
+            <p>中文翻译失败。日语故事可以继续阅读，也可以重新尝试。</p>
+            <button class="retry-button" id="translationRetry" type="button">翻訳をもう一度生成 / 重新翻译</button>
+          </section>
+        </article>
+        <section class="review-board" aria-labelledby="reviewTitle">
+          <h3 id="reviewTitle">表現の復習 / 表达复盘</h3>
+          <div class="review-list" id="sagaReview"></div>
+        </section>
+        <footer class="saga-footer">
+          <div class="saga-stats" id="sagaStats"></div>
+          <p class="saga-rank" id="sagaRank"></p>
+          <button class="next-button" type="button" id="sagaRestart">もう一度プレイ</button>
+        </footer>
+      </section>
+
+    </main>
+  </body>
+</html>
