@@ -1154,6 +1154,30 @@
         transform: translateY(-2px);
       }
 
+      /* 诊断结果配图：统一约束盒，兼容不同尺寸/比例的图片 */
+      .quiz-result-figure {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto 18px;
+      }
+
+      .quiz-result-figure img {
+        display: block;
+        width: auto;
+        max-width: min(260px, 80%);
+        max-height: 190px;
+        object-fit: contain;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+        background: rgba(15, 23, 42, 0.5);
+      }
+
+      .quiz-result-figure img[hidden] {
+        display: none;
+      }
+
       /* Company map section styles */
       .companies {
         margin: 0 auto;

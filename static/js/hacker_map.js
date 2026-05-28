@@ -844,14 +844,6 @@
             { text: "人をだます文章の作り方や心理の動きを分析したくなる", score: { blackhat: 3 } },
             { text: "急いでいる時は、とりあえず押してから考える", score: { victimRisk: 4 } }
           ]
-        },
-        {
-          question: "Q4. ハッカーという言葉を聞いて、一番ワクワクする役割は？",
-          answers: [
-            { text: "弱点を見つけて、社会や会社を守るホワイトハット", score: { whitehat: 3 } },
-            { text: "ルールの外側から、抜け道や裏ルートを探すブラックハット", score: { blackhat: 3 } },
-            { text: "難しそうなので、セキュリティは専門家だけに任せたい", score: { victimRisk: 3 } }
-          ]
         }
       ];
 
@@ -859,17 +851,20 @@
         whitehat: {
           title: "🛡️ ホワイトハット向き",
           desc: "あなたは弱点を見つけて、正しい方法で守る側に活かせるタイプです。",
-          detail: "原因を調べる力、報告する姿勢、相手を守ろうとする考え方があります。脆弱性診断、SOC、CSIRT、バグバウンティなど、合法的に社会を守る仕事と相性がよいです。"
+          detail: "原因を調べる力、報告する姿勢、相手を守ろうとする考え方があります。脆弱性診断、SOC、CSIRT、バグバウンティなど、合法的に社会を守る仕事と相性がよいです。",
+          image: "/static/images/hero.jpeg"
         },
         blackhat: {
           title: "⚠️ ブラックハット気質",
           desc: "あなたは攻撃者の視点を想像する力が強いタイプです。",
-          detail: "抜け道を探す発想は強みですが、許可なく試す行為は違法です。その好奇心は、CTF、Red Team、脆弱性診断など、ルールのある安全な場所で使うのが一番かっこいい道です。"
+          detail: "抜け道を探す発想は強みですが、許可なく試す行為は違法です。その好奇心は、CTF、Red Team、脆弱性診断など、ルールのある安全な場所で使うのが一番かっこいい道です。",
+          image: "/static/images/ハッカー.png"
         },
         victimRisk: {
           title: "🚨 一番ハッキングされやすいタイプ",
           desc: "あなたは『自分は大丈夫』と思いやすく、基本対策を後回しにしがちなタイプです。",
-          detail: "怪しいリンクを押さない、OSやアプリを更新する、パスワードを使い回さない、二段階認証を使う。この4つを守るだけで、被害にあう可能性をかなり下げられます。"
+          detail: "怪しいリンクを押さない、OSやアプリを更新する、パスワードを使い回さない、二段階認証を使う。この4つを守るだけで、被害にあう可能性をかなり下げられます。",
+          image: "/static/images/sad.png"
         }
       };
 
@@ -933,6 +928,17 @@
         }
         
         const result = quizResults[topRole] || quizResults.careers;
+        const quizResultImage = document.getElementById('quizResultImage');
+        if (quizResultImage) {
+          if (result.image) {
+            quizResultImage.src = result.image;
+            quizResultImage.alt = result.title;
+            quizResultImage.hidden = false;
+          } else {
+            quizResultImage.removeAttribute('src');
+            quizResultImage.hidden = true;
+          }
+        }
         quizResultTitle.innerHTML = formatGlossaryTerms(result.title);
         quizResultDesc.innerHTML = formatGlossaryTerms(result.desc);
         quizResultDetail.innerHTML = formatGlossaryTerms(result.detail);

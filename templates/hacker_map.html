@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ハッカーの業界地図</title>
-    <link rel="stylesheet" href="/static/css/hacker_map.css" />
+    <link rel="stylesheet" href="/static/css/hacker_map.css?v=2" />
   </head>
   <body>
     <!-- Background Canvas for Matrix Rain -->
@@ -182,6 +182,9 @@
           </div>
           <!-- Quiz Result Window -->
           <div id="quizResultContainer" style="display: none; text-align: center; padding: 10px 0;">
+            <div class="quiz-result-figure">
+              <img id="quizResultImage" alt="" />
+            </div>
             <h4 id="quizResultTitle" style="font-size: 20px; color: var(--green); margin-bottom: 12px;"></h4>
             <p id="quizResultDesc" style="font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 20px;"></p>
             <div id="quizResultDetail" class="info-box" style="text-align: left; background: rgba(15,23,42,0.6); padding: 16px;"></div>
@@ -207,6 +210,6 @@
       </div>
     </div>
 
-    <script src="/static/js/hacker_map.js"></script>
+    <script src="/static/js/hacker_map.js?v=2"></script>
   </body>
 </html>
